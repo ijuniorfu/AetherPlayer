@@ -26,6 +26,7 @@
 		86CF347649A91D2B990853B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC865F7686A9533FA69E135B /* Assets.xcassets */; };
 		8B3DAB6AE9250CA78B5A93BB /* RecentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651650500DBEBF3955D2C0A6 /* RecentItem.swift */; };
 		8C3C05EC6A3BCC6A6195C0CF /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B2A7817BDF162ECC87CB82 /* Playlist.swift */; };
+		8CBD4B252BDC010BCA99EA23 /* RecentsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8F888DB3F6F552B95C5CA7 /* RecentsListView.swift */; };
 		911776C7C8307451CDC0A026 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D103BBA3739D445E3954B5 /* PlayerViewModel.swift */; };
 		A4CADB880CB63E8BEC6D1121 /* KeyCatcherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5C8E6CC47029944F03BF49 /* KeyCatcherView.swift */; };
 		ADBB50A4992BB1FE126089CF /* Timecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D72D7101F574252D4DF390C /* Timecode.swift */; };
@@ -71,6 +72,7 @@
 		9B4245211CDE14A288F3A3C6 /* AetherPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AetherPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DF027E0C8A452E79A82DC39 /* RecentsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsStoreTests.swift; sourceTree = "<group>"; };
 		9F41670E23F316F7DBD632FB /* PlaylistTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTests.swift; sourceTree = "<group>"; };
+		AC8F888DB3F6F552B95C5CA7 /* RecentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsListView.swift; sourceTree = "<group>"; };
 		C3FEFE70E236F61EFF3FACE4 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMenuModelTests.swift; sourceTree = "<group>"; };
 		CC865F7686A9533FA69E135B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				C3FEFE70E236F61EFF3FACE4 /* EmptyStateView.swift */,
 				3C5C8E6CC47029944F03BF49 /* KeyCatcherView.swift */,
 				4B11436997124F720E91C535 /* PlayerContainerView.swift */,
+				AC8F888DB3F6F552B95C5CA7 /* RecentsListView.swift */,
 				21DED04DA7729F984DB15A33 /* ResumeToastView.swift */,
 				6F44EDD5A2153E72AF32A1B3 /* SubtitleOverlayView.swift */,
 				46653D3A70E8EFB17B45B5AB /* TracksPopover.swift */,
@@ -306,6 +309,7 @@
 				911776C7C8307451CDC0A026 /* PlayerViewModel.swift in Sources */,
 				8C3C05EC6A3BCC6A6195C0CF /* Playlist.swift in Sources */,
 				8B3DAB6AE9250CA78B5A93BB /* RecentItem.swift in Sources */,
+				8CBD4B252BDC010BCA99EA23 /* RecentsListView.swift in Sources */,
 				C381691519E3D99902A62562 /* RecentsStore.swift in Sources */,
 				3301A509B2988941D7032B16 /* ResumePolicy.swift in Sources */,
 				6BDD6184F887FEA522DBD459 /* ResumeToastView.swift in Sources */,

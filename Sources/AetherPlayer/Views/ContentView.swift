@@ -19,7 +19,14 @@ struct ContentView: View {
                 PlayerContainerView(model: model)
                     .ignoresSafeArea()
             } else {
-                EmptyStateView(isDropTargeted: isDropTargeted, onOpen: openPanel)
+                EmptyStateView(
+                    isDropTargeted: isDropTargeted,
+                    onOpen: openPanel,
+                    recents: model.recents.items,
+                    onOpenRecent: { item in Task { await model.openRecent(item) } },
+                    onRemoveRecent: { model.recents.remove($0) },
+                    onClearRecents: { model.recents.clearAll() }
+                )
             }
 
             if let err = model.loadError {
