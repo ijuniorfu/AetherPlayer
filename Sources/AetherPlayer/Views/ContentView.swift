@@ -62,9 +62,14 @@ struct ContentView: View {
             _ = provider.loadObject(ofClass: URL.self) { url, _ in
                 guard let url else { return }
                 Task { @MainActor in
-                    // A subtitle file dropped onto a playing video attaches as
-                    // a sidecar track; anything else loads as a new video.
-                    if Self.subtitleExtensions.contains(url.pathExtension.lowercased()), model.hasMedia {
+                    var isDir: ObjCBool = false
+                    FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir)
+                    if isDir.boolValue {
+                        let bm = BookmarkAccess.bookmark(for: url)
+                        await model.openFolder(url, bookmarkData: bm)
+                    } else if Self.subtitleExtensions.contains(url.pathExtension.lowercased()), model.hasMedia {
+                        // A subtitle file dropped onto a playing video attaches as
+                        // a sidecar track; anything else loads as a new video.
                         model.loadSidecarSubtitle(url: url)
                     } else {
                         await model.open(url: url)

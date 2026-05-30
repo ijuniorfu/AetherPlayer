@@ -4,6 +4,8 @@ import AetherEngine
 struct TransportBar: View {
     let model: PlayerViewModel
     let onTracksTapped: () -> Void
+    let onPrevious: () -> Void
+    let onNext: () -> Void
 
     var body: some View {
         VStack(spacing: 8) {
@@ -31,6 +33,16 @@ struct TransportBar: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.white)
+
+                Button(action: { onPrevious() }) {
+                    Image(systemName: "backward.end.fill").font(.title3)
+                }
+                .buttonStyle(.plain).foregroundStyle(.white).disabled(!model.hasPrevious)
+
+                Button(action: { onNext() }) {
+                    Image(systemName: "forward.end.fill").font(.title3)
+                }
+                .buttonStyle(.plain).foregroundStyle(.white).disabled(!model.hasNext)
 
                 HStack(spacing: 6) {
                     Button(action: { model.toggleMute() }) {

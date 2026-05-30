@@ -37,6 +37,8 @@ struct AetherPlayerApp: App {
             CommandGroup(replacing: .newItem) {
                 Button("Open\u{2026}") { openFile() }
                     .keyboardShortcut("o", modifiers: .command)
+                Button("Open Folder\u{2026}") { openFolderPanel() }
+                    .keyboardShortcut("o", modifiers: [.command, .shift])
             }
             CommandMenu("Audio") {
                 if let model {
@@ -74,6 +76,18 @@ struct AetherPlayerApp: App {
         panel.allowedContentTypes = [.movie, .video]
         if panel.runModal() == .OK, let url = panel.url {
             Task { await model.open(url: url) }
+        }
+    }
+
+    private func openFolderPanel() {
+        guard let model else { return }
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        if panel.runModal() == .OK, let url = panel.url {
+            let bm = BookmarkAccess.bookmark(for: url)
+            Task { await model.openFolder(url, bookmarkData: bm) }
         }
     }
 }

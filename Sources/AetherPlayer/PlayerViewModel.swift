@@ -26,6 +26,11 @@ final class PlayerViewModel {
     /// active-subtitle index exists, so we track it here).
     private(set) var selectedSubtitleIndex: Int?
 
+    private(set) var playlist: Playlist?
+    private var folderScoped: ScopedResource?
+    var hasNext: Bool { playlist?.hasNext ?? false }
+    var hasPrevious: Bool { playlist?.hasPrevious ?? false }
+
     let recents = RecentsStore()
     private var scoped: ScopedResource?
     /// Set briefly after a resume so the UI can offer "Start over".
@@ -69,6 +74,9 @@ final class PlayerViewModel {
             self?.updateSleepAssertion()
             if $0 == .idle, let url = self?.loadedURL, self?.hasMedia == true {
                 self?.recents.markFinished(url)   // reached natural end
+                if self?.playlist?.hasNext == true {
+                    Task { @MainActor in await self?.playNext() }
+                }
             }
         }.store(in: &cancellables)
         engine.$currentTime.receive(on: DispatchQueue.main).sink { [weak self] in
@@ -162,6 +170,8 @@ final class PlayerViewModel {
         flushPosition()
         engine.stop()
         scoped?.stop(); scoped = nil
+        folderScoped?.stop(); folderScoped = nil
+        playlist = nil
         loadedURL = nil
         loadError = nil
         resumeMessage = nil
@@ -192,6 +202,51 @@ final class PlayerViewModel {
 
     func loadSidecarSubtitle(url: URL) {
         engine.selectSidecarSubtitle(url: url)
+    }
+
+    // MARK: - Folder / Playlist
+
+    /// Open a folder: list playable files, sort, and play the first.
+    func openFolder(_ folderURL: URL, bookmarkData: Data? = nil) async {
+        folderScoped?.stop(); folderScoped = nil
+        if let data = bookmarkData, let res = ScopedResource(bookmark: data) {
+            folderScoped = res
+        }
+        let contents = (try? FileManager.default.contentsOfDirectory(
+            at: folderURL, includingPropertiesForKeys: nil)) ?? []
+        let files = playableFiles(in: contents)
+        guard !files.isEmpty else {
+            loadError = "No playable files in \(folderURL.lastPathComponent)."
+            return
+        }
+        playlist = Playlist(items: files, currentIndex: 0)
+        await openInternal(url: files[0], recordPlaylistRelative: false)
+    }
+
+    /// Build a folder playlist around an already-open single file, given access
+    /// to its parent folder (from a one-time prompt). Keeps the current file playing.
+    func adoptFolderPlaylist(folderURL: URL, around currentURL: URL, bookmarkData: Data?) {
+        folderScoped?.stop(); folderScoped = nil
+        if let data = bookmarkData, let res = ScopedResource(bookmark: data) { folderScoped = res }
+        let contents = (try? FileManager.default.contentsOfDirectory(
+            at: folderURL, includingPropertiesForKeys: nil)) ?? []
+        let files = playableFiles(in: contents)
+        let index = files.firstIndex { $0.standardizedFileURL == currentURL.standardizedFileURL } ?? 0
+        playlist = files.isEmpty ? nil : Playlist(items: files, currentIndex: index)
+    }
+
+    func playNext() async {
+        flushPosition()
+        guard var pl = playlist, let url = pl.next() else { return }
+        playlist = pl
+        await openInternal(url: url, recordPlaylistRelative: false)
+    }
+
+    func playPrevious() async {
+        flushPosition()
+        guard var pl = playlist, let url = pl.previous() else { return }
+        playlist = pl
+        await openInternal(url: url, recordPlaylistRelative: false)
     }
 
     // MARK: - Speed

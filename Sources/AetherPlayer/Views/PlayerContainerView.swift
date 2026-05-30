@@ -25,7 +25,12 @@ struct PlayerContainerView: View {
             if controlsVisible {
                 VStack {
                     Spacer()
-                    TransportBar(model: model) { showTracks.toggle() }
+                    TransportBar(
+                        model: model,
+                        onTracksTapped: { showTracks.toggle() },
+                        onPrevious: { ensureFolderThenAdvance(next: false) },
+                        onNext: { ensureFolderThenAdvance(next: true) }
+                    )
                 }
                 .transition(.opacity)
                 .popover(isPresented: $showTracks, arrowEdge: .bottom) {
@@ -56,6 +61,10 @@ struct PlayerContainerView: View {
         switch event.keyCode {
         case 49: model.primaryAction(); bumpActivity(); return true     // Space
         case 53: model.stop(); return true                              // Esc
+        case 124 where event.modifierFlags.contains(.command):          // Cmd+Right = next
+            ensureFolderThenAdvance(next: true); bumpActivity(); return true
+        case 123 where event.modifierFlags.contains(.command):          // Cmd+Left = previous
+            ensureFolderThenAdvance(next: false); bumpActivity(); return true
         case 123: model.seek(by: -10); bumpActivity(); return true      // Left
         case 124: model.seek(by: 10); bumpActivity(); return true       // Right
         case 126: model.adjustVolume(by: 0.05); bumpActivity(); return true  // Up
@@ -68,6 +77,25 @@ struct PlayerContainerView: View {
 
     private func toggleFullScreen() {
         NSApp.keyWindow?.toggleFullScreen(nil)
+    }
+
+    private func ensureFolderThenAdvance(next: Bool) {
+        if model.playlist != nil {
+            Task { if next { await model.playNext() } else { await model.playPrevious() } }
+            return
+        }
+        guard let current = model.loadedURL else { return }
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.directoryURL = current.deletingLastPathComponent()
+        panel.message = "Grant access to this folder to play the next file."
+        if panel.runModal() == .OK, let folder = panel.url {
+            let bm = BookmarkAccess.bookmark(for: folder)
+            model.adoptFolderPlaylist(folderURL: folder, around: current, bookmarkData: bm)
+            Task { if next { await model.playNext() } else { await model.playPrevious() } }
+        }
     }
 }
 
