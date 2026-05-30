@@ -31,6 +31,9 @@ struct AetherPlayerApp: App {
                 if let model {
                     AppDelegate.onOpenFiles = { urls in
                         guard let url = urls.first else { return }
+                        // A Finder open should bring the player to the front.
+                        NSApp.activate(ignoringOtherApps: true)
+                        NSApp.windows.first?.makeKeyAndOrderFront(nil)
                         Task { @MainActor in await model.open(url: url) }
                     }
                 }
