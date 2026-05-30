@@ -17,6 +17,9 @@ packages:
   AetherEngine:
     url: https://github.com/superuser404notfound/AetherEngine
     revision: 654da7f5fe3e5aa428cacf97ad60a0c53b99af45
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: "2.6.0"
 targets:
   AetherPlayer:
     type: application
@@ -30,6 +33,9 @@ targets:
         CFBundleName: AetherPlayer
         LSMinimumSystemVersion: "14.0"
         NSHumanReadableCopyright: ""
+        SUFeedURL: https://superuser404notfound.github.io/AetherPlayer/appcast.xml
+        SUPublicEDKey: PLACEHOLDER_REPLACE_WITH_GENERATED_ED_PUBLIC_KEY
+        SUEnableInstallerLauncherService: true
         CFBundleDocumentTypes:
           - CFBundleTypeName: Video
             LSItemContentTypes:
@@ -43,8 +49,10 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: de.superuser404.AetherPlayer
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) DIRECT_DISTRIBUTION"
     dependencies:
       - package: AetherEngine
+      - package: Sparkle
   AetherPlayerTests:
     type: bundle.unit-test
     platform: macOS

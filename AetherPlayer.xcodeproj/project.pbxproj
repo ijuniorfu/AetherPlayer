@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D70CF09403F144734CA775B /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D01BC7FC7BBCF3AF0B5CB8 /* Updater.swift */; };
+		0DF571E0B19DA9A63AB44B6F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = D8CD01999FE428529CC0DB5F /* Sparkle */; };
 		13A2FC91687D83F654B53BDE /* TracksPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46653D3A70E8EFB17B45B5AB /* TracksPopover.swift */; };
 		169CEF92A7F40A58E7F35D32 /* SubtitleOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F44EDD5A2153E72AF32A1B3 /* SubtitleOverlayView.swift */; };
 		2BBF2825AE3E822E2771F1E1 /* AetherEngine in Frameworks */ = {isa = PBXBuildFile; productRef = BE33BD5FE909AF50F8938376 /* AetherEngine */; };
@@ -56,6 +58,7 @@
 		233D66079A84FB8F2D75E290 /* TimecodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimecodeTests.swift; sourceTree = "<group>"; };
 		2EEFF5940111B0337F712DDF /* AetherPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AetherPlayerApp.swift; sourceTree = "<group>"; };
 		3C5C8E6CC47029944F03BF49 /* KeyCatcherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCatcherView.swift; sourceTree = "<group>"; };
+		45D01BC7FC7BBCF3AF0B5CB8 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		46653D3A70E8EFB17B45B5AB /* TracksPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksPopover.swift; sourceTree = "<group>"; };
 		4AB205A9EC1736A4D0E09EC0 /* TrackMenuModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMenuModel.swift; sourceTree = "<group>"; };
 		4B11436997124F720E91C535 /* PlayerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerContainerView.swift; sourceTree = "<group>"; };
@@ -87,6 +90,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2BBF2825AE3E822E2771F1E1 /* AetherEngine in Frameworks */,
+				0DF571E0B19DA9A63AB44B6F /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +119,7 @@
 				99D103BBA3739D445E3954B5 /* PlayerViewModel.swift */,
 				8D72D7101F574252D4DF390C /* Timecode.swift */,
 				4AB205A9EC1736A4D0E09EC0 /* TrackMenuModel.swift */,
+				45D01BC7FC7BBCF3AF0B5CB8 /* Updater.swift */,
 				288ABE75999DAD841D2D96A7 /* Library */,
 				3D2F448BCA022A6383DC172B /* Resources */,
 				F4CC0980753F865352BA2244 /* Views */,
@@ -212,6 +217,7 @@
 			name = AetherPlayer;
 			packageProductDependencies = (
 				BE33BD5FE909AF50F8938376 /* AetherEngine */,
+				D8CD01999FE428529CC0DB5F /* Sparkle */,
 			);
 			productName = AetherPlayer;
 			productReference = D6A5F4D0C3E4DB98E768BA0C /* AetherPlayer.app */;
@@ -257,6 +263,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				01FD55D28DD498C42BB12330 /* XCRemoteSwiftPackageReference "AetherEngine" */,
+				5F7234CE368E530069027164 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D89D6DC2B7ED0B934CE5E961 /* Products */;
@@ -318,6 +325,7 @@
 				60A44AA82BDDE1F9919F8A33 /* TrackMenuModel.swift in Sources */,
 				13A2FC91687D83F654B53BDE /* TracksPopover.swift in Sources */,
 				5E421971863E471E099FB244 /* TransportBar.swift in Sources */,
+				0D70CF09403F144734CA775B /* Updater.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,6 +369,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.superuser404.AetherPlayer;
 				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DIRECT_DISTRIBUTION";
 			};
 			name = Debug;
 		};
@@ -438,6 +447,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.superuser404.AetherPlayer;
 				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DIRECT_DISTRIBUTION";
 			};
 			name = Release;
 		};
@@ -567,6 +577,14 @@
 				revision = 654da7f5fe3e5aa428cacf97ad60a0c53b99af45;
 			};
 		};
+		5F7234CE368E530069027164 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -574,6 +592,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 01FD55D28DD498C42BB12330 /* XCRemoteSwiftPackageReference "AetherEngine" */;
 			productName = AetherEngine;
+		};
+		D8CD01999FE428529CC0DB5F /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F7234CE368E530069027164 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

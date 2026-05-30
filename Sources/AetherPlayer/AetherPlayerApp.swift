@@ -10,6 +10,9 @@ struct AetherPlayerApp: App {
         try? PlayerViewModel()
     }()
     @State private var alwaysOnTop = false
+#if DIRECT_DISTRIBUTION
+    @StateObject private var updater = Updater()
+#endif
 
     var body: some Scene {
         Window("AetherPlayer", id: "main") {
@@ -39,6 +42,11 @@ struct AetherPlayerApp: App {
         }
         .windowResizability(.contentMinSize)
         .commands {
+#if DIRECT_DISTRIBUTION
+            CommandGroup(after: .appInfo) {
+                Button("Check for Updates\u{2026}") { updater.checkForUpdates() }
+            }
+#endif
             CommandGroup(replacing: .newItem) {
                 Button("Open\u{2026}") { openFile() }
                     .keyboardShortcut("o", modifiers: .command)

@@ -137,6 +137,27 @@ jobs:
           ls -la "$DMG"
           gh release upload "${{ steps.tag.outputs.tag }}" "$DMG" --clobber
 
+      - name: Sign update + publish appcast to GitHub Pages
+        if: ${{ secrets.SPARKLE_PRIVATE_KEY != '' }}
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          DMG="build/AetherPlayer-${{ steps.tag.outputs.tag }}.dmg"
+          SIGN=$(find ~/Library/Developer/Xcode/DerivedData "$PWD" -path "*sparkle/Sparkle/bin/sign_update" 2>/dev/null | head -1)
+          echo "$SPARKLE_PRIVATE_KEY" > /tmp/sparkle_key
+          SIG=$("$SIGN" "$DMG" -f /tmp/sparkle_key)
+          rm /tmp/sparkle_key
+          LEN=$(stat -f%z "$DMG")
+          DLURL="https://github.com/superuser404notfound/AetherPlayer/releases/download/${{ steps.tag.outputs.tag }}/AetherPlayer-${{ steps.tag.outputs.tag }}.dmg"
+          git fetch origin gh-pages || true
+          git worktree add /tmp/pages origin/gh-pages 2>/dev/null || git worktree add -b gh-pages /tmp/pages
+          python3 Scripts/update_appcast.py /tmp/pages/appcast.xml \
+            "${{ steps.tag.outputs.tag }}" "$DLURL" "$LEN" "$SIG"
+          cd /tmp/pages
+          git add appcast.xml
+          git -c user.email=ci@local -c user.name=CI commit -m "appcast: ${{ steps.tag.outputs.tag }}"
+          git push origin gh-pages
+
       - name: Tear down keychain
         if: always()
         run: |
