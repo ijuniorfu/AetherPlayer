@@ -164,7 +164,10 @@ jobs:
           cd /tmp/pages
           git add appcast.xml
           git -c user.email=ci@local -c user.name=CI commit -m "appcast: ${{ steps.tag.outputs.tag }}"
-          git push origin gh-pages
+          # The worktree is on a detached HEAD, so push the commit explicitly
+          # to the gh-pages branch (a bare `git push origin gh-pages` fails with
+          # "src refspec gh-pages does not match any").
+          git push origin HEAD:gh-pages
 
       - name: Tear down keychain
         if: always()
