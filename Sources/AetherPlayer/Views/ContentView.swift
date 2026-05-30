@@ -34,8 +34,22 @@ struct ContentView: View {
                 }
                 .transition(.opacity)
             }
+
+            if let msg = model.resumeMessage {
+                VStack {
+                    Spacer()
+                    ResumeToastView(message: msg, onStartOver: { model.startOver() })
+                        .padding(.bottom, 90)
+                }
+                .transition(.opacity)
+                .task(id: msg) {
+                    try? await Task.sleep(for: .seconds(6))
+                    model.dismissResumeMessage()
+                }
+            }
         }
         .animation(.easeInOut(duration: 0.25), value: model.loadError)
+        .animation(.easeInOut(duration: 0.25), value: model.resumeMessage)
         .onDrop(of: [.fileURL], isTargeted: $isDropTargeted) { providers in
             guard let provider = providers.first else { return false }
             _ = provider.loadObject(ofClass: URL.self) { url, _ in

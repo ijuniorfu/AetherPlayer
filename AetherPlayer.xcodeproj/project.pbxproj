@@ -18,6 +18,7 @@
 		5E421971863E471E099FB244 /* TransportBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004AE8A16D07A63C1B81C59D /* TransportBar.swift */; };
 		5EDD6CF6CE3647773954C9B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18E793A6CF747DF8329B3DF /* AppDelegate.swift */; };
 		60A44AA82BDDE1F9919F8A33 /* TrackMenuModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB205A9EC1736A4D0E09EC0 /* TrackMenuModel.swift */; };
+		6BDD6184F887FEA522DBD459 /* ResumeToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DED04DA7729F984DB15A33 /* ResumeToastView.swift */; };
 		6EA4B6A36BB346F6CFD4DC51 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FEFE70E236F61EFF3FACE4 /* EmptyStateView.swift */; };
 		78C6C0C695CCAC4331057E3D /* AutoHideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A80F72F03FB387443963F /* AutoHideTests.swift */; };
 		8261B7E3227BAADBB7ACE9DC /* TrackMenuModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */; };
@@ -50,6 +51,7 @@
 		0343F7972D3F779D292A13C1 /* ResumePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumePolicy.swift; sourceTree = "<group>"; };
 		0A242920ECAE4DF2BCC1AAD1 /* RecentsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsStore.swift; sourceTree = "<group>"; };
 		1B8A80F72F03FB387443963F /* AutoHideTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoHideTests.swift; sourceTree = "<group>"; };
+		21DED04DA7729F984DB15A33 /* ResumeToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumeToastView.swift; sourceTree = "<group>"; };
 		233D66079A84FB8F2D75E290 /* TimecodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimecodeTests.swift; sourceTree = "<group>"; };
 		2EEFF5940111B0337F712DDF /* AetherPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AetherPlayerApp.swift; sourceTree = "<group>"; };
 		3C5C8E6CC47029944F03BF49 /* KeyCatcherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCatcherView.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 				C3FEFE70E236F61EFF3FACE4 /* EmptyStateView.swift */,
 				3C5C8E6CC47029944F03BF49 /* KeyCatcherView.swift */,
 				4B11436997124F720E91C535 /* PlayerContainerView.swift */,
+				21DED04DA7729F984DB15A33 /* ResumeToastView.swift */,
 				6F44EDD5A2153E72AF32A1B3 /* SubtitleOverlayView.swift */,
 				46653D3A70E8EFB17B45B5AB /* TracksPopover.swift */,
 				004AE8A16D07A63C1B81C59D /* TransportBar.swift */,
@@ -305,6 +308,7 @@
 				8B3DAB6AE9250CA78B5A93BB /* RecentItem.swift in Sources */,
 				C381691519E3D99902A62562 /* RecentsStore.swift in Sources */,
 				3301A509B2988941D7032B16 /* ResumePolicy.swift in Sources */,
+				6BDD6184F887FEA522DBD459 /* ResumeToastView.swift in Sources */,
 				169CEF92A7F40A58E7F35D32 /* SubtitleOverlayView.swift in Sources */,
 				ADBB50A4992BB1FE126089CF /* Timecode.swift in Sources */,
 				60A44AA82BDDE1F9919F8A33 /* TrackMenuModel.swift in Sources */,

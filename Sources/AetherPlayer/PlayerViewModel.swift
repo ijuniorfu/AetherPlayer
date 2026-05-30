@@ -26,6 +26,12 @@ final class PlayerViewModel {
     /// active-subtitle index exists, so we track it here).
     private(set) var selectedSubtitleIndex: Int?
 
+    let recents = RecentsStore()
+    private var scoped: ScopedResource?
+    /// Set briefly after a resume so the UI can offer "Start over".
+    private(set) var resumeMessage: String?
+    private var lastPersist: Date = .distantPast
+
     var volume: Float {
         get { engine.volume }
         set { engine.volume = max(0, min(1, newValue)) }
@@ -61,8 +67,14 @@ final class PlayerViewModel {
         engine.$state.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.state = $0
             self?.updateSleepAssertion()
+            if $0 == .idle, let url = self?.loadedURL, self?.hasMedia == true {
+                self?.recents.markFinished(url)   // reached natural end
+            }
         }.store(in: &cancellables)
-        engine.$currentTime.receive(on: DispatchQueue.main).sink { [weak self] in self?.currentTime = $0 }.store(in: &cancellables)
+        engine.$currentTime.receive(on: DispatchQueue.main).sink { [weak self] in
+            self?.currentTime = $0
+            self?.persistPositionThrottled()
+        }.store(in: &cancellables)
         engine.$duration.receive(on: DispatchQueue.main).sink { [weak self] in self?.duration = $0 }.store(in: &cancellables)
         engine.$audioTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.audioTracks = $0 }.store(in: &cancellables)
         engine.$subtitleTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleTracks = $0 }.store(in: &cancellables)
@@ -73,24 +85,56 @@ final class PlayerViewModel {
     }
 
     func open(url: URL) async {
+        await openInternal(url: url, recordPlaylistRelative: true)
+    }
+
+    /// Shared open path. Fresh opens make a new bookmark; reopening from a recent
+    /// resolves a ScopedResource first (see openRecent).
+    private func openInternal(url: URL, recordPlaylistRelative: Bool) async {
         loadError = nil
+        let resume = recents.position(for: url).flatMap { resumeTarget(lastPosition: $0.position, duration: $0.duration) }
         do {
-            try await engine.load(url: url)
+            try await engine.load(url: url, startPosition: resume)
             engine.play()
             loadedURL = url
             selectedSubtitleIndex = nil
             rate = 1.0
             engine.setRate(1.0)
+            if let bm = BookmarkAccess.bookmark(for: url) {
+                recents.record(url: url, bookmarkData: bm, duration: duration)
+            }
             NSDocumentController.shared.noteNewRecentDocumentURL(url)
+            if let resume { resumeMessage = "Resuming from \(formatTimecode(resume))" }
+            else { resumeMessage = nil }
         } catch {
             loadError = "Could not play \(url.lastPathComponent): \(error.localizedDescription)"
             loadedURL = nil
         }
     }
 
+    /// Reopen a recents entry: resolve its bookmark, hold scope, then load.
+    func openRecent(_ item: RecentItem) async {
+        scoped?.stop()
+        guard let resource = ScopedResource(bookmark: item.bookmarkData) else {
+            loadError = "Could not open \(item.name): the file may have moved or been deleted."
+            return
+        }
+        scoped = resource
+        await openInternal(url: resource.url, recordPlaylistRelative: true)
+    }
+
+    func startOver() {
+        resumeMessage = nil
+        seek(to: 0)
+    }
+
+    func dismissResumeMessage() { resumeMessage = nil }
+
     func togglePlayPause() {
         switch state {
-        case .playing: engine.pause()
+        case .playing:
+            flushPosition()
+            engine.pause()
         case .paused: engine.play()
         default: break
         }
@@ -115,9 +159,12 @@ final class PlayerViewModel {
     }
 
     func stop() {
+        flushPosition()
         engine.stop()
+        scoped?.stop(); scoped = nil
         loadedURL = nil
         loadError = nil
+        resumeMessage = nil
     }
 
     func seek(by delta: Double) {
@@ -178,6 +225,23 @@ final class PlayerViewModel {
 
     func clearLoadError() {
         loadError = nil
+    }
+
+    // MARK: - Position persistence
+
+    private func persistPositionThrottled() {
+        guard let url = loadedURL, state == .playing else { return }
+        let now = Date()
+        guard now.timeIntervalSince(lastPersist) >= 5 else { return }
+        lastPersist = now
+        recents.updatePosition(currentTime, duration: duration, for: url)
+    }
+
+    /// Force-save the current position (call on pause, stop, window close).
+    func flushPosition() {
+        guard let url = loadedURL, currentTime > 0,
+              !isEffectivelyFinished(position: currentTime, duration: duration) else { return }
+        recents.updatePosition(currentTime, duration: duration, for: url)
     }
 
     // MARK: - Sleep prevention
