@@ -369,7 +369,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.superuser404.AetherPlayer;
 				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DIRECT_DISTRIBUTION";
 			};
 			name = Debug;
 		};
@@ -447,7 +446,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.superuser404.AetherPlayer;
 				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DIRECT_DISTRIBUTION";
 			};
 			name = Release;
 		};
