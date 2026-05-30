@@ -49,5 +49,8 @@ targets:
     platform: macOS
     sources:
       - path: Tests/AetherPlayerTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
     dependencies:
       - target: AetherPlayer
