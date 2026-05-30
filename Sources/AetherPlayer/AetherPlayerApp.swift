@@ -29,11 +29,9 @@ struct AetherPlayerApp: App {
             .onAppear {
                 NSApp.windows.first?.setFrameAutosaveName("AetherPlayerMainWindow")
                 if let model {
+                    // Activation/fronting is handled in AppDelegate; just load.
                     AppDelegate.onOpenFiles = { urls in
                         guard let url = urls.first else { return }
-                        // A Finder open should bring the player to the front.
-                        NSApp.activate(ignoringOtherApps: true)
-                        NSApp.windows.first?.makeKeyAndOrderFront(nil)
                         Task { @MainActor in await model.open(url: url) }
                     }
                 }
