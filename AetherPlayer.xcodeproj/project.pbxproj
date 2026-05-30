@@ -12,6 +12,7 @@
 		60A44AA82BDDE1F9919F8A33 /* TrackMenuModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB205A9EC1736A4D0E09EC0 /* TrackMenuModel.swift */; };
 		78C6C0C695CCAC4331057E3D /* AutoHideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A80F72F03FB387443963F /* AutoHideTests.swift */; };
 		8261B7E3227BAADBB7ACE9DC /* TrackMenuModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */; };
+		911776C7C8307451CDC0A026 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D103BBA3739D445E3954B5 /* PlayerViewModel.swift */; };
 		ADBB50A4992BB1FE126089CF /* Timecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D72D7101F574252D4DF390C /* Timecode.swift */; };
 		D3BC9E17B2391B5DF5ED6ED9 /* AetherPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFF5940111B0337F712DDF /* AetherPlayerApp.swift */; };
 		F6716D6A28440962D624926C /* AutoHide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B86576A26F61BD21676054F /* AutoHide.swift */; };
@@ -35,6 +36,7 @@
 		6B86576A26F61BD21676054F /* AutoHide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoHide.swift; sourceTree = "<group>"; };
 		855A70C970D5E49F8180DB59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D72D7101F574252D4DF390C /* Timecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timecode.swift; sourceTree = "<group>"; };
+		99D103BBA3739D445E3954B5 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		9B4245211CDE14A288F3A3C6 /* AetherPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AetherPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMenuModelTests.swift; sourceTree = "<group>"; };
 		D6A5F4D0C3E4DB98E768BA0C /* AetherPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AetherPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,6 +70,7 @@
 			children = (
 				2EEFF5940111B0337F712DDF /* AetherPlayerApp.swift */,
 				6B86576A26F61BD21676054F /* AutoHide.swift */,
+				99D103BBA3739D445E3954B5 /* PlayerViewModel.swift */,
 				8D72D7101F574252D4DF390C /* Timecode.swift */,
 				4AB205A9EC1736A4D0E09EC0 /* TrackMenuModel.swift */,
 				3D2F448BCA022A6383DC172B /* Resources */,
@@ -209,6 +212,7 @@
 			files = (
 				D3BC9E17B2391B5DF5ED6ED9 /* AetherPlayerApp.swift in Sources */,
 				F6716D6A28440962D624926C /* AutoHide.swift in Sources */,
+				911776C7C8307451CDC0A026 /* PlayerViewModel.swift in Sources */,
 				ADBB50A4992BB1FE126089CF /* Timecode.swift in Sources */,
 				60A44AA82BDDE1F9919F8A33 /* TrackMenuModel.swift in Sources */,
 			);
