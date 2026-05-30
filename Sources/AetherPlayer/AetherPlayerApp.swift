@@ -4,6 +4,8 @@ import UniformTypeIdentifiers
 
 @main
 struct AetherPlayerApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     @State private var model: PlayerViewModel? = {
         try? PlayerViewModel()
     }()
@@ -18,6 +20,14 @@ struct AetherPlayerApp: App {
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.black)
+                }
+            }
+            .onAppear {
+                if let model {
+                    AppDelegate.onOpenFiles = { urls in
+                        guard let url = urls.first else { return }
+                        Task { @MainActor in await model.open(url: url) }
+                    }
                 }
             }
             .frame(minWidth: 640, minHeight: 360)

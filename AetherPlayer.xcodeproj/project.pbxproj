@@ -16,6 +16,7 @@
 		3F8D429EA937F104E52CFC4B /* TimecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233D66079A84FB8F2D75E290 /* TimecodeTests.swift */; };
 		5B986FC51A01D496620532E9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A9391037530D8F5D48F68E /* ContentView.swift */; };
 		5E421971863E471E099FB244 /* TransportBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004AE8A16D07A63C1B81C59D /* TransportBar.swift */; };
+		5EDD6CF6CE3647773954C9B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E18E793A6CF747DF8329B3DF /* AppDelegate.swift */; };
 		60A44AA82BDDE1F9919F8A33 /* TrackMenuModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB205A9EC1736A4D0E09EC0 /* TrackMenuModel.swift */; };
 		6EA4B6A36BB346F6CFD4DC51 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FEFE70E236F61EFF3FACE4 /* EmptyStateView.swift */; };
 		78C6C0C695CCAC4331057E3D /* AutoHideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A80F72F03FB387443963F /* AutoHideTests.swift */; };
@@ -72,6 +73,7 @@
 		CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMenuModelTests.swift; sourceTree = "<group>"; };
 		CC865F7686A9533FA69E135B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D6A5F4D0C3E4DB98E768BA0C /* AetherPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AetherPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E18E793A6CF747DF8329B3DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F16F0F485BEBCDFFE77C8E62 /* AetherPlayer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AetherPlayer.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -104,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				2EEFF5940111B0337F712DDF /* AetherPlayerApp.swift */,
+				E18E793A6CF747DF8329B3DF /* AppDelegate.swift */,
 				6B86576A26F61BD21676054F /* AutoHide.swift */,
 				99D103BBA3739D445E3954B5 /* PlayerViewModel.swift */,
 				8D72D7101F574252D4DF390C /* Timecode.swift */,
@@ -290,6 +293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D3BC9E17B2391B5DF5ED6ED9 /* AetherPlayerApp.swift in Sources */,
+				5EDD6CF6CE3647773954C9B7 /* AppDelegate.swift in Sources */,
 				F6716D6A28440962D624926C /* AutoHide.swift in Sources */,
 				3877B2FE032AB3D2C6F31658 /* BookmarkAccess.swift in Sources */,
 				5B986FC51A01D496620532E9 /* ContentView.swift in Sources */,
