@@ -1,0 +1,53 @@
+name: AetherPlayer
+options:
+  bundleIdPrefix: de.superuser404
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "6.0"
+    ARCHS: "$(ARCHS_STANDARD)"
+    ONLY_ACTIVE_ARCH: NO
+    CODE_SIGN_ENTITLEMENTS: Sources/AetherPlayer/Resources/AetherPlayer.entitlements
+    ENABLE_HARDENED_RUNTIME: YES
+packages:
+  AetherEngine:
+    url: https://github.com/superuser404notfound/AetherEngine
+    revision: 654da7f5fe3e5aa428cacf97ad60a0c53b99af45
+targets:
+  AetherPlayer:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/AetherPlayer
+    info:
+      path: Sources/AetherPlayer/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: AetherPlayer
+        CFBundleName: AetherPlayer
+        LSMinimumSystemVersion: "14.0"
+        NSHumanReadableCopyright: ""
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: Video
+            LSItemContentTypes:
+              - public.movie
+              - public.video
+              - org.matroska.mkv
+              - public.mpeg-4
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.superuser404.AetherPlayer
+    dependencies:
+      - package: AetherEngine
+  AetherPlayerTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/AetherPlayerTests
+    dependencies:
+      - target: AetherPlayer
