@@ -18,6 +18,7 @@
 		6EA4B6A36BB346F6CFD4DC51 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FEFE70E236F61EFF3FACE4 /* EmptyStateView.swift */; };
 		78C6C0C695CCAC4331057E3D /* AutoHideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A80F72F03FB387443963F /* AutoHideTests.swift */; };
 		8261B7E3227BAADBB7ACE9DC /* TrackMenuModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */; };
+		86CF347649A91D2B990853B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC865F7686A9533FA69E135B /* Assets.xcassets */; };
 		911776C7C8307451CDC0A026 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D103BBA3739D445E3954B5 /* PlayerViewModel.swift */; };
 		A4CADB880CB63E8BEC6D1121 /* KeyCatcherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5C8E6CC47029944F03BF49 /* KeyCatcherView.swift */; };
 		ADBB50A4992BB1FE126089CF /* Timecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D72D7101F574252D4DF390C /* Timecode.swift */; };
@@ -53,6 +54,7 @@
 		9B4245211CDE14A288F3A3C6 /* AetherPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AetherPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FEFE70E236F61EFF3FACE4 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMenuModelTests.swift; sourceTree = "<group>"; };
+		CC865F7686A9533FA69E135B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D6A5F4D0C3E4DB98E768BA0C /* AetherPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AetherPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F16F0F485BEBCDFFE77C8E62 /* AetherPlayer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AetherPlayer.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				F16F0F485BEBCDFFE77C8E62 /* AetherPlayer.entitlements */,
+				CC865F7686A9533FA69E135B /* Assets.xcassets */,
 				855A70C970D5E49F8180DB59 /* Info.plist */,
 			);
 			path = Resources;
@@ -158,6 +161,7 @@
 			buildConfigurationList = CF8E374B5637C123A0DB7996 /* Build configuration list for PBXNativeTarget "AetherPlayer" */;
 			buildPhases = (
 				999E46281DDB867E56F135A8 /* Sources */,
+				76CF5B282390FB903310C02A /* Resources */,
 				C18BCD25D335BE99308ED3B9 /* Frameworks */,
 			);
 			buildRules = (
@@ -223,6 +227,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		76CF5B282390FB903310C02A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				86CF347649A91D2B990853B8 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2E64C68D3387DE41F58D6905 /* Sources */ = {

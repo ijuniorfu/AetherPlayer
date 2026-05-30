@@ -42,6 +42,9 @@ struct ContentView: View {
             }
             return true
         }
+        .onChange(of: model.loadedURL) { _, url in
+            NSApp.keyWindow?.title = url?.lastPathComponent ?? "AetherPlayer"
+        }
     }
 
     func openPanel() {
