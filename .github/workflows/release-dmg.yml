@@ -154,10 +154,13 @@ jobs:
           rm /tmp/sparkle_key
           LEN=$(stat -f%z "$DMG")
           DLURL="https://github.com/superuser404notfound/AetherPlayer/releases/download/${{ steps.tag.outputs.tag }}/AetherPlayer-${{ steps.tag.outputs.tag }}.dmg"
+          # Sparkle compares CFBundleVersion (the monotonic build number), so
+          # read it from the built app and feed it as sparkle:version.
+          BUILD=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" build/export/AetherPlayer.app/Contents/Info.plist)
           git fetch origin gh-pages || true
           git worktree add /tmp/pages origin/gh-pages 2>/dev/null || git worktree add -b gh-pages /tmp/pages
           python3 Scripts/update_appcast.py /tmp/pages/appcast.xml \
-            "${{ steps.tag.outputs.tag }}" "$DLURL" "$LEN" "$SIG"
+            "${{ steps.tag.outputs.tag }}" "$BUILD" "$DLURL" "$LEN" "$SIG"
           cd /tmp/pages
           git add appcast.xml
           git -c user.email=ci@local -c user.name=CI commit -m "appcast: ${{ steps.tag.outputs.tag }}"

@@ -6,8 +6,8 @@ options:
   createIntermediateGroups: true
 settings:
   base:
-    MARKETING_VERSION: "0.2.0"
-    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "0.2.1"
+    CURRENT_PROJECT_VERSION: "2"
     SWIFT_VERSION: "6.0"
     ARCHS: "$(ARCHS_STANDARD)"
     ONLY_ACTIVE_ARCH: NO
@@ -31,10 +31,14 @@ targets:
       properties:
         CFBundleDisplayName: AetherPlayer
         CFBundleName: AetherPlayer
+        # Expanded at build time so the bundle reports the real version.
+        # Sparkle compares CFBundleVersion, so this must track the build number.
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSMinimumSystemVersion: "14.0"
         NSHumanReadableCopyright: ""
         SUFeedURL: https://superuser404notfound.github.io/AetherPlayer/appcast.xml
-        SUPublicEDKey: PLACEHOLDER_REPLACE_WITH_GENERATED_ED_PUBLIC_KEY
+        SUPublicEDKey: svx1jSdcWBeRUDFkz79lK7yBgXbFu5GnVrm/G/xh3dE=
         SUEnableInstallerLauncherService: true
         CFBundleDocumentTypes:
           - CFBundleTypeName: Video
@@ -49,12 +53,11 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: de.superuser404.AetherPlayer
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        # DIRECT_DISTRIBUTION is intentionally NOT set here. Sparkle is linked
-        # but its updater code is gated behind this flag and stays dormant until
-        # a real EdDSA SUPublicEDKey is in place -- otherwise Sparkle fatals at
-        # launch ("EdDSA public key is not valid"). Enable the flag (here or in a
-        # release-only config) once the key, SPARKLE_PRIVATE_KEY secret, and
-        # GitHub Pages appcast are set up. The App Store build must leave it off.
+        # Direct-distribution build: compiles in Sparkle auto-update (a real
+        # SUPublicEDKey is set above). A future App Store config must omit this
+        # flag, since the store handles updates and forbids third-party
+        # self-update.
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) DIRECT_DISTRIBUTION"
     dependencies:
       - package: AetherEngine
       - package: Sparkle

@@ -35,9 +35,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>14.0</string>
 	<key>NSHumanReadableCopyright</key>
@@ -47,6 +47,6 @@
 	<key>SUFeedURL</key>
 	<string>https://superuser404notfound.github.io/AetherPlayer/appcast.xml</string>
 	<key>SUPublicEDKey</key>
-	<string>PLACEHOLDER_REPLACE_WITH_GENERATED_ED_PUBLIC_KEY</string>
+	<string>svx1jSdcWBeRUDFkz79lK7yBgXbFu5GnVrm/G/xh3dE=</string>
 </dict>
 </plist>
