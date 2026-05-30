@@ -42,5 +42,11 @@
 	<string>14.0</string>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://superuser404notfound.github.io/AetherPlayer/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>PLACEHOLDER_REPLACE_WITH_GENERATED_ED_PUBLIC_KEY</string>
 </dict>
 </plist>
