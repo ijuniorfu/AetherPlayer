@@ -28,6 +28,31 @@ struct AetherPlayerApp: App {
                 Button("Open\u{2026}") { openFile() }
                     .keyboardShortcut("o", modifiers: .command)
             }
+            CommandMenu("Audio") {
+                if let model {
+                    ForEach(audioMenuRows(model.audioTracks, activeIndex: model.activeAudioTrackIndex)) { row in
+                        Button(action: { model.selectAudio(engineIndex: row.engineIndex) }) {
+                            Text((row.isSelected ? "\u{2713} " : "") + row.label)
+                        }
+                    }
+                }
+            }
+            CommandMenu("Subtitles") {
+                if let model {
+                    ForEach(subtitleMenuRows(model.subtitleTracks,
+                                             selectedEngineIndex: model.selectedSubtitleIndex,
+                                             isActive: model.isSubtitleActive)) { row in
+                        Button(action: {
+                            switch row.kind {
+                            case .off: model.disableSubtitle()
+                            case .track(let idx): model.selectSubtitle(engineIndex: idx)
+                            }
+                        }) {
+                            Text((row.isSelected ? "\u{2713} " : "") + row.label)
+                        }
+                    }
+                }
+            }
         }
     }
 
