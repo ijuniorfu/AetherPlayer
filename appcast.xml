@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+<?xml version='1.0' encoding='UTF-8'?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
   <channel>
     <title>AetherPlayer</title>
-  </channel>
+  <item><title>0.2.1</title><sparkle:version>2</sparkle:version><sparkle:shortVersionString>0.2.1</sparkle:shortVersionString><pubDate>Sat, 30 May 2026 19:21:25 +0000</pubDate><enclosure url="https://github.com/superuser404notfound/AetherPlayer/releases/download/0.2.1/AetherPlayer-0.2.1.dmg" length="11220469" type="application/octet-stream" sparkle:edSignature="TdMTE+AAl/2GI8OnmR6OMYDJe+HXsEewtGLs+LE088WrLq18ghISzkt7zU/tEhtuw7BKFoTyxwppeERIqwP3Cg==" /></item></channel>
 </rss>
