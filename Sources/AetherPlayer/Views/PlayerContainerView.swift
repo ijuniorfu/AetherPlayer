@@ -58,6 +58,9 @@ struct PlayerContainerView: View {
         case 53: model.stop(); return true                              // Esc
         case 123: model.seek(by: -10); bumpActivity(); return true      // Left
         case 124: model.seek(by: 10); bumpActivity(); return true       // Right
+        case 126: model.adjustVolume(by: 0.05); bumpActivity(); return true  // Up
+        case 125: model.adjustVolume(by: -0.05); bumpActivity(); return true // Down
+        case 46: model.toggleMute(); bumpActivity(); return true        // M
         case 3:  toggleFullScreen(); return true                        // F
         default: return false
         }

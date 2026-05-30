@@ -28,8 +28,20 @@ final class PlayerViewModel {
 
     var volume: Float {
         get { engine.volume }
-        set { engine.volume = newValue }
+        set { engine.volume = max(0, min(1, newValue)) }
     }
+
+    /// Playback speed. The engine has no published rate, so we mirror it
+    /// locally; reset to 1x on each new load.
+    private(set) var rate: Float = 1.0
+
+    /// Volume captured before muting, so unmute restores it.
+    private var preMuteVolume: Float?
+    var isMuted: Bool { volume == 0 }
+
+    /// Held while playing to keep the display and system awake during
+    /// playback; released as soon as playback is not active.
+    private var sleepAssertion: NSObjectProtocol?
 
     var isPlaying: Bool { state == .playing }
     var hasMedia: Bool { loadedURL != nil }
@@ -46,15 +58,18 @@ final class PlayerViewModel {
     }
 
     private func bind() {
-        engine.$state.receive(on: RunLoop.main).sink { [weak self] in self?.state = $0 }.store(in: &cancellables)
-        engine.$currentTime.receive(on: RunLoop.main).sink { [weak self] in self?.currentTime = $0 }.store(in: &cancellables)
-        engine.$duration.receive(on: RunLoop.main).sink { [weak self] in self?.duration = $0 }.store(in: &cancellables)
-        engine.$audioTracks.receive(on: RunLoop.main).sink { [weak self] in self?.audioTracks = $0 }.store(in: &cancellables)
-        engine.$subtitleTracks.receive(on: RunLoop.main).sink { [weak self] in self?.subtitleTracks = $0 }.store(in: &cancellables)
-        engine.$activeAudioTrackIndex.receive(on: RunLoop.main).sink { [weak self] in self?.activeAudioTrackIndex = $0 }.store(in: &cancellables)
-        engine.$playbackBackend.receive(on: RunLoop.main).sink { [weak self] in self?.backend = $0 }.store(in: &cancellables)
-        engine.$subtitleCues.receive(on: RunLoop.main).sink { [weak self] in self?.subtitleCues = $0 }.store(in: &cancellables)
-        engine.$isSubtitleActive.receive(on: RunLoop.main).sink { [weak self] in self?.isSubtitleActive = $0 }.store(in: &cancellables)
+        engine.$state.receive(on: DispatchQueue.main).sink { [weak self] in
+            self?.state = $0
+            self?.updateSleepAssertion()
+        }.store(in: &cancellables)
+        engine.$currentTime.receive(on: DispatchQueue.main).sink { [weak self] in self?.currentTime = $0 }.store(in: &cancellables)
+        engine.$duration.receive(on: DispatchQueue.main).sink { [weak self] in self?.duration = $0 }.store(in: &cancellables)
+        engine.$audioTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.audioTracks = $0 }.store(in: &cancellables)
+        engine.$subtitleTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleTracks = $0 }.store(in: &cancellables)
+        engine.$activeAudioTrackIndex.receive(on: DispatchQueue.main).sink { [weak self] in self?.activeAudioTrackIndex = $0 }.store(in: &cancellables)
+        engine.$playbackBackend.receive(on: DispatchQueue.main).sink { [weak self] in self?.backend = $0 }.store(in: &cancellables)
+        engine.$subtitleCues.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleCues = $0 }.store(in: &cancellables)
+        engine.$isSubtitleActive.receive(on: DispatchQueue.main).sink { [weak self] in self?.isSubtitleActive = $0 }.store(in: &cancellables)
     }
 
     func open(url: URL) async {
@@ -64,6 +79,8 @@ final class PlayerViewModel {
             engine.play()
             loadedURL = url
             selectedSubtitleIndex = nil
+            rate = 1.0
+            engine.setRate(1.0)
             NSDocumentController.shared.noteNewRecentDocumentURL(url)
         } catch {
             loadError = "Could not play \(url.lastPathComponent): \(error.localizedDescription)"
@@ -80,10 +97,13 @@ final class PlayerViewModel {
     }
 
     /// Replay from the beginning. Used when the video has reached its end.
+    /// Resets the speed to 1x so the rate menu and actual playback agree
+    /// (the engine's play() drops back to 1x on replay).
     func restart() {
         Task {
             await engine.seek(to: 0)
             engine.play()
+            setRate(1.0)
         }
     }
 
@@ -125,5 +145,56 @@ final class PlayerViewModel {
 
     func loadSidecarSubtitle(url: URL) {
         engine.selectSidecarSubtitle(url: url)
+    }
+
+    // MARK: - Speed
+
+    /// Available playback speeds offered in the UI.
+    static let availableRates: [Float] = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+
+    func setRate(_ newRate: Float) {
+        engine.setRate(newRate)
+        rate = newRate
+    }
+
+    // MARK: - Volume
+
+    func adjustVolume(by delta: Float) {
+        if isMuted { preMuteVolume = nil }   // an explicit change cancels mute memory
+        volume = volume + delta
+    }
+
+    func toggleMute() {
+        if isMuted {
+            volume = preMuteVolume ?? 1.0
+            preMuteVolume = nil
+        } else {
+            preMuteVolume = volume
+            volume = 0
+        }
+    }
+
+    // MARK: - Errors
+
+    func clearLoadError() {
+        loadError = nil
+    }
+
+    // MARK: - Sleep prevention
+
+    /// Disables idle display/system sleep while playing so the screen does
+    /// not dim mid-video; releases the assertion the moment playback stops.
+    private func updateSleepAssertion() {
+        if state == .playing {
+            if sleepAssertion == nil {
+                sleepAssertion = ProcessInfo.processInfo.beginActivity(
+                    options: [.idleDisplaySleepDisabled, .idleSystemSleepDisabled],
+                    reason: "Video playback"
+                )
+            }
+        } else if let token = sleepAssertion {
+            ProcessInfo.processInfo.endActivity(token)
+            sleepAssertion = nil
+        }
     }
 }

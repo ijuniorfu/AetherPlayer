@@ -33,7 +33,11 @@ struct TransportBar: View {
                 .foregroundStyle(.white)
 
                 HStack(spacing: 6) {
-                    Image(systemName: "speaker.fill").foregroundStyle(.white.opacity(0.7))
+                    Button(action: { model.toggleMute() }) {
+                        Image(systemName: model.isMuted ? "speaker.slash.fill" : "speaker.fill")
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.white.opacity(0.7))
                     Slider(value: Binding(get: { Double(model.volume) },
                                           set: { model.volume = Float($0) }),
                            in: 0...1)
@@ -48,6 +52,25 @@ struct TransportBar: View {
                     .background(.black.opacity(0.55), in: Capsule())
                     .foregroundStyle(.white)
 
+                Menu {
+                    ForEach(PlayerViewModel.availableRates, id: \.self) { r in
+                        Button {
+                            model.setRate(r)
+                        } label: {
+                            Text((model.rate == r ? "\u{2713} " : "") + rateLabel(r))
+                        }
+                    }
+                } label: {
+                    Text(rateLabel(model.rate))
+                        .font(.system(.caption, design: .monospaced))
+                        .padding(.horizontal, 8).padding(.vertical, 4)
+                        .background(.black.opacity(0.55), in: Capsule())
+                        .foregroundStyle(.white)
+                }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
+                .fixedSize()
+
                 Button(action: onTracksTapped) {
                     Image(systemName: "captions.bubble").font(.title3)
                 }
@@ -61,6 +84,14 @@ struct TransportBar: View {
             LinearGradient(colors: [.black.opacity(0), .black.opacity(0.75)],
                            startPoint: .top, endPoint: .bottom)
         )
+    }
+
+    /// "1x", "1.5x", "0.5x" -- drops trailing ".0" for whole rates.
+    private func rateLabel(_ r: Float) -> String {
+        if r == r.rounded() {
+            return "\(Int(r))x"
+        }
+        return "\(String(format: "%g", r))x"
     }
 
     private var playButtonSymbol: String {
