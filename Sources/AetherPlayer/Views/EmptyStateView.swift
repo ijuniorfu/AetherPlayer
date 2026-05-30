@@ -10,6 +10,7 @@ struct EmptyStateView: View {
 
     var body: some View {
         VStack(spacing: 24) {
+            Spacer(minLength: 0)
             VStack(spacing: 16) {
                 Image(systemName: "film.stack")
                     .font(.system(size: 64))
@@ -27,7 +28,9 @@ struct EmptyStateView: View {
                 RecentsListView(items: recents, onOpen: onOpenRecent,
                                 onRemove: onRemoveRecent, onClearAll: onClearRecents)
             }
+            Spacer(minLength: 0)
         }
+        .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .contentShape(Rectangle())
     }

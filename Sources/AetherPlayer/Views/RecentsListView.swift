@@ -22,8 +22,12 @@ struct RecentsListView: View {
                     }
                 }
             }
+            // Hug the content for a few entries, then cap and scroll, so the box
+            // does not balloon into empty space with only one or two recents.
+            .frame(height: min(CGFloat(items.count) * 44, 220))
         }
         .frame(maxWidth: 460)
+        .fixedSize(horizontal: false, vertical: true)
         .padding(16)
         .background(.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 12))
     }
