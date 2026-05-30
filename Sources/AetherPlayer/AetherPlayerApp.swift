@@ -9,6 +9,7 @@ struct AetherPlayerApp: App {
     @State private var model: PlayerViewModel? = {
         try? PlayerViewModel()
     }()
+    @State private var alwaysOnTop = false
 
     var body: some Scene {
         Window("AetherPlayer", id: "main") {
@@ -23,12 +24,16 @@ struct AetherPlayerApp: App {
                 }
             }
             .onAppear {
+                NSApp.windows.first?.setFrameAutosaveName("AetherPlayerMainWindow")
                 if let model {
                     AppDelegate.onOpenFiles = { urls in
                         guard let url = urls.first else { return }
                         Task { @MainActor in await model.open(url: url) }
                     }
                 }
+            }
+            .onChange(of: alwaysOnTop) { _, on in
+                NSApp.keyWindow?.level = on ? .floating : .normal
             }
             .frame(minWidth: 640, minHeight: 360)
         }
@@ -64,6 +69,10 @@ struct AetherPlayerApp: App {
                         }
                     }
                 }
+            }
+            CommandMenu("Window") {
+                Toggle("Always on Top", isOn: $alwaysOnTop)
+                    .keyboardShortcut("t", modifiers: [.command, .shift])
             }
         }
     }

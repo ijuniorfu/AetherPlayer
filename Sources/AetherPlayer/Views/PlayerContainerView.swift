@@ -16,6 +16,8 @@ struct PlayerContainerView: View {
             // Bottom layer: mouse-move tracker (needs hit testing to receive mouseMoved).
             MouseActivityView { bumpActivity() }
 
+            DoubleClickView { toggleFullScreen() }
+
             AetherPlayerSurface(engine: model.engine)
                 .onTapGesture { model.primaryAction(); bumpActivity() }
 
@@ -60,7 +62,13 @@ struct PlayerContainerView: View {
     private func handleKey(_ event: NSEvent) -> Bool {
         switch event.keyCode {
         case 49: model.primaryAction(); bumpActivity(); return true     // Space
-        case 53: model.stop(); return true                              // Esc
+        case 53:  // Esc: exit fullscreen if in fullscreen, else stop
+            if NSApp.keyWindow?.styleMask.contains(.fullScreen) == true {
+                toggleFullScreen()
+            } else {
+                model.stop()
+            }
+            return true
         case 124 where event.modifierFlags.contains(.command):          // Cmd+Right = next
             ensureFolderThenAdvance(next: true); bumpActivity(); return true
         case 123 where event.modifierFlags.contains(.command):          // Cmd+Left = previous
@@ -96,6 +104,26 @@ struct PlayerContainerView: View {
             model.adoptFolderPlaylist(folderURL: folder, around: current, bookmarkData: bm)
             Task { if next { await model.playNext() } else { await model.playPrevious() } }
         }
+    }
+}
+
+/// Transparent overlay that fires a callback on double-click.
+private struct DoubleClickView: NSViewRepresentable {
+    let onDoubleClick: () -> Void
+    func makeNSView(context: Context) -> NSView {
+        let v = NSView()
+        let gr = NSClickGestureRecognizer(target: context.coordinator,
+                                          action: #selector(Coordinator.fire))
+        gr.numberOfClicksRequired = 2
+        v.addGestureRecognizer(gr)
+        return v
+    }
+    func updateNSView(_ nsView: NSView, context: Context) { context.coordinator.onDoubleClick = onDoubleClick }
+    func makeCoordinator() -> Coordinator { Coordinator(onDoubleClick) }
+    final class Coordinator: NSObject {
+        var onDoubleClick: () -> Void
+        init(_ cb: @escaping () -> Void) { onDoubleClick = cb }
+        @objc func fire() { onDoubleClick() }
     }
 }
 

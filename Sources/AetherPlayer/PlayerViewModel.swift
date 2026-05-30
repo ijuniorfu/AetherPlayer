@@ -39,7 +39,11 @@ final class PlayerViewModel {
 
     var volume: Float {
         get { engine.volume }
-        set { engine.volume = max(0, min(1, newValue)) }
+        set {
+            let clamped = max(0, min(1, newValue))
+            engine.volume = clamped
+            UserDefaults.standard.set(clamped, forKey: "player.volume")
+        }
     }
 
     /// Playback speed. The engine has no published rate, so we mirror it
@@ -66,6 +70,9 @@ final class PlayerViewModel {
     init() throws {
         self.engine = try AetherEngine()
         bind()
+        if UserDefaults.standard.object(forKey: "player.volume") != nil {
+            engine.volume = UserDefaults.standard.float(forKey: "player.volume")
+        }
     }
 
     private func bind() {
