@@ -138,10 +138,15 @@ jobs:
           gh release upload "${{ steps.tag.outputs.tag }}" "$DMG" --clobber
 
       - name: Sign update + publish appcast to GitHub Pages
-        if: ${{ secrets.SPARKLE_PRIVATE_KEY != '' }}
         env:
           SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
         run: |
+          # Skip until the Sparkle signing key is configured. (The secrets
+          # context is not allowed in step `if:` conditions, so guard here.)
+          if [ -z "$SPARKLE_PRIVATE_KEY" ]; then
+            echo "SPARKLE_PRIVATE_KEY not set; skipping appcast publish."
+            exit 0
+          fi
           DMG="build/AetherPlayer-${{ steps.tag.outputs.tag }}.dmg"
           SIGN=$(find ~/Library/Developer/Xcode/DerivedData "$PWD" -path "*sparkle/Sparkle/bin/sign_update" 2>/dev/null | head -1)
           echo "$SPARKLE_PRIVATE_KEY" > /tmp/sparkle_key
