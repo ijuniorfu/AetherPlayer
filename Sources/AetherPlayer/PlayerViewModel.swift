@@ -33,6 +33,10 @@ final class PlayerViewModel {
 
     var isPlaying: Bool { state == .playing }
     var hasMedia: Bool { loadedURL != nil }
+    /// A loaded file that has played to its natural end. The engine flips
+    /// `state` back to `.idle` on end-of-stream (both backends), and our
+    /// `loadedURL` only clears on `stop()`, so "loaded but idle" means ended.
+    var isEnded: Bool { hasMedia && state == .idle }
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -73,6 +77,21 @@ final class PlayerViewModel {
         case .paused: engine.play()
         default: break
         }
+    }
+
+    /// Replay from the beginning. Used when the video has reached its end.
+    func restart() {
+        Task {
+            await engine.seek(to: 0)
+            engine.play()
+        }
+    }
+
+    /// The transport's primary action: replay if the video has ended,
+    /// otherwise toggle play/pause. Backs the play button, the video tap,
+    /// and the Space key so all three stay consistent at end-of-stream.
+    func primaryAction() {
+        if isEnded { restart() } else { togglePlayPause() }
     }
 
     func stop() {

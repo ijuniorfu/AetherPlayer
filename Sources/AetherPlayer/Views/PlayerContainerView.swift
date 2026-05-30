@@ -17,7 +17,7 @@ struct PlayerContainerView: View {
             MouseActivityView { bumpActivity() }
 
             AetherPlayerSurface(engine: model.engine)
-                .onTapGesture { model.togglePlayPause(); bumpActivity() }
+                .onTapGesture { model.primaryAction(); bumpActivity() }
 
             SubtitleOverlayView(cues: model.subtitleCues, currentTime: model.currentTime)
                 .allowsHitTesting(false)
@@ -54,7 +54,7 @@ struct PlayerContainerView: View {
 
     private func handleKey(_ event: NSEvent) -> Bool {
         switch event.keyCode {
-        case 49: model.togglePlayPause(); bumpActivity(); return true   // Space
+        case 49: model.primaryAction(); bumpActivity(); return true     // Space
         case 53: model.stop(); return true                              // Esc
         case 123: model.seek(by: -10); bumpActivity(); return true      // Left
         case 124: model.seek(by: 10); bumpActivity(); return true       // Right

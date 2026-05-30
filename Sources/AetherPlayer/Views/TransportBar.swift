@@ -25,8 +25,8 @@ struct TransportBar: View {
             }
             // Controls row
             HStack(spacing: 16) {
-                Button(action: { model.togglePlayPause() }) {
-                    Image(systemName: model.isPlaying ? "pause.fill" : "play.fill")
+                Button(action: { model.primaryAction() }) {
+                    Image(systemName: playButtonSymbol)
                         .font(.title2)
                 }
                 .buttonStyle(.plain)
@@ -61,6 +61,11 @@ struct TransportBar: View {
             LinearGradient(colors: [.black.opacity(0), .black.opacity(0.75)],
                            startPoint: .top, endPoint: .bottom)
         )
+    }
+
+    private var playButtonSymbol: String {
+        if model.isEnded { return "arrow.counterclockwise" }
+        return model.isPlaying ? "pause.fill" : "play.fill"
     }
 
     private var backendBadge: String {
