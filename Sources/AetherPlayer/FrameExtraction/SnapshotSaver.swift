@@ -25,9 +25,16 @@ enum SnapshotSaver {
         panel.allowedContentTypes = [.png]
         panel.nameFieldStringValue = suggestedName
         panel.canCreateDirectories = true
-        guard panel.runModal() == .OK, let url = panel.url else { return }
-        let rep = NSBitmapImageRep(cgImage: image)
-        guard let data = rep.representation(using: .png, properties: [:]) else { return }
-        try? data.write(to: url)
+        // Use begin(completionHandler:), not runModal(): we are inside a Task
+        // continuation here (after the async snapshot), and starting a nested
+        // modal run loop from there aborts immediately and returns .cancel
+        // without ever showing the panel. begin() presents on the main run
+        // loop and calls back, which works from an async context.
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
+            let rep = NSBitmapImageRep(cgImage: image)
+            guard let data = rep.representation(using: .png, properties: [:]) else { return }
+            try? data.write(to: url)
+        }
     }
 }
