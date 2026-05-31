@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import AppKit
+import CoreGraphics
 import AetherEngine
 
 @Observable
@@ -32,6 +33,14 @@ final class PlayerViewModel {
     var hasPrevious: Bool { playlist?.hasPrevious ?? false }
 
     let recents = RecentsStore()
+    /// One frame extractor per playback session, built from the playing file
+    /// and shared by scrub preview and snapshot. Released (and shut down) on
+    /// the next load and on stop().
+    @ObservationIgnored private var frameExtractor: FrameExtractor?
+    /// Scrub-preview source, reconfigured on each load.
+    let scrubPreview = ScrubPreviewProvider()
+    /// Decode + disk-cached thumbnails for the recents list.
+    let recentsThumbnails = RecentsThumbnailProvider()
     private var scoped: ScopedResource?
     /// Set briefly after a resume so the UI can offer "Start over".
     private(set) var resumeMessage: String?
@@ -112,6 +121,10 @@ final class PlayerViewModel {
             try await engine.load(url: url, startPosition: resume)
             engine.play()
             loadedURL = url
+            let previousExtractor = frameExtractor
+            frameExtractor = engine.makeFrameExtractor()
+            scrubPreview.configure(extractor: frameExtractor, enabled: frameExtractor != nil)
+            if let previousExtractor { Task { await previousExtractor.shutdown() } }
             selectedSubtitleIndex = nil
             rate = 1.0
             engine.setRate(1.0)
@@ -176,6 +189,10 @@ final class PlayerViewModel {
     func stop() {
         flushPosition()
         engine.stop()
+        let extractorToClose = frameExtractor
+        frameExtractor = nil
+        scrubPreview.reset()
+        if let extractorToClose { Task { await extractorToClose.shutdown() } }
         scoped?.stop(); scoped = nil
         folderScoped?.stop(); folderScoped = nil
         playlist = nil
@@ -209,6 +226,15 @@ final class PlayerViewModel {
 
     func loadSidecarSubtitle(url: URL) {
         engine.selectSidecarSubtitle(url: url)
+    }
+
+    // MARK: - Snapshot
+
+    /// Capture the current frame at full resolution. Nil when nothing is
+    /// loaded. Uses the session extractor's frame-accurate path.
+    func snapshotCurrentFrame() async -> CGImage? {
+        guard let frameExtractor else { return nil }
+        return await frameExtractor.snapshot(at: currentTime)
     }
 
     // MARK: - Folder / Playlist
