@@ -21,4 +21,13 @@ final class FrameHelpersTests: XCTestCase {
         XCTAssertEqual(scrubThumbX(fraction: 1, width: 200, thumbWidth: 160), 40)
         XCTAssertEqual(scrubThumbX(fraction: 0.5, width: 0, thumbWidth: 160), 0)
     }
+
+    func testFractionForX() {
+        XCTAssertEqual(fraction(forX: 0, width: 200), 0)
+        XCTAssertEqual(fraction(forX: 100, width: 200), 0.5, accuracy: 0.0001)
+        XCTAssertEqual(fraction(forX: 200, width: 200), 1)
+        XCTAssertEqual(fraction(forX: 250, width: 200), 1)
+        XCTAssertEqual(fraction(forX: -10, width: 200), 0)
+        XCTAssertEqual(fraction(forX: 50, width: 0), 0)
+    }
 }

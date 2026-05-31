@@ -13,13 +13,12 @@ struct TransportBar: View {
     @Binding var scrubbing: Bool
     @State private var scrubFraction: Double = 0
 
-    /// 0...1 position shown by the slider: the scrub fraction while dragging,
-    /// otherwise the live playback fraction.
-    private var displayedFraction: Double {
-        if scrubbing { return scrubFraction }
-        return model.duration > 0 ? model.currentTime / model.duration : 0
+    /// Live playback position as a 0...1 fraction.
+    private var playbackFraction: Double {
+        model.duration > 0 ? model.currentTime / model.duration : 0
     }
-    /// Seconds shown by the leading timecode label.
+    /// Seconds shown by the leading timecode label: the scrub position while
+    /// dragging, otherwise the live playback time.
     private var displayedTime: Double {
         scrubbing ? scrubFraction * model.duration : model.currentTime
     }
@@ -31,42 +30,14 @@ struct TransportBar: View {
                 Text(formatTimecode(displayedTime))
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(.white)
-                GeometryReader { geo in
-                    Slider(
-                        value: Binding(
-                            get: { displayedFraction },
-                            set: { newValue in
-                                scrubFraction = newValue
-                                model.scrubPreview.update(fraction: newValue,
-                                                          durationSeconds: model.duration)
-                            }
-                        ),
-                        in: 0...1,
-                        onEditingChanged: { editing in
-                            if editing {
-                                scrubbing = true
-                                scrubFraction = displayedFraction
-                                model.scrubPreview.prewarm()
-                            } else {
-                                scrubbing = false
-                                model.seek(to: scrubFraction * model.duration)
-                                model.scrubPreview.clear()
-                            }
-                        }
-                    )
-                    .overlay(alignment: .bottomLeading) {
-                        if scrubbing, let image = model.scrubPreview.previewImage {
-                            ScrubThumbnail(image: image, time: scrubFraction * model.duration)
-                                .offset(
-                                    x: scrubThumbX(fraction: scrubFraction,
-                                                   width: geo.size.width,
-                                                   thumbWidth: 160),
-                                    y: -90
-                                )
-                        }
-                    }
-                }
-                .frame(height: 20)
+                ScrubBar(
+                    progress: playbackFraction,
+                    duration: model.duration,
+                    scrubPreview: model.scrubPreview,
+                    scrubbing: $scrubbing,
+                    scrubFraction: $scrubFraction,
+                    onSeek: { model.seek(to: $0) }
+                )
                 Text(formatTimecode(model.duration))
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(.white)
@@ -171,6 +142,93 @@ struct TransportBar: View {
         case .aether: return "aether"
         case .none: return ""
         }
+    }
+}
+
+/// Custom scrub track: click-to-seek, drag-to-scrub, and hover-to-preview in
+/// one view. A click or drag commits the seek on release (deferred), so the
+/// engine isn't hammered mid-drag; hovering only drives the floating preview
+/// and never moves playback. The preview bubble follows the cursor (or the
+/// drag) and stays clamped within the track.
+private struct ScrubBar: View {
+    let progress: Double          // 0...1 live playback position
+    let duration: Double
+    let scrubPreview: ScrubPreviewProvider
+    @Binding var scrubbing: Bool
+    @Binding var scrubFraction: Double
+    let onSeek: (Double) -> Void
+
+    @State private var hovering = false
+    @State private var hoverFraction: Double = 0
+
+    private let trackHeight: CGFloat = 4
+    private let previewWidth: CGFloat = 160
+
+    var body: some View {
+        GeometryReader { geo in
+            let width = geo.size.width
+            let active = min(max(scrubbing ? scrubFraction : progress, 0), 1)
+            let knobX = CGFloat(active) * width
+            let emphasized = scrubbing || hovering
+            let knobSize: CGFloat = emphasized ? 16 : 12
+            let bubbleFraction = scrubbing ? scrubFraction : hoverFraction
+
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(.white.opacity(0.25))
+                    .frame(height: trackHeight)
+                Capsule()
+                    .fill(.white)
+                    .frame(width: knobX, height: trackHeight)
+                Circle()
+                    .fill(.white)
+                    .frame(width: knobSize, height: knobSize)
+                    .offset(x: knobX - knobSize / 2)
+            }
+            .frame(maxHeight: .infinity)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        scrubbing = true
+                        scrubFraction = fraction(forX: Double(value.location.x), width: Double(width))
+                        scrubPreview.update(fraction: scrubFraction, durationSeconds: duration)
+                    }
+                    .onEnded { value in
+                        let f = fraction(forX: Double(value.location.x), width: Double(width))
+                        scrubFraction = f
+                        onSeek(f * duration)
+                        scrubbing = false
+                        if !hovering { scrubPreview.clear() }
+                    }
+            )
+            .onContinuousHover { phase in
+                switch phase {
+                case .active(let point):
+                    if !hovering { scrubPreview.prewarm() }
+                    hovering = true
+                    hoverFraction = fraction(forX: Double(point.x), width: Double(width))
+                    if !scrubbing {
+                        scrubPreview.update(fraction: hoverFraction, durationSeconds: duration)
+                    }
+                case .ended:
+                    hovering = false
+                    if !scrubbing { scrubPreview.clear() }
+                }
+            }
+            .overlay(alignment: .bottomLeading) {
+                if emphasized, let image = scrubPreview.previewImage {
+                    ScrubThumbnail(image: image, time: bubbleFraction * duration)
+                        .offset(
+                            x: scrubThumbX(fraction: bubbleFraction,
+                                           width: Double(width),
+                                           thumbWidth: Double(previewWidth)),
+                            y: -90
+                        )
+                }
+            }
+        }
+        .frame(height: 22)
     }
 }
 

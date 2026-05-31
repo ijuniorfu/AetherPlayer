@@ -25,3 +25,10 @@ func scrubThumbX(fraction: Double, width: Double, thumbWidth: Double) -> Double 
     let leading = f * width - thumbWidth / 2
     return min(max(leading, 0), max(0, width - thumbWidth))
 }
+
+/// Maps a hover/drag x position on the scrub track to a 0...1 fraction,
+/// clamped to the track. Returns 0 for a zero width.
+func fraction(forX x: Double, width: Double) -> Double {
+    guard width > 0 else { return 0 }
+    return min(max(x / width, 0), 1)
+}
