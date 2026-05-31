@@ -1,6 +1,37 @@
 # AetherPlayer
 
-A standalone native macOS media player built on [AetherEngine](https://github.com/superuser404notfound/AetherEngine). Drop or open a video, play it, pick audio/subtitle tracks, scrub. Universal binary (Apple Silicon + Intel), macOS 14.0+.
+A standalone native macOS media player built on [AetherEngine](https://github.com/superuser404notfound/AetherEngine). Drop or open a video, play it, switch audio and subtitle tracks, scrub with live thumbnail previews, and grab full-resolution frames. Universal binary (Apple Silicon + Intel), macOS 14.0+.
+
+## Install
+
+Grab the latest notarized `.dmg` from the [Releases page](https://github.com/superuser404notfound/AetherPlayer/releases), drag AetherPlayer to your Applications folder, and launch it. The app keeps itself current through built-in auto-updates (Sparkle), so you only have to download it once.
+
+## Features
+
+- **Plays what other players choke on.** FFmpeg-backed decoding through AetherEngine, with an on-screen `native`/`sw` badge so you can see which rendering path a file took.
+- **Audio and subtitle track switching** from the menu bar or the tracks popover, with an "Off" option for subtitles.
+- **Scrub bar with live preview.** Hover the timeline for a thumbnail, click to seek, or drag to scrub.
+- **Frame capture.** Save the current frame at full resolution (Cmd+Shift+S, or the camera button).
+- **Recents with thumbnails.** Recently opened files show disk-cached keyframe thumbnails for quick visual recognition.
+- **Resume where you left off.** Reopen a file and pick up at your last position.
+- **Folder playlists.** Open a folder and step through its videos with Cmd+Left / Cmd+Right.
+- **Stays out of the way.** Controls auto-hide during playback and reappear on mouse movement.
+
+## Controls
+
+| Action | Effect |
+| --- | --- |
+| Space / click | Play / pause |
+| Double-click / F | Toggle fullscreen |
+| Left / Right | Seek -/+ 10s |
+| Cmd+Left / Cmd+Right | Previous / next in folder |
+| Up / Down | Volume +/- 5% |
+| M | Mute / unmute |
+| Escape | Exit fullscreen, else stop |
+| Cmd+O | Open file |
+| Cmd+Shift+O | Open folder |
+| Cmd+Shift+S | Save current frame |
+| Cmd+Shift+T | Toggle always on top |
 
 ## Build
 
@@ -20,12 +51,4 @@ NOTARY_PROFILE="NOTARY_PROFILE" \
 ./Scripts/build-dmg.sh
 ```
 
-## Controls
-
-| Action | Effect |
-| --- | --- |
-| Space / click | Play / pause |
-| Left / Right | Seek -/+ 10s |
-| Escape | Stop |
-| F | Toggle fullscreen |
-| Cmd+O | Open file |
+Produces a notarized, stapled universal `.dmg`. Set `DEVELOPER_ID` for a signed local build; add `NOTARY_PROFILE` to notarize for distribution.
