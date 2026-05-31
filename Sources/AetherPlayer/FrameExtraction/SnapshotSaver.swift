@@ -9,12 +9,13 @@ import UniformTypeIdentifiers
 enum SnapshotSaver {
     /// Capture + save. No-op if the frame can't be captured or the user cancels.
     static func captureAndSave(model: PlayerViewModel) {
+        // Capture the time and name now, before the async decode lets
+        // playback advance, so the suggested filename matches the frame.
+        let atTime = model.currentTime
+        let movieName = model.loadedURL?.lastPathComponent ?? "Frame"
         Task {
             guard let image = await model.snapshotCurrentFrame() else { return }
-            let name = snapshotFilename(
-                movieName: model.loadedURL?.lastPathComponent ?? "Frame",
-                at: model.currentTime
-            )
+            let name = snapshotFilename(movieName: movieName, at: atTime)
             present(image, suggestedName: name)
         }
     }

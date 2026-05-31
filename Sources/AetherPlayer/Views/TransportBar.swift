@@ -7,7 +7,10 @@ struct TransportBar: View {
     let onPrevious: () -> Void
     let onNext: () -> Void
 
-    @State private var scrubbing = false
+    /// Bound to PlayerContainerView so the auto-hide timer can keep the
+    /// controls visible while a scrub is in progress (otherwise hiding the
+    /// bar mid-drag would drop the deferred seek).
+    @Binding var scrubbing: Bool
     @State private var scrubFraction: Double = 0
 
     /// 0...1 position shown by the slider: the scrub fraction while dragging,
@@ -131,6 +134,7 @@ struct TransportBar: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.white)
+                .disabled(!model.hasMedia)
 
                 Button(action: onTracksTapped) {
                     Image(systemName: "captions.bubble").font(.title3)

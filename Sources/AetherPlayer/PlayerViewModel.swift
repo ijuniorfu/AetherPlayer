@@ -117,14 +117,19 @@ final class PlayerViewModel {
     private func openInternal(url: URL, recordPlaylistRelative: Bool) async {
         loadError = nil
         let resume = recents.position(for: url).flatMap { resumeTarget(lastPosition: $0.position, duration: $0.duration) }
+        // Tear down the previous session's extractor up front so a failed
+        // re-open does not strand it (it would otherwise linger until the
+        // engine's 10 s idle-close).
+        let previousExtractor = frameExtractor
+        frameExtractor = nil
+        scrubPreview.reset()
+        if let previousExtractor { Task { await previousExtractor.shutdown() } }
         do {
             try await engine.load(url: url, startPosition: resume)
             engine.play()
             loadedURL = url
-            let previousExtractor = frameExtractor
             frameExtractor = engine.makeFrameExtractor()
             scrubPreview.configure(extractor: frameExtractor, enabled: frameExtractor != nil)
-            if let previousExtractor { Task { await previousExtractor.shutdown() } }
             selectedSubtitleIndex = nil
             rate = 1.0
             engine.setRate(1.0)

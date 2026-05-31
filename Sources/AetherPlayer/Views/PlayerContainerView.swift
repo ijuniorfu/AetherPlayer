@@ -8,6 +8,10 @@ struct PlayerContainerView: View {
     @State private var controlsVisible = true
     @State private var lastActivity = Date()
     @State private var showTracks = false
+    /// True while the user is dragging the scrubber. Keeps the controls from
+    /// auto-hiding mid-drag, which would tear down the slider and drop the
+    /// deferred seek.
+    @State private var scrubbing = false
     private let hideInterval: TimeInterval = 3
     private let tick = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
@@ -36,7 +40,8 @@ struct PlayerContainerView: View {
                         model: model,
                         onTracksTapped: { showTracks.toggle() },
                         onPrevious: { ensureFolderThenAdvance(next: false) },
-                        onNext: { ensureFolderThenAdvance(next: true) }
+                        onNext: { ensureFolderThenAdvance(next: true) },
+                        scrubbing: $scrubbing
                     )
                 }
                 .transition(.opacity)
@@ -53,7 +58,7 @@ struct PlayerContainerView: View {
             if shouldHideControls(now: Date().timeIntervalSinceReferenceDate,
                                   lastActivity: lastActivity.timeIntervalSinceReferenceDate,
                                   interval: hideInterval),
-               model.isPlaying, !showTracks {
+               model.isPlaying, !showTracks, !scrubbing {
                 withAnimation { controlsVisible = false }
             }
         }

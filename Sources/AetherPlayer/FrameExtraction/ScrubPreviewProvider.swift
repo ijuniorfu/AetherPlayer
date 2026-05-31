@@ -20,6 +20,7 @@ final class ScrubPreviewProvider {
 
     // Debounce + staleness control.
     @ObservationIgnored private var loadTask: Task<Void, Never>?
+    @ObservationIgnored private var prewarmTask: Task<Void, Never>?
     @ObservationIgnored private var generation = 0
 
     init() {}
@@ -36,7 +37,8 @@ final class ScrubPreviewProvider {
     /// cold-start latency. Safe to call repeatedly.
     func prewarm() {
         guard enabled, let extractor else { return }
-        Task { await extractor.prewarm() }
+        prewarmTask?.cancel()
+        prewarmTask = Task { await extractor.prewarm() }
     }
 
     /// Drive the preview to a scrub position. `fraction` is 0...1 of the
@@ -71,6 +73,8 @@ final class ScrubPreviewProvider {
     func reset() {
         loadTask?.cancel()
         loadTask = nil
+        prewarmTask?.cancel()
+        prewarmTask = nil
         previewImage = nil
         extractor = nil
         enabled = false
