@@ -237,12 +237,20 @@ private struct ScrubThumbnail: View {
     let image: CGImage
     let time: Double
 
+    private static let width: CGFloat = 160
+
+    /// Height from the frame's own aspect ratio. Fixing both dimensions keeps
+    /// the thin track overlay (22 pt tall) from squashing the proposed height.
+    private var height: CGFloat {
+        image.width > 0 ? Self.width * CGFloat(image.height) / CGFloat(image.width)
+                        : Self.width * 9 / 16
+    }
+
     var body: some View {
         VStack(spacing: 2) {
             Image(decorative: image, scale: 1, orientation: .up)
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 160)
+                .frame(width: Self.width, height: height)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .overlay(
                     RoundedRectangle(cornerRadius: 6)
