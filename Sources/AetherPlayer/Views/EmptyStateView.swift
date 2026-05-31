@@ -4,6 +4,7 @@ struct EmptyStateView: View {
     let isDropTargeted: Bool
     let onOpen: () -> Void
     let recents: [RecentItem]
+    let thumbnails: RecentsThumbnailProvider
     let onOpenRecent: (RecentItem) -> Void
     let onRemoveRecent: (RecentItem) -> Void
     let onClearRecents: () -> Void
@@ -25,7 +26,7 @@ struct EmptyStateView: View {
                     .foregroundStyle(.white.opacity(0.35))
             }
             if !recents.isEmpty {
-                RecentsListView(items: recents, onOpen: onOpenRecent,
+                RecentsListView(items: recents, thumbnails: thumbnails, onOpen: onOpenRecent,
                                 onRemove: onRemoveRecent, onClearAll: onClearRecents)
             }
             Spacer(minLength: 0)

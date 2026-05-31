@@ -23,6 +23,7 @@ struct ContentView: View {
                     isDropTargeted: isDropTargeted,
                     onOpen: openPanel,
                     recents: model.recents.items,
+                    thumbnails: model.recentsThumbnails,
                     onOpenRecent: { item in Task { await model.openRecent(item) } },
                     onRemoveRecent: { model.recents.remove($0) },
                     onClearRecents: { model.recents.clearAll() }
