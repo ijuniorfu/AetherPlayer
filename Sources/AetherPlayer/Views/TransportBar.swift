@@ -7,20 +7,63 @@ struct TransportBar: View {
     let onPrevious: () -> Void
     let onNext: () -> Void
 
+    @State private var scrubbing = false
+    @State private var scrubFraction: Double = 0
+
+    /// 0...1 position shown by the slider: the scrub fraction while dragging,
+    /// otherwise the live playback fraction.
+    private var displayedFraction: Double {
+        if scrubbing { return scrubFraction }
+        return model.duration > 0 ? model.currentTime / model.duration : 0
+    }
+    /// Seconds shown by the leading timecode label.
+    private var displayedTime: Double {
+        scrubbing ? scrubFraction * model.duration : model.currentTime
+    }
+
     var body: some View {
         VStack(spacing: 8) {
             // Scrubber
             HStack(spacing: 10) {
-                Text(formatTimecode(model.currentTime))
+                Text(formatTimecode(displayedTime))
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(.white)
-                Slider(
-                    value: Binding(
-                        get: { model.duration > 0 ? model.currentTime : 0 },
-                        set: { model.seek(to: $0) }
-                    ),
-                    in: 0...max(model.duration, 0.01)
-                )
+                GeometryReader { geo in
+                    Slider(
+                        value: Binding(
+                            get: { displayedFraction },
+                            set: { newValue in
+                                scrubFraction = newValue
+                                model.scrubPreview.update(fraction: newValue,
+                                                          durationSeconds: model.duration)
+                            }
+                        ),
+                        in: 0...1,
+                        onEditingChanged: { editing in
+                            if editing {
+                                scrubbing = true
+                                scrubFraction = displayedFraction
+                                model.scrubPreview.prewarm()
+                            } else {
+                                scrubbing = false
+                                model.seek(to: scrubFraction * model.duration)
+                                model.scrubPreview.clear()
+                            }
+                        }
+                    )
+                    .overlay(alignment: .bottomLeading) {
+                        if scrubbing, let image = model.scrubPreview.previewImage {
+                            ScrubThumbnail(image: image, time: scrubFraction * model.duration)
+                                .offset(
+                                    x: scrubThumbX(fraction: scrubFraction,
+                                                   width: geo.size.width,
+                                                   thumbWidth: 160),
+                                    y: -90
+                                )
+                        }
+                    }
+                }
+                .frame(height: 20)
                 Text(formatTimecode(model.duration))
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(.white)
@@ -83,6 +126,12 @@ struct TransportBar: View {
                 .menuIndicator(.hidden)
                 .fixedSize()
 
+                Button(action: { SnapshotSaver.captureAndSave(model: model) }) {
+                    Image(systemName: "camera").font(.title3)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.white)
+
                 Button(action: onTracksTapped) {
                     Image(systemName: "captions.bubble").font(.title3)
                 }
@@ -118,5 +167,31 @@ struct TransportBar: View {
         case .aether: return "aether"
         case .none: return ""
         }
+    }
+}
+
+/// The floating keyframe preview shown above the playhead while scrubbing.
+private struct ScrubThumbnail: View {
+    let image: CGImage
+    let time: Double
+
+    var body: some View {
+        VStack(spacing: 2) {
+            Image(decorative: image, scale: 1, orientation: .up)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 160)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(.white.opacity(0.3), lineWidth: 1)
+                )
+            Text(formatTimecode(time))
+                .font(.system(.caption2, design: .monospaced))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 4).padding(.vertical, 1)
+                .background(.black.opacity(0.6), in: Capsule())
+        }
+        .shadow(radius: 6)
     }
 }
