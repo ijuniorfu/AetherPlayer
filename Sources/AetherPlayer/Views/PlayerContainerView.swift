@@ -16,10 +16,15 @@ struct PlayerContainerView: View {
             // Bottom layer: mouse-move tracker (needs hit testing to receive mouseMoved).
             MouseActivityView { bumpActivity() }
 
-            DoubleClickView { toggleFullScreen() }
-
             AetherPlayerSurface(engine: model.engine)
-                .onTapGesture { model.primaryAction(); bumpActivity() }
+
+            // Click layer above the surface: single click = play/pause,
+            // double click = fullscreen. The single click waits for the double
+            // to fail so a double-click does not also toggle playback.
+            ClickView(
+                onSingle: { model.primaryAction(); bumpActivity() },
+                onDouble: { toggleFullScreen(); bumpActivity() }
+            )
 
             SubtitleOverlayView(cues: model.subtitleCues, currentTime: model.currentTime)
                 .allowsHitTesting(false)
@@ -107,23 +112,51 @@ struct PlayerContainerView: View {
     }
 }
 
-/// Transparent overlay that fires a callback on double-click.
-private struct DoubleClickView: NSViewRepresentable {
-    let onDoubleClick: () -> Void
-    func makeNSView(context: Context) -> NSView {
-        let v = NSView()
-        let gr = NSClickGestureRecognizer(target: context.coordinator,
-                                          action: #selector(Coordinator.fire))
-        gr.numberOfClicksRequired = 2
-        v.addGestureRecognizer(gr)
+/// Transparent overlay that distinguishes single from double click using a
+/// short, fixed window (rather than the generous system double-click interval
+/// the gesture recognizers use). A second click within `interval` cancels the
+/// pending single action and fires the double instead.
+private struct ClickView: NSViewRepresentable {
+    let onSingle: () -> Void
+    let onDouble: () -> Void
+
+    func makeNSView(context: Context) -> _ClickNSView {
+        let v = _ClickNSView()
+        v.onSingle = onSingle
+        v.onDouble = onDouble
         return v
     }
-    func updateNSView(_ nsView: NSView, context: Context) { context.coordinator.onDoubleClick = onDoubleClick }
-    func makeCoordinator() -> Coordinator { Coordinator(onDoubleClick) }
-    final class Coordinator: NSObject {
-        var onDoubleClick: () -> Void
-        init(_ cb: @escaping () -> Void) { onDoubleClick = cb }
-        @objc func fire() { onDoubleClick() }
+
+    func updateNSView(_ nsView: _ClickNSView, context: Context) {
+        nsView.onSingle = onSingle
+        nsView.onDouble = onDouble
+    }
+
+    final class _ClickNSView: NSView {
+        var onSingle: (() -> Void)?
+        var onDouble: (() -> Void)?
+        private var pendingSingle: DispatchWorkItem?
+        /// Single-click wait and double-click window. Shorter than the system
+        /// default for a snappier single click.
+        private let interval: TimeInterval = 0.35
+
+        override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+        override func mouseDown(with event: NSEvent) { /* claim the click; act on mouseUp */ }
+
+        override func mouseUp(with event: NSEvent) {
+            if let pending = pendingSingle {
+                pending.cancel()
+                pendingSingle = nil
+                onDouble?()
+            } else {
+                let work = DispatchWorkItem { [weak self] in
+                    self?.pendingSingle = nil
+                    self?.onSingle?()
+                }
+                pendingSingle = work
+                DispatchQueue.main.asyncAfter(deadline: .now() + interval, execute: work)
+            }
+        }
     }
 }
 
