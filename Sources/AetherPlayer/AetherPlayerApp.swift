@@ -54,6 +54,13 @@ struct AetherPlayerApp: App {
                 Button("Open Folder\u{2026}") { openFolderPanel() }
                     .keyboardShortcut("o", modifiers: [.command, .shift])
             }
+            CommandGroup(replacing: .saveItem) {
+                Button("Save Frame As\u{2026}") {
+                    if let model { SnapshotSaver.captureAndSave(model: model) }
+                }
+                .keyboardShortcut("s", modifiers: [.command, .shift])
+                .disabled(model?.hasMedia != true)
+            }
             CommandMenu("Audio") {
                 if let model {
                     ForEach(audioMenuRows(model.audioTracks, activeIndex: model.activeAudioTrackIndex)) { row in
