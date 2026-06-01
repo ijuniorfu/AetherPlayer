@@ -12,5 +12,15 @@
     <true/>
     <key>com.apple.security.network.server</key>
     <true/>
+    <!-- Sparkle ships its updater as XPC services; a sandboxed app must be
+         granted a mach-lookup exception for the installer + status services
+         or the install step fails with "An error occurred while running the
+         updater." Names match Sparkle's reference Sparkle-Test-App.entitlements
+         (-spks status, -spki installer). -->
+    <key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
+    <array>
+        <string>$(PRODUCT_BUNDLE_IDENTIFIER)-spks</string>
+        <string>$(PRODUCT_BUNDLE_IDENTIFIER)-spki</string>
+    </array>
 </dict>
 </plist>
