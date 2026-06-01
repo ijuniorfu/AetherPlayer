@@ -1,4 +1,8 @@
-# AetherPlayer
+<p align="center">
+  <img src="docs/images/aetherplayer-logo.png" alt="AetherPlayer" width="160">
+</p>
+
+<h1 align="center">AetherPlayer</h1>
 
 A standalone native macOS media player built on [AetherEngine](https://github.com/superuser404notfound/AetherEngine). Drop or open a video, play it, switch audio and subtitle tracks, scrub with live thumbnail previews, and grab full-resolution frames. Universal binary (Apple Silicon + Intel), macOS 14.0+.
 

@@ -41,9 +41,32 @@ xcodebuild -exportArchive -archivePath "$ARCHIVE" \
   -exportPath "$EXPORT_DIR"
 
 APP="$EXPORT_DIR/$APP_NAME.app"
+VOL_ICON="docs/images/AppIcon.icns"
 
-# 3. Package into a .dmg.
-hdiutil create -volname "$APP_NAME" -srcfolder "$APP" -ov -format UDZO "$DMG"
+# 3. Package into a branded .dmg: the app, a drag-to-/Applications shortcut, and a volume icon.
+STAGE="$BUILD_DIR/dmg"
+rm -rf "$STAGE"
+mkdir -p "$STAGE"
+cp -R "$APP" "$STAGE/"
+ln -s /Applications "$STAGE/Applications"
+[ -f "$VOL_ICON" ] && cp "$VOL_ICON" "$STAGE/.VolumeIcon.icns"
+
+# Build a writable image first so we can flag the volume icon, then convert to compressed read-only.
+RW_DMG="$BUILD_DIR/$APP_NAME-rw.dmg"
+rm -f "$RW_DMG" "$DMG"
+hdiutil create -volname "$APP_NAME" -srcfolder "$STAGE" -ov -format UDRW "$RW_DMG"
+
+if [ -f "$VOL_ICON" ]; then
+  MOUNT_DIR="$(mktemp -d)"
+  hdiutil attach "$RW_DMG" -mountpoint "$MOUNT_DIR" -nobrowse -noverify
+  # SetFile (from the Xcode command line tools) flags the volume to use its .VolumeIcon.icns.
+  # Best-effort: if SetFile is unavailable the DMG still ships, just without the custom icon.
+  command -v SetFile >/dev/null 2>&1 && SetFile -a C "$MOUNT_DIR" || true
+  hdiutil detach "$MOUNT_DIR" -quiet || hdiutil detach "$MOUNT_DIR"
+fi
+
+hdiutil convert "$RW_DMG" -format UDZO -o "$DMG"
+rm -f "$RW_DMG"
 
 # 4. Notarize + staple (skipped if NOTARY_PROFILE unset; local smoke test only).
 if [ -n "$NOTARY_PROFILE" ]; then
