@@ -43,6 +43,20 @@ xcodebuild -exportArchive -archivePath "$ARCHIVE" \
 APP="$EXPORT_DIR/$APP_NAME.app"
 VOL_ICON="docs/images/AppIcon.icns"
 
+# 2b. Notarize + staple the .app BEFORE it is packaged into the DMG.
+# Sparkle extracts the .app out of the DMG and discards the DMG, so the
+# notarization ticket must live on the .app itself. Stapling only the .dmg
+# (as this script used to) leaves the installed copy unstapled, and Sparkle's
+# offline Gatekeeper check then fails the update with the generic error
+# "An error occurred while running the updater. Please try again later."
+if [ -n "$NOTARY_PROFILE" ]; then
+  APP_ZIP="$BUILD_DIR/$APP_NAME-app.zip"
+  ditto -c -k --keepParent "$APP" "$APP_ZIP"
+  xcrun notarytool submit "$APP_ZIP" --keychain-profile "$NOTARY_PROFILE" --wait
+  xcrun stapler staple "$APP"
+  rm -f "$APP_ZIP"
+fi
+
 # 3. Package into a branded .dmg: the app, a drag-to-/Applications shortcut, and a volume icon.
 STAGE="$BUILD_DIR/dmg"
 rm -rf "$STAGE"
@@ -68,11 +82,25 @@ fi
 hdiutil convert "$RW_DMG" -format UDZO -o "$DMG"
 rm -f "$RW_DMG"
 
-# 4. Notarize + staple (skipped if NOTARY_PROFILE unset; local smoke test only).
+# 4. Notarize + staple the .dmg (skipped if NOTARY_PROFILE unset; local smoke
+#    test only). The .app inside was already notarized + stapled in step 2b.
 if [ -n "$NOTARY_PROFILE" ]; then
   xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
   xcrun stapler staple "$DMG"
-  xcrun stapler staple "$APP"
+
+  # Guard against the stapling-gap regression: the .app Sparkle extracts from
+  # the DMG MUST carry its own stapled ticket, or in-app updates fail. Verify
+  # against the real DMG contents, not the export copy.
+  VERIFY_MNT="$(mktemp -d)"
+  hdiutil attach "$DMG" -mountpoint "$VERIFY_MNT" -nobrowse -noverify -quiet
+  if xcrun stapler validate "$VERIFY_MNT/$APP_NAME.app" >/dev/null 2>&1; then
+    hdiutil detach "$VERIFY_MNT" -quiet || hdiutil detach "$VERIFY_MNT"
+  else
+    hdiutil detach "$VERIFY_MNT" -quiet || true
+    echo "ERROR: $APP_NAME.app inside the DMG has no stapled notarization ticket." >&2
+    echo "       Sparkle updates would fail. Aborting." >&2
+    exit 1
+  fi
 else
   echo "NOTARY_PROFILE unset: built + signed but NOT notarized (won't pass Gatekeeper elsewhere)."
 fi
