@@ -10,7 +10,7 @@ struct ResumeToastView: View {
             Text(message).foregroundStyle(.white)
             Button("Start over", action: onStartOver)
                 .buttonStyle(.borderless)
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color.aetherPurple)
         }
         .font(.callout)
         .padding(.horizontal, 16).padding(.vertical, 10)

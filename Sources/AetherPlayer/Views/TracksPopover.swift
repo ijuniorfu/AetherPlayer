@@ -47,6 +47,7 @@ struct TracksPopover: View {
         Button(action: action) {
             HStack {
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(selected ? AnyShapeStyle(Color.aetherPurple) : AnyShapeStyle(.secondary))
                 Text(label)
                 Spacer()
             }

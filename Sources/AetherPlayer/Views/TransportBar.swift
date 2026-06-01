@@ -50,16 +50,17 @@ struct TransportBar: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.white)
+                .shadow(color: .aetherPurple.opacity(0.6), radius: 6)
 
                 Button(action: { onPrevious() }) {
                     Image(systemName: "backward.end.fill").font(.title3)
                 }
-                .buttonStyle(.plain).foregroundStyle(.white).disabled(!model.hasPrevious)
+                .buttonStyle(.plain).aetherHover().disabled(!model.hasPrevious)
 
                 Button(action: { onNext() }) {
                     Image(systemName: "forward.end.fill").font(.title3)
                 }
-                .buttonStyle(.plain).foregroundStyle(.white).disabled(!model.hasNext)
+                .buttonStyle(.plain).aetherHover().disabled(!model.hasNext)
 
                 HStack(spacing: 6) {
                     Button(action: { model.toggleMute() }) {
@@ -71,15 +72,14 @@ struct TransportBar: View {
                                           set: { model.volume = Float($0) }),
                            in: 0...1)
                         .frame(width: 90)
+                        .tint(.aetherPurple)
                 }
 
                 Spacer()
 
                 Text(backendBadge)
                     .font(.system(.caption2, design: .monospaced))
-                    .padding(.horizontal, 6).padding(.vertical, 3)
-                    .background(.black.opacity(0.55), in: Capsule())
-                    .foregroundStyle(.white)
+                    .aetherBadge()
 
                 Menu {
                     ForEach(PlayerViewModel.availableRates, id: \.self) { r in
@@ -92,9 +92,7 @@ struct TransportBar: View {
                 } label: {
                     Text(rateLabel(model.rate))
                         .font(.system(.caption, design: .monospaced))
-                        .padding(.horizontal, 8).padding(.vertical, 4)
-                        .background(.black.opacity(0.55), in: Capsule())
-                        .foregroundStyle(.white)
+                        .aetherBadge()
                 }
                 .menuStyle(.borderlessButton)
                 .menuIndicator(.hidden)
@@ -104,14 +102,14 @@ struct TransportBar: View {
                     Image(systemName: "camera").font(.title3)
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.white)
+                .aetherHover()
                 .disabled(!model.hasMedia)
 
                 Button(action: onTracksTapped) {
                     Image(systemName: "captions.bubble").font(.title3)
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.white)
+                .aetherHover()
             }
         }
         .padding(.horizontal, 24)
@@ -178,10 +176,10 @@ private struct ScrubBar: View {
                     .fill(.white.opacity(0.25))
                     .frame(height: trackHeight)
                 Capsule()
-                    .fill(.white)
+                    .fill(LinearGradient.aetherAccent)
                     .frame(width: knobX, height: trackHeight)
                 Circle()
-                    .fill(.white)
+                    .fill(Color.aetherPurple)
                     .frame(width: knobSize, height: knobSize)
                     .offset(x: knobX - knobSize / 2)
             }

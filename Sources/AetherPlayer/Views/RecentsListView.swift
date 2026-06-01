@@ -53,7 +53,7 @@ private struct RecentRow: View {
                     Text(item.name).foregroundStyle(.white).lineLimit(1)
                     ProgressView(value: item.progress)
                         .frame(height: 2)
-                        .tint(.white.opacity(0.6))
+                        .tint(.aetherPurple)
                 }
                 Spacer()
                 if hovering {

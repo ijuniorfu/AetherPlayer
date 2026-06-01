@@ -12,6 +12,7 @@
 		0DF571E0B19DA9A63AB44B6F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = D8CD01999FE428529CC0DB5F /* Sparkle */; };
 		13A2FC91687D83F654B53BDE /* TracksPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46653D3A70E8EFB17B45B5AB /* TracksPopover.swift */; };
 		169CEF92A7F40A58E7F35D32 /* SubtitleOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F44EDD5A2153E72AF32A1B3 /* SubtitleOverlayView.swift */; };
+		21528252960F081B9D64B82A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8F7197D56D73713E1AC322 /* Theme.swift */; };
 		2BBF2825AE3E822E2771F1E1 /* AetherEngine in Frameworks */ = {isa = PBXBuildFile; productRef = BE33BD5FE909AF50F8938376 /* AetherEngine */; };
 		3301A509B2988941D7032B16 /* ResumePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0343F7972D3F779D292A13C1 /* ResumePolicy.swift */; };
 		3877B2FE032AB3D2C6F31658 /* BookmarkAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9621B0431CAE01C3FB239018 /* BookmarkAccess.swift */; };
@@ -90,6 +91,7 @@
 		CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMenuModelTests.swift; sourceTree = "<group>"; };
 		CC865F7686A9533FA69E135B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D6A5F4D0C3E4DB98E768BA0C /* AetherPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AetherPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF8F7197D56D73713E1AC322 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		E18E793A6CF747DF8329B3DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F16F0F485BEBCDFFE77C8E62 /* AetherPlayer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AetherPlayer.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -216,6 +218,7 @@
 				AC8F888DB3F6F552B95C5CA7 /* RecentsListView.swift */,
 				21DED04DA7729F984DB15A33 /* ResumeToastView.swift */,
 				6F44EDD5A2153E72AF32A1B3 /* SubtitleOverlayView.swift */,
+				DF8F7197D56D73713E1AC322 /* Theme.swift */,
 				46653D3A70E8EFB17B45B5AB /* TracksPopover.swift */,
 				004AE8A16D07A63C1B81C59D /* TransportBar.swift */,
 			);
@@ -349,6 +352,7 @@
 				781398CCB0497ACC785DC5C8 /* ScrubPreviewProvider.swift in Sources */,
 				B0709C1A666B095EAEF0AE59 /* SnapshotSaver.swift in Sources */,
 				169CEF92A7F40A58E7F35D32 /* SubtitleOverlayView.swift in Sources */,
+				21528252960F081B9D64B82A /* Theme.swift in Sources */,
 				ADBB50A4992BB1FE126089CF /* Timecode.swift in Sources */,
 				60A44AA82BDDE1F9919F8A33 /* TrackMenuModel.swift in Sources */,
 				13A2FC91687D83F654B53BDE /* TracksPopover.swift in Sources */,
@@ -437,7 +441,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = Sources/AetherPlayer/Resources/AetherPlayer.entitlements;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -451,7 +455,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.1;
+				MARKETING_VERSION = 0.4.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
@@ -515,7 +519,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = Sources/AetherPlayer/Resources/AetherPlayer.entitlements;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -535,7 +539,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.1;
+				MARKETING_VERSION = 0.4.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;

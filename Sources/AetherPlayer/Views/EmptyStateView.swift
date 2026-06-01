@@ -15,10 +15,15 @@ struct EmptyStateView: View {
             VStack(spacing: 16) {
                 Image(systemName: "film.stack")
                     .font(.system(size: 64))
-                    .foregroundStyle(.white.opacity(isDropTargeted ? 0.95 : 0.45))
+                    .foregroundStyle(isDropTargeted
+                        ? AnyShapeStyle(Color.aetherPurple)
+                        : AnyShapeStyle(.white.opacity(0.45)))
+                    .shadow(color: .aetherPurple.opacity(isDropTargeted ? 0.7 : 0), radius: 16)
                 Text(isDropTargeted ? "Release to load" : "Drop a video here")
                     .font(.title2)
-                    .foregroundStyle(.white.opacity(isDropTargeted ? 0.95 : 0.65))
+                    .foregroundStyle(isDropTargeted
+                        ? AnyShapeStyle(Color.aetherPurple)
+                        : AnyShapeStyle(.white.opacity(0.65)))
                 Button("Open File\u{2026}", action: onOpen)
                     .controlSize(.large)
                 Text("MKV, MP4, WebM, MPEG-TS, AVI, OGG, FLV")
