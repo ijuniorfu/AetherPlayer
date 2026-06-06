@@ -99,6 +99,15 @@ struct TransportBar: View {
                 .fixedSize()
 
                 if model.backend == .audio {
+                    Button(action: { model.toggleShuffle() }) {
+                        Image(systemName: "shuffle").font(.title3)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(model.shuffleEnabled
+                                     ? AnyShapeStyle(Color.aetherPurple)
+                                     : AnyShapeStyle(.white.opacity(0.45)))
+                    .help(model.shuffleEnabled ? "Shuffle: on" : "Shuffle: off")
+
                     Button(action: { model.cycleRepeatMode() }) {
                         Image(systemName: repeatSymbol).font(.title3)
                     }

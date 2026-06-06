@@ -43,6 +43,16 @@ final class PlayerViewModel {
         UserDefaults.standard.set(repeatMode.rawValue, forKey: "player.repeatMode")
     }
 
+    /// Whether folder playback is shuffled. Persisted across launches and
+    /// applied to the active folder playlist immediately when toggled.
+    private(set) var shuffleEnabled: Bool = false
+
+    func toggleShuffle() {
+        shuffleEnabled.toggle()
+        UserDefaults.standard.set(shuffleEnabled, forKey: "player.shuffle")
+        playlist?.setShuffled(shuffleEnabled)
+    }
+
     let recents = RecentsStore()
     private let nowPlaying = NowPlayingController()
     /// One frame extractor per playback session, built from the playing file
@@ -100,6 +110,7 @@ final class PlayerViewModel {
            let mode = RepeatMode(rawValue: raw) {
             repeatMode = mode
         }
+        shuffleEnabled = UserDefaults.standard.bool(forKey: "player.shuffle")
         nowPlaying.configure(actions: .init(
             play: { [weak self] in self?.engine.play() },
             pause: { [weak self] in self?.engine.pause() },
@@ -292,8 +303,9 @@ final class PlayerViewModel {
             loadError = "No playable files in \(folderURL.lastPathComponent)."
             return
         }
-        playlist = Playlist(items: files, currentIndex: 0)
-        await openInternal(url: files[0], recordPlaylistRelative: false)
+        let pl = Playlist(items: files, currentIndex: 0, isShuffled: shuffleEnabled)
+        playlist = pl
+        await openInternal(url: pl.current ?? files[0], recordPlaylistRelative: false)
     }
 
     /// Build a folder playlist around an already-open single file, given access
@@ -305,7 +317,8 @@ final class PlayerViewModel {
             at: folderURL, includingPropertiesForKeys: nil)) ?? []
         let files = playableFiles(in: contents)
         let index = files.firstIndex { $0.standardizedFileURL == currentURL.standardizedFileURL } ?? 0
-        playlist = files.isEmpty ? nil : Playlist(items: files, currentIndex: index)
+        playlist = files.isEmpty ? nil
+            : Playlist(items: files, currentIndex: index, isShuffled: shuffleEnabled)
     }
 
     func playNext() async {

@@ -23,9 +23,25 @@ func playableFiles(in urls: [URL]) -> [URL] {
 }
 
 /// An ordered list of files with a cursor. Pure value type.
+///
+/// `items` is the active play order that `next`/`previous` walk. When shuffle
+/// is on it is a random permutation; when off it is the original Finder order
+/// (kept in `sortedItems` so it can be restored). The currently playing item
+/// stays the cursor across a shuffle toggle.
 struct Playlist: Equatable {
     private(set) var items: [URL]
     private(set) var currentIndex: Int
+    /// Original Finder-sorted order, restored when shuffle turns off.
+    private let sortedItems: [URL]
+    private(set) var isShuffled: Bool
+
+    init(items: [URL], currentIndex: Int, isShuffled: Bool = false) {
+        self.sortedItems = items
+        self.currentIndex = currentIndex
+        self.isShuffled = false
+        self.items = items
+        if isShuffled { setShuffled(true) }
+    }
 
     var current: URL? { items.indices.contains(currentIndex) ? items[currentIndex] : nil }
     var hasNext: Bool { currentIndex + 1 < items.count }
@@ -33,6 +49,25 @@ struct Playlist: Equatable {
 
     func index(of url: URL) -> Int? {
         items.firstIndex { $0.standardizedFileURL == url.standardizedFileURL }
+    }
+
+    /// Enable or disable shuffle, keeping the currently playing item as the
+    /// cursor. Enabling places the current item first and randomizes the rest;
+    /// disabling restores the Finder order with the cursor on the same item.
+    mutating func setShuffled(_ on: Bool) {
+        guard on != isShuffled else { return }
+        let cur = current
+        isShuffled = on
+        if on {
+            var rest = items
+            if let cur, let i = rest.firstIndex(of: cur) { rest.remove(at: i) }
+            rest.shuffle()
+            items = (cur.map { [$0] } ?? []) + rest
+            currentIndex = 0
+        } else {
+            items = sortedItems
+            currentIndex = cur.flatMap { sortedItems.firstIndex(of: $0) } ?? 0
+        }
     }
 
     mutating func next() -> URL? {

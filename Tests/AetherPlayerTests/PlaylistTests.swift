@@ -44,4 +44,35 @@ final class PlaylistTests: XCTestCase {
         XCTAssertTrue(audioExtensions.contains("mp3"))
         XCTAssertFalse(audioExtensions.contains("FLAC"))
     }
+
+    func testShuffleKeepsCurrentFirstAndPermutesTheRest() {
+        let files = (1...8).map { u("t\($0).mp3") }
+        var p = Playlist(items: files, currentIndex: 3) // current = t4
+        let current = p.current
+        p.setShuffled(true)
+        XCTAssertTrue(p.isShuffled)
+        XCTAssertEqual(p.currentIndex, 0)
+        XCTAssertEqual(p.current, current)                 // current stays the cursor
+        XCTAssertEqual(Set(p.items), Set(files))           // same set, no loss/dupe
+        XCTAssertEqual(p.items.count, files.count)
+    }
+
+    func testUnshuffleRestoresSortedOrderKeepingCursorOnCurrent() {
+        let files = (1...8).map { u("t\($0).mp3") }
+        var p = Playlist(items: files, currentIndex: 0)
+        p.setShuffled(true)
+        let playing = p.current
+        p.setShuffled(false)
+        XCTAssertFalse(p.isShuffled)
+        XCTAssertEqual(p.items, files)                     // original order back
+        XCTAssertEqual(p.current, playing)                 // cursor still on same item
+    }
+
+    func testInitWithShuffleProducesShuffledList() {
+        let files = (1...6).map { u("t\($0).mp3") }
+        let p = Playlist(items: files, currentIndex: 0, isShuffled: true)
+        XCTAssertTrue(p.isShuffled)
+        XCTAssertEqual(Set(p.items), Set(files))
+        XCTAssertEqual(p.current, files[0])                // current preserved at front
+    }
 }
