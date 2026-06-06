@@ -98,12 +98,14 @@ struct TransportBar: View {
                 .menuIndicator(.hidden)
                 .fixedSize()
 
-                Button(action: { SnapshotSaver.captureAndSave(model: model) }) {
-                    Image(systemName: "camera").font(.title3)
+                if model.backend != .audio {
+                    Button(action: { SnapshotSaver.captureAndSave(model: model) }) {
+                        Image(systemName: "camera").font(.title3)
+                    }
+                    .buttonStyle(.plain)
+                    .aetherHover()
+                    .disabled(!model.hasMedia)
                 }
-                .buttonStyle(.plain)
-                .aetherHover()
-                .disabled(!model.hasMedia)
 
                 Button(action: onTracksTapped) {
                     Image(systemName: "captions.bubble").font(.title3)

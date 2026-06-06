@@ -10,15 +10,14 @@ import AetherEngine
 struct NowPlayingView: View {
     let model: PlayerViewModel
 
-    /// Embedded cover decoded once per artwork-bytes change.
-    private var coverImage: NSImage? {
-        guard let data = model.metadata?.artworkData else { return nil }
-        return NSImage(data: data)
-    }
+    /// Embedded cover decoded once per artwork-bytes change (see .task below).
+    @State private var cover: NSImage?
+    @State private var showTracks = false
+    @State private var scrubbing = false
 
     var body: some View {
         ZStack {
-            if let cover = coverImage {
+            if let cover {
                 Image(nsImage: cover)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -35,12 +34,41 @@ struct NowPlayingView: View {
 
             VStack(spacing: 24) {
                 Spacer()
-                cover(coverImage)
+                cover(cover)
                 metadataBlock
                 Spacer()
             }
-            .padding(.bottom, 120) // leave room for the transport bar
+            .padding(.bottom, 80) // leave room for the transport bar
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .task(id: model.metadata?.artworkData) {
+            cover = model.metadata?.artworkData.flatMap { NSImage(data: $0) }
+        }
+        .overlay(alignment: .bottom) {
+            TransportBar(
+                model: model,
+                onTracksTapped: { showTracks.toggle() },
+                onPrevious: { Task { await model.playPrevious() } },
+                onNext: { Task { await model.playNext() } },
+                scrubbing: $scrubbing
+            )
+            .popover(isPresented: $showTracks, arrowEdge: .bottom) {
+                TracksPopover(model: model)
+            }
+        }
+        .overlay { KeyCatcherView(onKey: handleKey).allowsHitTesting(false) }
+    }
+
+    private func handleKey(_ event: NSEvent) -> Bool {
+        switch event.keyCode {
+        case 49: model.primaryAction(); return true              // Space
+        case 123: model.seek(by: -10); return true               // Left
+        case 124: model.seek(by: 10); return true                // Right
+        case 126: model.adjustVolume(by: 0.05); return true      // Up
+        case 125: model.adjustVolume(by: -0.05); return true     // Down
+        case 46: model.toggleMute(); return true                 // M
+        case 53: model.stop(); return true                       // Esc
+        default: return false
         }
     }
 

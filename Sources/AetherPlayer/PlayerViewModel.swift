@@ -349,10 +349,13 @@ final class PlayerViewModel {
     private func updateSleepAssertion() {
         if state == .playing {
             if sleepAssertion == nil {
+                // Video keeps the display awake; audio only blocks system
+                // sleep so the screen may dim while music plays.
+                let options: ProcessInfo.ActivityOptions = backend == .audio
+                    ? [.idleSystemSleepDisabled]
+                    : [.idleDisplaySleepDisabled, .idleSystemSleepDisabled]
                 sleepAssertion = ProcessInfo.processInfo.beginActivity(
-                    options: [.idleDisplaySleepDisabled, .idleSystemSleepDisabled],
-                    reason: "Video playback"
-                )
+                    options: options, reason: "Media playback")
             }
         } else if let token = sleepAssertion {
             ProcessInfo.processInfo.endActivity(token)
