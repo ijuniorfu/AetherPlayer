@@ -19,6 +19,7 @@ final class PlayerViewModel {
     private(set) var backend: PlaybackBackend = .none
     private(set) var subtitleCues: [SubtitleCue] = []
     private(set) var isSubtitleActive: Bool = false
+    private(set) var metadata: MediaMetadata?
 
     // Host-only state.
     private(set) var loadedURL: URL?
@@ -73,6 +74,8 @@ final class PlayerViewModel {
     /// `state` back to `.idle` on end-of-stream (both backends), and our
     /// `loadedURL` only clears on `stop()`, so "loaded but idle" means ended.
     var isEnded: Bool { hasMedia && state == .idle }
+    /// True when the session is presenting as audio-only (see isAudioPlayback).
+    var isAudioOnly: Bool { isAudioPlayback(backend: backend, url: loadedURL) }
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -106,6 +109,7 @@ final class PlayerViewModel {
         engine.$playbackBackend.receive(on: DispatchQueue.main).sink { [weak self] in self?.backend = $0 }.store(in: &cancellables)
         engine.$subtitleCues.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleCues = $0 }.store(in: &cancellables)
         engine.$isSubtitleActive.receive(on: DispatchQueue.main).sink { [weak self] in self?.isSubtitleActive = $0 }.store(in: &cancellables)
+        engine.$metadata.receive(on: DispatchQueue.main).sink { [weak self] in self?.metadata = $0 }.store(in: &cancellables)
     }
 
     func open(url: URL) async {
@@ -125,7 +129,8 @@ final class PlayerViewModel {
         scrubPreview.reset()
         if let previousExtractor { Task { await previousExtractor.shutdown() } }
         do {
-            try await engine.load(url: url, startPosition: resume)
+            let options = LoadOptions(audioOnly: isAudioExtension(url))
+            try await engine.load(url: url, startPosition: resume, options: options)
             engine.play()
             loadedURL = url
             frameExtractor = engine.makeFrameExtractor()
