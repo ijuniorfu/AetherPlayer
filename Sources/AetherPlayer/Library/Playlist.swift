@@ -46,4 +46,12 @@ struct Playlist: Equatable {
         currentIndex -= 1
         return items[currentIndex]
     }
+
+    /// Move the cursor back to the first item and return it (for repeat-all
+    /// wrap-around at the end of the list). Nil only when the list is empty.
+    mutating func rewindToStart() -> URL? {
+        guard !items.isEmpty else { return nil }
+        currentIndex = 0
+        return items[0]
+    }
 }

@@ -33,6 +33,16 @@ final class PlayerViewModel {
     var hasNext: Bool { playlist?.hasNext ?? false }
     var hasPrevious: Bool { playlist?.hasPrevious ?? false }
 
+    /// Repeat behavior for audio playback (off / repeat-all / repeat-one),
+    /// cycled from the transport bar. Persisted across launches.
+    private(set) var repeatMode: RepeatMode = .off
+
+    /// Advance the repeat mode through its off -> all -> one -> off cycle.
+    func cycleRepeatMode() {
+        repeatMode = repeatMode.cycled
+        UserDefaults.standard.set(repeatMode.rawValue, forKey: "player.repeatMode")
+    }
+
     let recents = RecentsStore()
     private let nowPlaying = NowPlayingController()
     /// One frame extractor per playback session, built from the playing file
@@ -86,6 +96,10 @@ final class PlayerViewModel {
         if UserDefaults.standard.object(forKey: "player.volume") != nil {
             engine.volume = UserDefaults.standard.float(forKey: "player.volume")
         }
+        if let raw = UserDefaults.standard.string(forKey: "player.repeatMode"),
+           let mode = RepeatMode(rawValue: raw) {
+            repeatMode = mode
+        }
         nowPlaying.configure(actions: .init(
             play: { [weak self] in self?.engine.play() },
             pause: { [weak self] in self?.engine.pause() },
@@ -101,11 +115,8 @@ final class PlayerViewModel {
         engine.$state.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.state = $0
             self?.updateSleepAssertion()
-            if $0 == .idle, let url = self?.loadedURL, self?.hasMedia == true {
-                self?.recents.markFinished(url)   // reached natural end
-                if self?.playlist?.hasNext == true {
-                    Task { @MainActor in await self?.playNext() }
-                }
+            if $0 == .idle, self?.hasMedia == true {
+                self?.handleTrackEnded()
             }
             self?.pushNowPlaying()
         }.store(in: &cancellables)
@@ -309,6 +320,38 @@ final class PlayerViewModel {
         guard var pl = playlist, let url = pl.previous() else { return }
         playlist = pl
         await openInternal(url: url, recordPlaylistRelative: false)
+    }
+
+    /// Restart the folder playlist from its first track (repeat-all wrap).
+    private func playPlaylistFirst() async {
+        flushPosition()
+        guard var pl = playlist, let url = pl.rewindToStart() else { return }
+        playlist = pl
+        await openInternal(url: url, recordPlaylistRelative: false)
+    }
+
+    /// Decide what happens when the current item reaches its natural end.
+    /// Repeat behavior applies to audio only; video keeps the plain
+    /// auto-advance-within-a-folder behavior.
+    private func handleTrackEnded() {
+        guard let url = loadedURL else { return }
+        recents.markFinished(url)
+
+        guard backend == .audio else {
+            if playlist?.hasNext == true { Task { await playNext() } }
+            return
+        }
+
+        switch repeatMode {
+        case .one:
+            restart()                                   // loop this track
+        case .all:
+            if playlist?.hasNext == true { Task { await playNext() } }
+            else if playlist != nil { Task { await playPlaylistFirst() } }  // wrap
+            else { restart() }                          // single file: loop it
+        case .off:
+            if playlist?.hasNext == true { Task { await playNext() } }
+        }
     }
 
     // MARK: - Speed

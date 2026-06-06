@@ -98,6 +98,17 @@ struct TransportBar: View {
                 .menuIndicator(.hidden)
                 .fixedSize()
 
+                if model.backend == .audio {
+                    Button(action: { model.cycleRepeatMode() }) {
+                        Image(systemName: repeatSymbol).font(.title3)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(model.repeatMode == .off
+                                     ? AnyShapeStyle(.white.opacity(0.45))
+                                     : AnyShapeStyle(Color.aetherPurple))
+                    .help(repeatHelp)
+                }
+
                 if model.backend != .audio {
                     Button(action: { SnapshotSaver.captureAndSave(model: model) }) {
                         Image(systemName: "camera").font(.title3)
@@ -142,6 +153,18 @@ struct TransportBar: View {
         case .aether: return "aether"
         case .audio: return "audio"
         case .none: return ""
+        }
+    }
+
+    private var repeatSymbol: String {
+        model.repeatMode == .one ? "repeat.1" : "repeat"
+    }
+
+    private var repeatHelp: String {
+        switch model.repeatMode {
+        case .off: return "Repeat: off"
+        case .all: return "Repeat: all tracks in folder"
+        case .one: return "Repeat: current track"
         }
     }
 }
