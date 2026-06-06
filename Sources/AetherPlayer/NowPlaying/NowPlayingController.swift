@@ -52,10 +52,19 @@ final class NowPlayingController {
             metadata: metadata, fallbackTitle: fallbackTitle,
             duration: duration, elapsed: elapsed, rate: rate)
         if let data = metadata?.artworkData, let image = NSImage(data: data) {
-            dict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: image.size) { _ in image }
+            dict[MPMediaItemPropertyArtwork] = Self.makeArtwork(image)
         }
         info.nowPlayingInfo = dict
         info.playbackState = rate > 0 ? .playing : .paused
+    }
+
+    /// Wrap an image as `MPMediaItemArtwork`. MediaPlayer invokes the
+    /// request handler on its own internal queue, so the closure must NOT
+    /// be main-actor-isolated; otherwise Swift's actor-isolation runtime
+    /// check traps (SIGTRAP) the moment MediaPlayer renders the artwork.
+    /// A `nonisolated` context produces a plain, non-isolated closure.
+    private nonisolated static func makeArtwork(_ image: NSImage) -> MPMediaItemArtwork {
+        MPMediaItemArtwork(boundsSize: image.size) { _ in image }
     }
 
     /// Clear the system surface on stop.
