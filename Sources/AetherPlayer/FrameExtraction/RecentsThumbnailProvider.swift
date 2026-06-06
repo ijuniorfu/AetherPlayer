@@ -36,16 +36,32 @@ final class RecentsThumbnailProvider {
             return disk
         }
 
-        let extractor = FrameExtractor(url: scoped.url)
-        let image = await extractor.thumbnail(
-            at: recentsThumbnailTime(duration: item.duration), maxWidth: 320)
-        await extractor.shutdown()
+        let ext = scoped.url.pathExtension.lowercased()
+        let image: CGImage?
+        if audioExtensions.contains(ext) {
+            image = Self.coverArtImage(for: scoped.url)
+        } else {
+            let extractor = FrameExtractor(url: scoped.url)
+            image = await extractor.thumbnail(
+                at: recentsThumbnailTime(duration: item.duration), maxWidth: 320)
+            await extractor.shutdown()
+        }
 
         if let image {
             memory[item.id] = image
             Self.writeJPEG(image, to: cacheURL)
         }
         return image
+    }
+
+    /// Decode embedded cover art for an audio file via a one-shot engine
+    /// probe. Returns nil when the file has no attached picture (the
+    /// recents row then shows its generic placeholder, unchanged).
+    private static func coverArtImage(for url: URL) -> CGImage? {
+        guard let probe = try? AetherEngine.probe(url: url),
+              let data = probe.metadata.artworkData,
+              let src = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+        return CGImageSourceCreateImageAtIndex(src, 0, nil)
     }
 
     // MARK: - Cache file naming
