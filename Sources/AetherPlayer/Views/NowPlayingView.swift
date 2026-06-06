@@ -16,35 +16,15 @@ struct NowPlayingView: View {
     @State private var scrubbing = false
 
     var body: some View {
-        ZStack {
-            if let cover {
-                Image(nsImage: cover)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .blur(radius: 60)
-                    .overlay(Color.black.opacity(0.55))
-                    .ignoresSafeArea()
-            } else {
-                LinearGradient(
-                    colors: [Color.aetherBlue.opacity(0.35), Color.aetherPurple.opacity(0.25), .black],
-                    startPoint: .topLeading, endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
-            }
-
-            VStack(spacing: 24) {
-                Spacer()
-                cover(cover)
-                metadataBlock
-                Spacer()
-            }
-            .padding(.bottom, 80) // leave room for the transport bar
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .task(id: model.metadata?.artworkData) {
-            cover = model.metadata?.artworkData.flatMap { NSImage(data: $0) }
-        }
-        .overlay(alignment: .bottom) {
+        VStack(spacing: 0) {
+            // Cover + metadata centered between the spacers; the cover shrinks
+            // when space is tight so the bar always fits.
+            Spacer(minLength: 16)
+            coverArt
+            metadataBlock.padding(.top, 20)
+            Spacer(minLength: 16)
+            // Transport bar is the last element, so it is always laid out at
+            // the bottom and visible (no auto-hide for audio).
             TransportBar(
                 model: model,
                 onTracksTapped: { showTracks.toggle() },
@@ -55,6 +35,14 @@ struct NowPlayingView: View {
             .popover(isPresented: $showTracks, arrowEdge: .bottom) {
                 TracksPopover(model: model)
             }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Full-bleed backdrop applied as a background so its greedy aspect-fill
+        // image and blur never affect the foreground layout (which was pushing
+        // the transport bar off-screen).
+        .background { backgroundFill }
+        .task(id: model.metadata?.artworkData) {
+            cover = model.metadata?.artworkData.flatMap { NSImage(data: $0) }
         }
         .overlay { KeyCatcherView(onKey: handleKey).allowsHitTesting(false) }
     }
@@ -72,21 +60,47 @@ struct NowPlayingView: View {
         }
     }
 
+    /// Blurred, darkened copy of the cover as a full-bleed backdrop, or an
+    /// Aether-brand gradient when there is no embedded artwork. Framed to
+    /// fill (and clip) the window without dictating the layout size: an
+    /// unconstrained aspect-fill image is greedy and would otherwise blow up
+    /// the ZStack and push the content and bar off-screen.
     @ViewBuilder
-    private func cover(_ image: NSImage?) -> some View {
+    private var backgroundFill: some View {
+        ZStack {
+            if let cover {
+                Image(nsImage: cover)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .blur(radius: 60)
+                    .overlay(Color.black.opacity(0.55))
+            } else {
+                LinearGradient(
+                    colors: [Color.aetherBlue.opacity(0.35), Color.aetherPurple.opacity(0.25), .black],
+                    startPoint: .topLeading, endPoint: .bottomTrailing
+                )
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipped()
+    }
+
+    @ViewBuilder
+    private var coverArt: some View {
         Group {
-            if let image {
-                Image(nsImage: image).resizable().aspectRatio(contentMode: .fit)
+            if let cover {
+                Image(nsImage: cover).resizable().aspectRatio(contentMode: .fit)
             } else {
                 ZStack {
                     RoundedRectangle(cornerRadius: 16).fill(.white.opacity(0.06))
                     Image(systemName: "music.note")
-                        .font(.system(size: 96, weight: .light))
+                        .font(.system(size: 80, weight: .light))
                         .foregroundStyle(LinearGradient.aetherAccent)
                 }
             }
         }
-        .frame(width: 320, height: 320)
+        .aspectRatio(1, contentMode: .fit)
+        .frame(maxWidth: 300, maxHeight: 300)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).stroke(.white.opacity(0.12), lineWidth: 1))
         .shadow(color: .black.opacity(0.5), radius: 24, y: 10)
