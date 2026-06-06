@@ -49,6 +49,19 @@ targets:
               - public.mpeg-4
             CFBundleTypeRole: Viewer
             LSHandlerRank: Alternate
+          - CFBundleTypeName: Audio
+            LSItemContentTypes:
+              - public.audio
+              - public.mp3
+              - public.mpeg-4-audio
+              - com.apple.m4a-audio
+              - org.xiph.flac
+              - com.microsoft.waveform-audio
+              - public.aiff-audio
+              - org.xiph.opus
+              - org.xiph.ogg
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: de.superuser404.AetherPlayer
