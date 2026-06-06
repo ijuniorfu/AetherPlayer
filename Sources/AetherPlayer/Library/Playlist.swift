@@ -1,9 +1,18 @@
 import Foundation
 
-/// Container extensions AetherPlayer treats as playable, lowercased.
-let playableExtensions: Set<String> = [
+/// Video container extensions AetherPlayer treats as playable, lowercased.
+let videoExtensions: Set<String> = [
     "mkv", "mp4", "m4v", "mov", "webm", "ts", "m2ts", "avi", "ogv", "ogg", "flv"
 ]
+
+/// Audio container extensions AetherPlayer treats as playable, lowercased.
+let audioExtensions: Set<String> = [
+    "mp3", "m4a", "aac", "flac", "wav", "aiff", "aif",
+    "opus", "oga", "wma", "mka", "ape", "dsf", "wv"
+]
+
+/// Everything AetherPlayer can open: video and audio containers.
+let playableExtensions: Set<String> = videoExtensions.union(audioExtensions)
 
 /// Filters a directory listing to playable files and sorts them the way
 /// Finder does (so ep2 precedes ep10).

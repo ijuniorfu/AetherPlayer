@@ -26,4 +26,22 @@ final class PlaylistTests: XCTestCase {
         XCTAssertEqual(p.index(of: u("b.mkv")), 1)
         XCTAssertNil(p.index(of: u("z.mkv")))
     }
+
+    func testPlayableFilesIncludesAudioFormats() {
+        let urls = [
+            URL(fileURLWithPath: "/m/track.flac"),
+            URL(fileURLWithPath: "/m/song.mp3"),
+            URL(fileURLWithPath: "/m/clip.mp4"),
+            URL(fileURLWithPath: "/m/notes.txt"),
+            URL(fileURLWithPath: "/m/audio.opus"),
+        ]
+        let names = playableFiles(in: urls).map { $0.lastPathComponent }
+        XCTAssertEqual(names, ["audio.opus", "clip.mp4", "song.mp3", "track.flac"])
+    }
+
+    func testAudioExtensionsAreLowercasedSet() {
+        XCTAssertTrue(audioExtensions.contains("flac"))
+        XCTAssertTrue(audioExtensions.contains("mp3"))
+        XCTAssertFalse(audioExtensions.contains("FLAC"))
+    }
 }
