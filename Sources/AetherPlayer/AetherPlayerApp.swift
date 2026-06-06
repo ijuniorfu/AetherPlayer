@@ -98,7 +98,7 @@ struct AetherPlayerApp: App {
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
-        panel.allowedContentTypes = [.movie, .video]
+        panel.allowedContentTypes = [.movie, .video, .audio]
         if panel.runModal() == .OK, let url = panel.url {
             Task { await model.open(url: url) }
         }
