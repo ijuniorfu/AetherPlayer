@@ -39,7 +39,7 @@ final class RecentsThumbnailProvider {
         let ext = scoped.url.pathExtension.lowercased()
         let image: CGImage?
         if audioExtensions.contains(ext) {
-            image = Self.coverArtImage(for: scoped.url)
+            image = await Self.coverArtImage(for: scoped.url)
         } else {
             let extractor = FrameExtractor(url: scoped.url)
             image = await extractor.thumbnail(
@@ -55,11 +55,16 @@ final class RecentsThumbnailProvider {
     }
 
     /// Decode embedded cover art for an audio file via a one-shot engine
-    /// probe. Returns nil when the file has no attached picture (the
-    /// recents row then shows its generic placeholder, unchanged).
-    private static func coverArtImage(for url: URL) -> CGImage? {
-        guard let probe = try? AetherEngine.probe(url: url),
-              let data = probe.metadata.artworkData,
+    /// probe, run off the main actor so the recents list stays responsive.
+    /// Returns nil when the file has no attached picture (the recents row
+    /// then shows its generic placeholder, unchanged).
+    private static func coverArtImage(for url: URL) async -> CGImage? {
+        let data = await Task.detached(priority: .utility) {
+            guard let probe = try? AetherEngine.probe(url: url),
+                  let artwork = probe.metadata.artworkData else { return nil as Data? }
+            return artwork
+        }.value
+        guard let data,
               let src = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
         return CGImageSourceCreateImageAtIndex(src, 0, nil)
     }
