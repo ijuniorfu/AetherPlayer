@@ -16,27 +16,30 @@ struct NowPlayingView: View {
     @State private var scrubbing = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Cover + metadata centered between the spacers; the cover shrinks
-            // when space is tight so the bar always fits.
-            Spacer(minLength: 16)
-            coverArt
-            metadataBlock.padding(.top, 20)
-            Spacer(minLength: 16)
-            // Transport bar is the last element, so it is always laid out at
-            // the bottom and visible (no auto-hide for audio).
-            TransportBar(
-                model: model,
-                onTracksTapped: { showTracks.toggle() },
-                onPrevious: { Task { await model.playPrevious() } },
-                onNext: { Task { await model.playNext() } },
-                scrubbing: $scrubbing
-            )
-            .popover(isPresented: $showTracks, arrowEdge: .bottom) {
-                TracksPopover(model: model)
+        GeometryReader { geo in
+            VStack(spacing: 0) {
+                // Cover + metadata centered between the spacers; the cover side
+                // is computed from the available height so it shrinks on small
+                // windows instead of clipping.
+                Spacer(minLength: 16)
+                coverArt(side: coverSide(for: geo.size))
+                metadataBlock.padding(.top, 20)
+                Spacer(minLength: 16)
+                // Transport bar is the last element, so it is always laid out at
+                // the bottom and visible (no auto-hide for audio).
+                TransportBar(
+                    model: model,
+                    onTracksTapped: { showTracks.toggle() },
+                    onPrevious: { Task { await model.playPrevious() } },
+                    onNext: { Task { await model.playNext() } },
+                    scrubbing: $scrubbing
+                )
+                .popover(isPresented: $showTracks, arrowEdge: .bottom) {
+                    TracksPopover(model: model)
+                }
             }
+            .frame(width: geo.size.width, height: geo.size.height)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         // Full-bleed backdrop applied as a background so its greedy aspect-fill
         // image and blur never affect the foreground layout (which was pushing
         // the transport bar off-screen).
@@ -85,8 +88,14 @@ struct NowPlayingView: View {
         .clipped()
     }
 
+    /// Cover edge length: capped at 300 pt, shrinking with the window height
+    /// (reserving room for metadata + transport bar) so it never clips.
+    private func coverSide(for size: CGSize) -> CGFloat {
+        max(120, min(300, size.width - 80, size.height - 200))
+    }
+
     @ViewBuilder
-    private var coverArt: some View {
+    private func coverArt(side: CGFloat) -> some View {
         Group {
             if let cover {
                 Image(nsImage: cover).resizable().aspectRatio(contentMode: .fit)
@@ -94,13 +103,12 @@ struct NowPlayingView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 16).fill(.white.opacity(0.06))
                     Image(systemName: "music.note")
-                        .font(.system(size: 80, weight: .light))
+                        .font(.system(size: side * 0.3, weight: .light))
                         .foregroundStyle(LinearGradient.aetherAccent)
                 }
             }
         }
-        .aspectRatio(1, contentMode: .fit)
-        .frame(maxWidth: 300, maxHeight: 300)
+        .frame(width: side, height: side)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).stroke(.white.opacity(0.12), lineWidth: 1))
         .shadow(color: .black.opacity(0.5), radius: 24, y: 10)
