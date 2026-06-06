@@ -10,33 +10,42 @@ struct EmptyStateView: View {
     let onClearRecents: () -> Void
 
     var body: some View {
-        VStack(spacing: 24) {
-            Spacer(minLength: 0)
-            VStack(spacing: 16) {
-                Image(systemName: "film.stack")
-                    .font(.system(size: 64))
-                    .foregroundStyle(isDropTargeted
-                        ? AnyShapeStyle(Color.aetherPurple)
-                        : AnyShapeStyle(.white.opacity(0.45)))
-                    .shadow(color: .aetherPurple.opacity(isDropTargeted ? 0.7 : 0), radius: 16)
-                Text(isDropTargeted ? "Release to load" : "Drop a video here")
-                    .font(.title2)
-                    .foregroundStyle(isDropTargeted
-                        ? AnyShapeStyle(Color.aetherPurple)
-                        : AnyShapeStyle(.white.opacity(0.65)))
-                Button("Open File\u{2026}", action: onOpen)
-                    .controlSize(.large)
-                Text("MKV, MP4, WebM, MPEG-TS, AVI, OGG, FLV")
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.35))
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: 24) {
+                    if recents.isEmpty {
+                        Spacer(minLength: 0)
+                    }
+                    VStack(spacing: 16) {
+                        Image(systemName: "play.square.stack")
+                            .font(.system(size: 64))
+                            .foregroundStyle(isDropTargeted
+                                ? AnyShapeStyle(Color.aetherPurple)
+                                : AnyShapeStyle(.white.opacity(0.45)))
+                            .shadow(color: .aetherPurple.opacity(isDropTargeted ? 0.7 : 0), radius: 16)
+                        Text(isDropTargeted ? "Release to load" : "Drop a video or audio file here")
+                            .font(.title2)
+                            .foregroundStyle(isDropTargeted
+                                ? AnyShapeStyle(Color.aetherPurple)
+                                : AnyShapeStyle(.white.opacity(0.65)))
+                        Button("Open File\u{2026}", action: onOpen)
+                            .controlSize(.large)
+                        Text("MKV, MP4, WebM, AVI \u{00B7} MP3, FLAC, WAV, M4A, OGG")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.35))
+                    }
+                    if !recents.isEmpty {
+                        RecentsListView(items: recents, thumbnails: thumbnails, onOpen: onOpenRecent,
+                                        onRemove: onRemoveRecent, onClearAll: onClearRecents)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, 40)
+                .padding(.bottom, 40)
+                .padding(.top, recents.isEmpty ? 40 : 24)
+                .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
-            if !recents.isEmpty {
-                RecentsListView(items: recents, thumbnails: thumbnails, onOpen: onOpenRecent,
-                                onRemove: onRemoveRecent, onClearAll: onClearRecents)
-            }
-            Spacer(minLength: 0)
         }
-        .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .contentShape(Rectangle())
     }
