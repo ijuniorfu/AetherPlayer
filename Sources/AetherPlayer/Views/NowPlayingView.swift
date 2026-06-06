@@ -5,8 +5,8 @@ import AetherEngine
 /// Full-window presentation for audio-only playback: a large centered
 /// cover over a blurred, darkened copy of the same cover, with title /
 /// artist / album below. Falls back to a music glyph on an Aether-brand
-/// gradient when the source has no embedded artwork. (The transport bar
-/// is added by a later task and stays visible; no auto-hide.)
+/// gradient when the source has no embedded artwork. The transport bar
+/// stays visible at the bottom (no auto-hide, unlike the video path).
 struct NowPlayingView: View {
     let model: PlayerViewModel
 
