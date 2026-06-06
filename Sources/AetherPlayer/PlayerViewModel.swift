@@ -34,6 +34,7 @@ final class PlayerViewModel {
     var hasPrevious: Bool { playlist?.hasPrevious ?? false }
 
     let recents = RecentsStore()
+    private let nowPlaying = NowPlayingController()
     /// One frame extractor per playback session, built from the playing file
     /// and shared by scrub preview and snapshot. Released (and shut down) on
     /// the next load and on stop().
@@ -85,6 +86,15 @@ final class PlayerViewModel {
         if UserDefaults.standard.object(forKey: "player.volume") != nil {
             engine.volume = UserDefaults.standard.float(forKey: "player.volume")
         }
+        nowPlaying.configure(actions: .init(
+            play: { [weak self] in self?.engine.play() },
+            pause: { [weak self] in self?.engine.pause() },
+            toggle: { [weak self] in self?.primaryAction() },
+            skip: { [weak self] d in self?.seek(by: d) },
+            next: { [weak self] in Task { await self?.playNext() } },
+            previous: { [weak self] in Task { await self?.playPrevious() } },
+            seekTo: { [weak self] t in self?.seek(to: t) }
+        ))
     }
 
     private func bind() {
@@ -97,19 +107,27 @@ final class PlayerViewModel {
                     Task { @MainActor in await self?.playNext() }
                 }
             }
+            self?.pushNowPlaying()
         }.store(in: &cancellables)
         engine.$currentTime.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.currentTime = $0
             self?.persistPositionThrottled()
+            self?.pushNowPlayingThrottled()
         }.store(in: &cancellables)
-        engine.$duration.receive(on: DispatchQueue.main).sink { [weak self] in self?.duration = $0 }.store(in: &cancellables)
+        engine.$duration.receive(on: DispatchQueue.main).sink { [weak self] in
+            self?.duration = $0
+            self?.pushNowPlaying()
+        }.store(in: &cancellables)
         engine.$audioTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.audioTracks = $0 }.store(in: &cancellables)
         engine.$subtitleTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleTracks = $0 }.store(in: &cancellables)
         engine.$activeAudioTrackIndex.receive(on: DispatchQueue.main).sink { [weak self] in self?.activeAudioTrackIndex = $0 }.store(in: &cancellables)
         engine.$playbackBackend.receive(on: DispatchQueue.main).sink { [weak self] in self?.backend = $0 }.store(in: &cancellables)
         engine.$subtitleCues.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleCues = $0 }.store(in: &cancellables)
         engine.$isSubtitleActive.receive(on: DispatchQueue.main).sink { [weak self] in self?.isSubtitleActive = $0 }.store(in: &cancellables)
-        engine.$metadata.receive(on: DispatchQueue.main).sink { [weak self] in self?.metadata = $0 }.store(in: &cancellables)
+        engine.$metadata.receive(on: DispatchQueue.main).sink { [weak self] in
+            self?.metadata = $0
+            self?.pushNowPlaying()
+        }.store(in: &cancellables)
     }
 
     func open(url: URL) async {
@@ -209,6 +227,7 @@ final class PlayerViewModel {
         loadedURL = nil
         loadError = nil
         resumeMessage = nil
+        nowPlaying.clear()
     }
 
     func seek(by delta: Double) {
@@ -300,6 +319,7 @@ final class PlayerViewModel {
     func setRate(_ newRate: Float) {
         engine.setRate(newRate)
         rate = newRate
+        pushNowPlaying()
     }
 
     // MARK: - Volume
@@ -333,6 +353,29 @@ final class PlayerViewModel {
         guard now.timeIntervalSince(lastPersist) >= 5 else { return }
         lastPersist = now
         recents.updatePosition(currentTime, duration: duration, for: url)
+    }
+
+    // MARK: - Now Playing
+
+    private func pushNowPlaying() {
+        guard hasMedia else { nowPlaying.clear(); return }
+        nowPlaying.update(
+            metadata: metadata,
+            fallbackTitle: loadedURL.map { $0.deletingPathExtension().lastPathComponent } ?? "AetherPlayer",
+            duration: duration,
+            elapsed: currentTime,
+            rate: isPlaying ? rate : 0)
+        nowPlaying.updateAvailability(hasNext: hasNext, hasPrevious: hasPrevious)
+    }
+
+    private var lastNowPlayingPush: Date = .distantPast
+    /// Throttled variant for the per-tick currentTime updates (at most ~1/s)
+    /// so we do not rewrite MPNowPlayingInfoCenter on every playhead change.
+    private func pushNowPlayingThrottled() {
+        let now = Date()
+        guard now.timeIntervalSince(lastNowPlayingPush) >= 1 else { return }
+        lastNowPlayingPush = now
+        pushNowPlaying()
     }
 
     /// Force-save the current position (call on pause, stop, window close).
