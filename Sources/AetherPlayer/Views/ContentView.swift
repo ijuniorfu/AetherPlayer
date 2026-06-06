@@ -16,8 +16,13 @@ struct ContentView: View {
             Color.black.ignoresSafeArea()
 
             if model.hasMedia {
-                PlayerContainerView(model: model)
-                    .ignoresSafeArea()
+                if model.isAudioOnly {
+                    NowPlayingView(model: model)
+                        .ignoresSafeArea()
+                } else {
+                    PlayerContainerView(model: model)
+                        .ignoresSafeArea()
+                }
             } else {
                 EmptyStateView(
                     isDropTargeted: isDropTargeted,
@@ -79,9 +84,9 @@ struct ContentView: View {
             }
             return true
         }
-        .onChange(of: model.loadedURL) { _, url in
-            NSApp.keyWindow?.title = url?.lastPathComponent ?? "AetherPlayer"
-        }
+        .onChange(of: model.loadedURL) { _, _ in updateWindowTitle() }
+        .onChange(of: model.metadata) { _, _ in updateWindowTitle() }
+        .onChange(of: model.isAudioOnly) { _, _ in updateWindowTitle() }
         .onChange(of: model.loadError) { _, err in
             // Auto-dismiss the error toast after a few seconds, unless a newer
             // error replaced it in the meantime.
@@ -95,6 +100,11 @@ struct ContentView: View {
 
     /// Sidecar subtitle file extensions recognized on drop.
     private static let subtitleExtensions: Set<String> = ["srt", "ass", "ssa", "vtt", "sub"]
+
+    private func updateWindowTitle() {
+        NSApp.keyWindow?.title = windowTitle(
+            metadata: model.metadata, url: model.loadedURL, isAudio: model.isAudioOnly)
+    }
 
     func openPanel() {
         let panel = NSOpenPanel()
