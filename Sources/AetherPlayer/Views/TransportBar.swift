@@ -138,6 +138,7 @@ struct TransportBar: View {
         case .native: return "native"
         case .software: return "sw"
         case .aether: return "aether"
+        case .audio: return "audio"
         case .none: return ""
         }
     }
