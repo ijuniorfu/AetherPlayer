@@ -131,7 +131,10 @@ final class PlayerViewModel {
             }
             self?.pushNowPlaying()
         }.store(in: &cancellables)
-        engine.$currentTime.receive(on: DispatchQueue.main).sink { [weak self] in
+        // The playback clock lives on engine.clock (a separate
+        // ObservableObject since AetherEngine#29) so its ~10 Hz ticks
+        // only reach views that explicitly observe the clock.
+        engine.clock.$currentTime.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.currentTime = $0
             self?.persistPositionThrottled()
             self?.pushNowPlayingThrottled()
