@@ -4,7 +4,22 @@
 
 <h1 align="center">AetherPlayer</h1>
 
-A standalone native macOS media player built on [AetherEngine](https://github.com/superuser404notfound/AetherEngine). Drop or open a video, play it, switch audio and subtitle tracks, scrub with live thumbnail previews, and grab full-resolution frames. Universal binary (Apple Silicon + Intel), macOS 14.0+.
+<p align="center">
+  <b>A standalone native macOS media player built on <a href="https://github.com/superuser404notfound/AetherEngine">AetherEngine</a>.</b><br>
+  Drop or open a video or audio file, play it, switch audio and subtitle tracks, scrub with live thumbnail previews, and grab full-resolution frames.<br>
+  Universal binary (Apple Silicon + Intel), macOS 14.0+.
+</p>
+
+<p align="center">
+  <a href="https://github.com/superuser404notfound/AetherPlayer/releases/latest"><img src="https://img.shields.io/github/v/release/superuser404notfound/AetherPlayer?label=release&color=blue"></a>
+  <a href="https://github.com/superuser404notfound/AetherPlayer/actions/workflows/release-dmg.yml"><img src="https://github.com/superuser404notfound/AetherPlayer/actions/workflows/release-dmg.yml/badge.svg"></a>
+  <img src="https://img.shields.io/badge/macOS-14%2B-black?logo=apple">
+  <img src="https://img.shields.io/badge/Swift-6.0%2B-F05138?logo=swift&logoColor=white">
+  <img src="https://img.shields.io/badge/license-LGPL--3.0-lightgrey">
+  <a href="https://ko-fi.com/superuser404"><img src="https://img.shields.io/badge/Ko--fi-Support-FF5E5B?logo=kofi&logoColor=white"></a>
+</p>
+
+---
 
 ## Install
 
@@ -13,13 +28,14 @@ Grab the latest notarized `.dmg` from the [Releases page](https://github.com/sup
 ## Features
 
 - **Plays what other players choke on.** FFmpeg-backed decoding through AetherEngine, with an on-screen `native`/`sw` badge so you can see which rendering path a file took.
+- **Audio too, with system Now Playing.** Open a music or audio file and AetherPlayer shows a dedicated Now Playing view (embedded cover art over a blurred backdrop, or a generated gradient when there is none). Playback wires into Control Center, the lock screen, and the keyboard media keys via `MPNowPlayingInfoCenter`.
 - **Audio and subtitle track switching** from the menu bar or the tracks popover, with an "Off" option for subtitles.
 - **Scrub bar with live preview.** Hover the timeline for a thumbnail, click to seek, or drag to scrub.
 - **Frame capture.** Save the current frame at full resolution (Cmd+Shift+S, or the camera button).
 - **Recents with thumbnails.** Recently opened files show disk-cached keyframe thumbnails for quick visual recognition.
 - **Resume where you left off.** Reopen a file and pick up at your last position.
 - **Folder playlists.** Open a folder and step through its videos with Cmd+Left / Cmd+Right.
-- **Stays out of the way.** Controls auto-hide during playback and reappear on mouse movement.
+- **Stays out of the way.** Controls auto-hide during video playback and reappear on mouse movement.
 
 ## Controls
 
@@ -36,6 +52,8 @@ Grab the latest notarized `.dmg` from the [Releases page](https://github.com/sup
 | Cmd+Shift+O | Open folder |
 | Cmd+Shift+S | Save current frame |
 | Cmd+Shift+T | Toggle always on top |
+
+The system media keys and Control Center transport also drive play / pause and track stepping, handy for audio.
 
 ## Build
 
@@ -56,3 +74,11 @@ NOTARY_PROFILE="NOTARY_PROFILE" \
 ```
 
 Produces a notarized, stapled universal `.dmg`. Set `DEVELOPER_ID` for a signed local build; add `NOTARY_PROFILE` to notarize for distribution.
+
+## Built with
+
+Vibe-coded and maintained by [Vincent Herbst](https://github.com/superuser404notfound) in close pair-programming with **Claude** (Anthropic). The heavy lifting (demux, decode, HDR, audio) lives in [AetherEngine](https://github.com/superuser404notfound/AetherEngine); this repo is the macOS shell around it.
+
+## License
+
+[LGPL-3.0](LICENSE), matching AetherEngine and upstream FFmpeg.
