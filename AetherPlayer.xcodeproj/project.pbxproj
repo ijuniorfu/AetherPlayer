@@ -34,6 +34,7 @@
 		6FBBD1001F9F6A7D114635CB /* FrameHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93824C28886D126A5CFA790B /* FrameHelpersTests.swift */; };
 		765C3F6F5868875F50607BA4 /* NowPlayingInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A68F5A4C570AB63B8EDB54 /* NowPlayingInfoTests.swift */; };
 		781398CCB0497ACC785DC5C8 /* ScrubPreviewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B4732DA5AD499D6597B1BC /* ScrubPreviewProvider.swift */; };
+		788D3248F94F267640983722 /* SubtitleLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC54EC90821C436C01FEA25 /* SubtitleLayout.swift */; };
 		78C6C0C695CCAC4331057E3D /* AutoHideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A80F72F03FB387443963F /* AutoHideTests.swift */; };
 		8261B7E3227BAADBB7ACE9DC /* TrackMenuModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */; };
 		85C0AE7328F9CFA7E91E7BCF /* PlaylistTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F41670E23F316F7DBD632FB /* PlaylistTests.swift */; };
@@ -52,6 +53,7 @@
 		D3BC9E17B2391B5DF5ED6ED9 /* AetherPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFF5940111B0337F712DDF /* AetherPlayerApp.swift */; };
 		DE92143A4ADD0201A9AB1843 /* AudioDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00875B74FCCF3AC1D2AD59D9 /* AudioDetection.swift */; };
 		E1FE9B0FD84DE2758E92753A /* NowPlayingText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D014653AFF073855375B63 /* NowPlayingText.swift */; };
+		E7F2AAFDB6A45862E2D5B02B /* SubtitleLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7F491313B24CBDDB44433C /* SubtitleLayoutTests.swift */; };
 		F6716D6A28440962D624926C /* AutoHide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B86576A26F61BD21676054F /* AutoHide.swift */; };
 /* End PBXBuildFile section */
 
@@ -88,6 +90,7 @@
 		58A8028DC5D26E80DD6C5DA4 /* RepeatMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatMode.swift; sourceTree = "<group>"; };
 		651650500DBEBF3955D2C0A6 /* RecentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentItem.swift; sourceTree = "<group>"; };
 		6B86576A26F61BD21676054F /* AutoHide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoHide.swift; sourceTree = "<group>"; };
+		6C7F491313B24CBDDB44433C /* SubtitleLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleLayoutTests.swift; sourceTree = "<group>"; };
 		6F44EDD5A2153E72AF32A1B3 /* SubtitleOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleOverlayView.swift; sourceTree = "<group>"; };
 		78BEA53895E7E40BF129B1C2 /* RepeatModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatModeTests.swift; sourceTree = "<group>"; };
 		79B4732DA5AD499D6597B1BC /* ScrubPreviewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrubPreviewProvider.swift; sourceTree = "<group>"; };
@@ -109,6 +112,7 @@
 		C3FEFE70E236F61EFF3FACE4 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMenuModelTests.swift; sourceTree = "<group>"; };
 		CC865F7686A9533FA69E135B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CCC54EC90821C436C01FEA25 /* SubtitleLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleLayout.swift; sourceTree = "<group>"; };
 		D6A5F4D0C3E4DB98E768BA0C /* AetherPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AetherPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF8F7197D56D73713E1AC322 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		E18E793A6CF747DF8329B3DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -141,6 +145,7 @@
 				9DF027E0C8A452E79A82DC39 /* RecentsStoreTests.swift */,
 				78BEA53895E7E40BF129B1C2 /* RepeatModeTests.swift */,
 				53FEB8B79DD96C0738631A14 /* ResumePolicyTests.swift */,
+				6C7F491313B24CBDDB44433C /* SubtitleLayoutTests.swift */,
 				233D66079A84FB8F2D75E290 /* TimecodeTests.swift */,
 				CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */,
 			);
@@ -157,6 +162,7 @@
 				85D014653AFF073855375B63 /* NowPlayingText.swift */,
 				99D103BBA3739D445E3954B5 /* PlayerViewModel.swift */,
 				58A8028DC5D26E80DD6C5DA4 /* RepeatMode.swift */,
+				CCC54EC90821C436C01FEA25 /* SubtitleLayout.swift */,
 				8D72D7101F574252D4DF390C /* Timecode.swift */,
 				4AB205A9EC1736A4D0E09EC0 /* TrackMenuModel.swift */,
 				45D01BC7FC7BBCF3AF0B5CB8 /* Updater.swift */,
@@ -365,6 +371,7 @@
 				BE290CC516BBF1F04EF1F3F5 /* RecentsStoreTests.swift in Sources */,
 				60548C8382031267A0C8083F /* RepeatModeTests.swift in Sources */,
 				B342144744F6F0198B5ED03F /* ResumePolicyTests.swift in Sources */,
+				E7F2AAFDB6A45862E2D5B02B /* SubtitleLayoutTests.swift in Sources */,
 				3F8D429EA937F104E52CFC4B /* TimecodeTests.swift in Sources */,
 				8261B7E3227BAADBB7ACE9DC /* TrackMenuModelTests.swift in Sources */,
 			);
@@ -399,6 +406,7 @@
 				6BDD6184F887FEA522DBD459 /* ResumeToastView.swift in Sources */,
 				781398CCB0497ACC785DC5C8 /* ScrubPreviewProvider.swift in Sources */,
 				B0709C1A666B095EAEF0AE59 /* SnapshotSaver.swift in Sources */,
+				788D3248F94F267640983722 /* SubtitleLayout.swift in Sources */,
 				169CEF92A7F40A58E7F35D32 /* SubtitleOverlayView.swift in Sources */,
 				21528252960F081B9D64B82A /* Theme.swift in Sources */,
 				ADBB50A4992BB1FE126089CF /* Timecode.swift in Sources */,
@@ -503,7 +511,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.6.0;
+				MARKETING_VERSION = 0.6.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
@@ -587,7 +595,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.6.0;
+				MARKETING_VERSION = 0.6.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;

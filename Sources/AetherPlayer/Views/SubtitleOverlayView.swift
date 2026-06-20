@@ -7,6 +7,8 @@ import AetherEngine
 struct SubtitleOverlayView: View {
     let cues: [SubtitleCue]
     let currentTime: Double
+    /// User size multiplier (from PlayerViewModel.subtitleSize.scale).
+    var userScale: CGFloat = 1.0
 
     private var activeCues: [SubtitleCue] {
         cues.filter { currentTime >= $0.startTime && currentTime <= $0.endTime }
@@ -29,7 +31,8 @@ struct SubtitleOverlayView: View {
 
     private func textCue(_ text: String, in size: CGSize) -> some View {
         Text(text)
-            .font(.system(size: 24, weight: .medium))
+            .font(.system(size: subtitleFontSize(surfaceHeight: size.height, userScale: userScale),
+                          weight: .medium))
             .multilineTextAlignment(.center)
             .foregroundStyle(.white)
             .padding(.horizontal, 12).padding(.vertical, 6)

@@ -89,6 +89,15 @@ struct AetherPlayerApp: App {
             CommandMenu("Window") {
                 Toggle("Always on Top", isOn: $alwaysOnTop)
                     .keyboardShortcut("t", modifiers: [.command, .shift])
+                Menu("Subtitle Size") {
+                    if let model {
+                        ForEach(SubtitleSize.allCases) { size in
+                            Button(action: { model.setSubtitleSize(size) }) {
+                                Text((model.subtitleSize == size ? "\u{2713} " : "") + size.label)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

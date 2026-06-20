@@ -30,7 +30,9 @@ struct PlayerContainerView: View {
                 onDouble: { toggleFullScreen(); bumpActivity() }
             )
 
-            SubtitleOverlayView(cues: model.subtitleCues, currentTime: model.currentTime)
+            SubtitleOverlayView(cues: model.subtitleCues,
+                                currentTime: model.currentTime,
+                                userScale: model.subtitleSize.scale)
                 .allowsHitTesting(false)
 
             if controlsVisible {

@@ -53,6 +53,15 @@ final class PlayerViewModel {
         playlist?.setShuffled(shuffleEnabled)
     }
 
+    /// User subtitle size choice, combined with the surface-relative auto
+    /// scale in `SubtitleOverlayView`. Persisted across launches.
+    private(set) var subtitleSize: SubtitleSize = .normal
+
+    func setSubtitleSize(_ size: SubtitleSize) {
+        subtitleSize = size
+        UserDefaults.standard.set(size.rawValue, forKey: "player.subtitleSize")
+    }
+
     let recents = RecentsStore()
     private let nowPlaying = NowPlayingController()
     /// One frame extractor per playback session, built from the playing file
@@ -111,6 +120,10 @@ final class PlayerViewModel {
             repeatMode = mode
         }
         shuffleEnabled = UserDefaults.standard.bool(forKey: "player.shuffle")
+        if let raw = UserDefaults.standard.string(forKey: "player.subtitleSize"),
+           let size = SubtitleSize(rawValue: raw) {
+            subtitleSize = size
+        }
         nowPlaying.configure(actions: .init(
             play: { [weak self] in self?.engine.play() },
             pause: { [weak self] in self?.engine.pause() },
