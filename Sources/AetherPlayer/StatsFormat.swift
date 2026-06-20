@@ -1,7 +1,7 @@
 import AetherEngine
 
 /// Figure-dash placeholder for an unavailable value.
-private let statsPlaceholder = "\u{2014}"
+private let statsPlaceholder = "\u{2012}"
 
 func formatResolution(width: Int, height: Int) -> String {
     guard width > 0, height > 0 else { return statsPlaceholder }
@@ -15,6 +15,7 @@ func videoFormatLabel(_ format: VideoFormat) -> String {
     case .hdr10Plus: return "HDR10+"
     case .dolbyVision: return "Dolby Vision"
     case .hlg: return "HLG"
+    @unknown default: return statsPlaceholder
     }
 }
 

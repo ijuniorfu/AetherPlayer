@@ -18,7 +18,7 @@ struct StatsInspectorView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 section("Source") {
-                    row("File", model.loadedURL?.lastPathComponent ?? "\u{2014}")
+                    row("File", model.loadedURL?.lastPathComponent ?? "\u{2012}")
                     row("Duration", formatTimecode(model.duration))
                     row("Live", model.engine.isLive ? "Yes" : "No")
                 }
@@ -27,11 +27,11 @@ struct StatsInspectorView: View {
                         width: Int(model.engine.sourceVideoWidth),
                         height: Int(model.engine.sourceVideoHeight)))
                     row("HDR", videoFormatLabel(model.engine.sourceVideoFormat))
-                    row("Decoder", model.engine.activeVideoDecoder ?? "\u{2014}")
+                    row("Decoder", model.engine.activeVideoDecoder ?? "\u{2012}")
                     row("Backend", formatBackend(model.backend))
                 }
                 section("Audio") {
-                    row("Decoder", model.engine.activeAudioDecoder ?? "\u{2014}")
+                    row("Decoder", model.engine.activeAudioDecoder ?? "\u{2012}")
                     row("Tracks", "\(model.audioTracks.count)")
                 }
                 section("Live") {
@@ -40,8 +40,8 @@ struct StatsInspectorView: View {
                     row("Bitrate (inst)", formatMbps(tele?.instantBitrateMbps))
                     row("Bitrate (avg)", formatMbps(tele?.averageBitrateMbps))
                     row("Buffer ahead", formatSeconds(tele?.forwardBufferSeconds))
-                    row("A/V sync", tele.map { formatSeconds($0.avSyncGapMs.map { $0 / 1000 }) } ?? "\u{2014}")
-                    row("Memory", tele.map { formatMemoryMB($0.rssMb) } ?? "\u{2014}")
+                    row("A/V sync", tele.map { formatSeconds($0.avSyncGapMs.map { $0 / 1000 }) } ?? "\u{2012}")
+                    row("Memory", tele.map { formatMemoryMB($0.rssMb) } ?? "\u{2012}")
                 }
             }
             .padding(20)

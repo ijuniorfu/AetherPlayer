@@ -5,7 +5,7 @@ import AetherEngine
 final class StatsFormatTests: XCTestCase {
     func testResolution() {
         XCTAssertEqual(formatResolution(width: 1920, height: 1080), "1920 \u{00D7} 1080")
-        XCTAssertEqual(formatResolution(width: 0, height: 0), "\u{2014}")
+        XCTAssertEqual(formatResolution(width: 0, height: 0), "\u{2012}")
     }
 
     func testVideoFormatLabels() {
@@ -18,13 +18,13 @@ final class StatsFormatTests: XCTestCase {
 
     func testOptionalNumericFormatters() {
         XCTAssertEqual(formatMbps(12.34), "12.3 Mbps")
-        XCTAssertEqual(formatMbps(nil), "\u{2014}")
+        XCTAssertEqual(formatMbps(nil), "\u{2012}")
         XCTAssertEqual(formatFps(47.96), "48.0 fps")
-        XCTAssertEqual(formatFps(nil), "\u{2014}")
+        XCTAssertEqual(formatFps(nil), "\u{2012}")
         XCTAssertEqual(formatDroppedFrames(3), "3")
-        XCTAssertEqual(formatDroppedFrames(nil), "\u{2014}")
+        XCTAssertEqual(formatDroppedFrames(nil), "\u{2012}")
         XCTAssertEqual(formatSeconds(2.5), "2.5 s")
-        XCTAssertEqual(formatSeconds(nil), "\u{2014}")
+        XCTAssertEqual(formatSeconds(nil), "\u{2012}")
     }
 
     func testMemoryAndBackend() {
@@ -33,6 +33,6 @@ final class StatsFormatTests: XCTestCase {
         XCTAssertEqual(formatBackend(.software), "Software")
         XCTAssertEqual(formatBackend(.audio), "Audio")
         XCTAssertEqual(formatBackend(.aether), "Aether")
-        XCTAssertEqual(formatBackend(.none), "\u{2014}")
+        XCTAssertEqual(formatBackend(.none), "\u{2012}")
     }
 }
