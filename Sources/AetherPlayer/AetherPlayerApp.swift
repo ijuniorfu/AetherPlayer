@@ -99,7 +99,20 @@ struct AetherPlayerApp: App {
                     }
                 }
             }
+            StatsCommands()
         }
+
+        Window("Stats for Nerds", id: "stats") {
+            Group {
+                if let model {
+                    StatsInspectorView(model: model)
+                } else {
+                    Text("No player.").frame(minWidth: 320, minHeight: 420)
+                }
+            }
+        }
+        .windowResizability(.contentMinSize)
+        .defaultPosition(.topTrailing)
     }
 
     private func openFile() {
@@ -122,6 +135,17 @@ struct AetherPlayerApp: App {
         if panel.runModal() == .OK, let url = panel.url {
             let bm = BookmarkAccess.bookmark(for: url)
             Task { await model.openFolder(url, bookmarkData: bm) }
+        }
+    }
+}
+
+private struct StatsCommands: Commands {
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some Commands {
+        CommandGroup(after: .windowArrangement) {
+            Button("Stats for Nerds") { openWindow(id: "stats") }
+                .keyboardShortcut("i", modifiers: [.command, .shift])
         }
     }
 }
