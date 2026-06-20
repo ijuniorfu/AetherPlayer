@@ -16,30 +16,34 @@ struct TracksPopover: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            if !audioRows.isEmpty {
-                Text("Audio").font(.headline)
-                ForEach(audioRows) { row in
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                if !audioRows.isEmpty {
+                    Text("Audio").font(.headline)
+                    ForEach(audioRows) { row in
+                        rowButton(row.label, selected: row.isSelected) {
+                            model.selectAudio(engineIndex: row.engineIndex)
+                        }
+                    }
+                    Divider()
+                }
+                Text("Subtitles").font(.headline)
+                ForEach(subtitleRows) { row in
                     rowButton(row.label, selected: row.isSelected) {
-                        model.selectAudio(engineIndex: row.engineIndex)
+                        switch row.kind {
+                        case .off: model.disableSubtitle()
+                        case .track(let idx): model.selectSubtitle(engineIndex: idx)
+                        }
                     }
                 }
-                Divider()
+                Button("Load Subtitle File\u{2026}", action: loadSidecar)
+                    .padding(.top, 4)
             }
-            Text("Subtitles").font(.headline)
-            ForEach(subtitleRows) { row in
-                rowButton(row.label, selected: row.isSelected) {
-                    switch row.kind {
-                    case .off: model.disableSubtitle()
-                    case .track(let idx): model.selectSubtitle(engineIndex: idx)
-                    }
-                }
-            }
-            Button("Load Subtitle File\u{2026}", action: loadSidecar)
-                .padding(.top, 4)
+            .padding(16)
         }
-        .padding(16)
         .frame(width: 280)
+        .frame(maxHeight: tracksPopoverMaxHeight(
+            screenHeight: NSScreen.main?.visibleFrame.height ?? 800))
     }
 
     @ViewBuilder
