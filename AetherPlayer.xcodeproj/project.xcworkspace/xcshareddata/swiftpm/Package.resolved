@@ -6,7 +6,16 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/superuser404notfound/AetherEngine",
       "state" : {
-        "revision" : "1e26f53ecb065a7858f1ea95efbe7f24e77ca531"
+        "revision" : "ef396217f582029a3d4d1441e9d5f703c893764a"
+      }
+    },
+    {
+      "identity" : "amsmb2",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/amosavian/AMSMB2",
+      "state" : {
+        "revision" : "1726aaaf7adf63d7d1d2a0c5d1b0e635028215c0",
+        "version" : "4.0.3"
       }
     },
     {
@@ -14,8 +23,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/superuser404notfound/FFmpegBuild",
       "state" : {
-        "branch" : "main",
-        "revision" : "c07f908748d8c5ec3516d0fc1d0988f3988c70a0"
+        "revision" : "4d5a9a1185b190a560a0adc335a24898164fc519",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "libdovi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/superuser404notfound/LibDovi",
+      "state" : {
+        "revision" : "bebab0af0e3633b0002fcc7106ea6fc7ceea8277",
+        "version" : "1.0.2"
       }
     },
     {
