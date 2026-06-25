@@ -30,6 +30,7 @@ Grab the latest notarized `.dmg` from the [Releases page](https://github.com/sup
 - **Plays what other players choke on.** FFmpeg-backed decoding through AetherEngine, with an on-screen `native`/`sw` badge so you can see which rendering path a file took.
 - **Audio too, with system Now Playing.** Open a music or audio file and AetherPlayer shows a dedicated Now Playing view (embedded cover art over a blurred backdrop, or a generated gradient when there is none). Playback wires into Control Center, the lock screen, and the keyboard media keys via `MPNowPlayingInfoCenter`.
 - **Audio and subtitle track switching** from the menu bar or the tracks popover, with an "Off" option for subtitles.
+- **Disc titles and chapters.** Open a decrypted DVD-Video or Blu-ray `.iso` and the tracks popover lists its titles (pick one to switch) and the playing title's chapters (click to jump).
 - **Scrub bar with live preview.** Hover the timeline for a thumbnail, click to seek, or drag to scrub.
 - **Frame capture.** Save the current frame at full resolution (Cmd+Shift+S, or the camera button).
 - **Recents with thumbnails.** Recently opened files show disk-cached keyframe thumbnails for quick visual recognition.
