@@ -14,10 +14,41 @@ struct TracksPopover: View {
                          selectedEngineIndex: model.selectedSubtitleIndex,
                          isActive: model.isSubtitleActive)
     }
+    private var titleRows: [TitleMenuRow] {
+        titleMenuRows(model.discTitles, selectedID: model.selectedDiscTitleID)
+    }
+    private var chapterRows: [ChapterMenuRow] {
+        chapterMenuRows(model.discChapters)
+    }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
+                if !titleRows.isEmpty {
+                    Text("Titles").font(.headline)
+                    ForEach(titleRows) { row in
+                        rowButton(row.label, selected: row.isSelected) {
+                            model.selectTitle(id: row.id)
+                        }
+                    }
+                    Divider()
+                }
+                if !chapterRows.isEmpty {
+                    Text("Chapters").font(.headline)
+                    ForEach(chapterRows) { row in
+                        Button(action: { model.selectChapter(id: row.id) }) {
+                            HStack {
+                                Image(systemName: "chevron.right")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                Text(row.label)
+                                Spacer()
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    Divider()
+                }
                 if !audioRows.isEmpty {
                     Text("Audio").font(.headline)
                     ForEach(audioRows) { row in

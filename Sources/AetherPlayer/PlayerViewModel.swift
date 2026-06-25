@@ -20,6 +20,10 @@ final class PlayerViewModel {
     private(set) var subtitleCues: [SubtitleCue] = []
     private(set) var isSubtitleActive: Bool = false
     private(set) var metadata: MediaMetadata?
+    // Disc titles + chapters (#67); empty for non-disc sources.
+    private(set) var discTitles: [TitleInfo] = []
+    private(set) var selectedDiscTitleID: Int?
+    private(set) var discChapters: [ChapterInfo] = []
 
     // Host-only state.
     private(set) var loadedURL: URL?
@@ -159,6 +163,9 @@ final class PlayerViewModel {
         engine.$audioTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.audioTracks = $0 }.store(in: &cancellables)
         engine.$subtitleTracks.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleTracks = $0 }.store(in: &cancellables)
         engine.$activeAudioTrackIndex.receive(on: DispatchQueue.main).sink { [weak self] in self?.activeAudioTrackIndex = $0 }.store(in: &cancellables)
+        engine.$discTitles.receive(on: DispatchQueue.main).sink { [weak self] in self?.discTitles = $0 }.store(in: &cancellables)
+        engine.$selectedDiscTitle.receive(on: DispatchQueue.main).sink { [weak self] in self?.selectedDiscTitleID = $0?.id }.store(in: &cancellables)
+        engine.$discChapters.receive(on: DispatchQueue.main).sink { [weak self] in self?.discChapters = $0 }.store(in: &cancellables)
         engine.$playbackBackend.receive(on: DispatchQueue.main).sink { [weak self] in self?.backend = $0 }.store(in: &cancellables)
         engine.$subtitleCues.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleCues = $0 }.store(in: &cancellables)
         engine.$isSubtitleActive.receive(on: DispatchQueue.main).sink { [weak self] in self?.isSubtitleActive = $0 }.store(in: &cancellables)
@@ -279,6 +286,14 @@ final class PlayerViewModel {
 
     func selectAudio(engineIndex: Int) {
         engine.selectAudioTrack(index: engineIndex)
+    }
+
+    func selectTitle(id: Int) {
+        engine.selectTitle(id: id)
+    }
+
+    func selectChapter(id: Int) {
+        engine.selectChapter(id: id)
     }
 
     func selectSubtitle(engineIndex: Int) {

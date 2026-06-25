@@ -60,3 +60,41 @@ func subtitleMenuRows(_ tracks: [TrackInfo], selectedEngineIndex: Int?, isActive
     }
     return rows
 }
+
+// MARK: - Disc titles + chapters (#67)
+
+struct TitleMenuRow: Identifiable, Equatable {
+    let id: Int            // engine title id
+    let label: String
+    let isSelected: Bool
+}
+
+struct ChapterMenuRow: Identifiable, Equatable {
+    let id: Int            // engine chapter id
+    let label: String
+}
+
+func discTimecode(_ seconds: Double) -> String {
+    let t = Int(seconds.rounded())
+    return String(format: "%d:%02d:%02d", t / 3600, (t % 3600) / 60, t % 60)
+}
+
+private func titleLabel(_ t: TitleInfo) -> String {
+    var parts = [t.name.isEmpty ? "Title \(t.id + 1)" : t.name]
+    if t.durationSeconds > 0 { parts.append(discTimecode(t.durationSeconds)) }
+    if t.chapterCount > 0 { parts.append("\(t.chapterCount) ch") }
+    return parts.joined(separator: " \u{00B7} ")
+}
+
+func titleMenuRows(_ titles: [TitleInfo], selectedID: Int?) -> [TitleMenuRow] {
+    titles.map { t in
+        TitleMenuRow(id: t.id, label: titleLabel(t), isSelected: t.id == selectedID)
+    }
+}
+
+func chapterMenuRows(_ chapters: [ChapterInfo]) -> [ChapterMenuRow] {
+    chapters.map { c in
+        let name = c.name.isEmpty ? "Chapter \(c.id + 1)" : c.name
+        return ChapterMenuRow(id: c.id, label: "\(name) \u{00B7} \(discTimecode(c.startSeconds))")
+    }
+}

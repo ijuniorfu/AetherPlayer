@@ -36,4 +36,27 @@ final class TrackMenuModelTests: XCTestCase {
         XCTAssertEqual(on.last?.label, "English · EN")
         XCTAssertTrue(on.last!.isSelected)
     }
+
+    func testTitleRowsLabelAndSelection() {
+        let titles = [
+            TitleInfo(id: 0, name: "Title 1", durationSeconds: 7325, chapterCount: 12),
+            TitleInfo(id: 1, name: "Title 2", durationSeconds: 0, chapterCount: 0),
+        ]
+        let rows = titleMenuRows(titles, selectedID: 0)
+        XCTAssertEqual(rows[0].label, "Title 1 · 2:02:05 · 12 ch")
+        XCTAssertTrue(rows[0].isSelected)
+        XCTAssertEqual(rows[1].label, "Title 2")          // no duration / chapters -> name only
+        XCTAssertFalse(rows[1].isSelected)
+    }
+
+    func testChapterRowsLabel() {
+        let chapters = [
+            ChapterInfo(id: 0, name: "Chapter 1", startSeconds: 0, durationSeconds: 600),
+            ChapterInfo(id: 1, name: "Chapter 2", startSeconds: 754, durationSeconds: 600),
+        ]
+        let rows = chapterMenuRows(chapters)
+        XCTAssertEqual(rows.map(\.id), [0, 1])
+        XCTAssertEqual(rows[0].label, "Chapter 1 · 0:00:00")
+        XCTAssertEqual(rows[1].label, "Chapter 2 · 0:12:34")
+    }
 }
