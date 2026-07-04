@@ -17,6 +17,10 @@ struct TransportBar: View {
     private var playbackFraction: Double {
         model.duration > 0 ? model.currentTime / model.duration : 0
     }
+    /// Live buffered progress.
+    private var bufferedProgress: Double {
+        model.bufferedPosition > 0 ? model.bufferedPosition / model.duration : 0
+    }
     /// Seconds shown by the leading timecode label: the scrub position while
     /// dragging, otherwise the live playback time.
     private var displayedTime: Double {
@@ -33,6 +37,7 @@ struct TransportBar: View {
                 ScrubBar(
                     progress: playbackFraction,
                     duration: model.duration,
+                    bufferedProgress: bufferedProgress,
                     scrubPreview: model.scrubPreview,
                     scrubbing: $scrubbing,
                     scrubFraction: $scrubFraction,
@@ -186,6 +191,7 @@ struct TransportBar: View {
 private struct ScrubBar: View {
     let progress: Double          // 0...1 live playback position
     let duration: Double
+    let bufferedProgress: Double
     let scrubPreview: ScrubPreviewProvider
     @Binding var scrubbing: Bool
     @Binding var scrubFraction: Double
@@ -202,6 +208,8 @@ private struct ScrubBar: View {
             let width = geo.size.width
             let active = min(max(scrubbing ? scrubFraction : progress, 0), 1)
             let knobX = CGFloat(active) * width
+            let buffered = min(max(bufferedProgress, 0), 1)
+            let bufferedX = CGFloat(buffered) * width
             let emphasized = scrubbing || hovering
             let knobSize: CGFloat = emphasized ? 16 : 12
             let bubbleFraction = scrubbing ? scrubFraction : hoverFraction
@@ -210,6 +218,9 @@ private struct ScrubBar: View {
                 Capsule()
                     .fill(.white.opacity(0.25))
                     .frame(height: trackHeight)
+                Capsule()
+                    .fill(Color.aetherPurple.opacity(0.35))
+                    .frame(width: bufferedX, height: trackHeight)
                 Capsule()
                     .fill(LinearGradient.aetherAccent)
                     .frame(width: knobX, height: trackHeight)

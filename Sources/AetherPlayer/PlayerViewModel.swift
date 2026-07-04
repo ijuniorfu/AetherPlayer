@@ -13,6 +13,7 @@ final class PlayerViewModel {
     private(set) var state: PlaybackState = .idle
     private(set) var currentTime: Double = 0
     private(set) var duration: Double = 0
+    private(set) var bufferedPosition: Double = 0
     private(set) var audioTracks: [TrackInfo] = []
     private(set) var subtitleTracks: [TrackInfo] = []
     private(set) var activeAudioTrackIndex: Int?
@@ -153,6 +154,9 @@ final class PlayerViewModel {
             self?.currentTime = $0
             self?.persistPositionThrottled()
             self?.pushNowPlayingThrottled()
+        }.store(in: &cancellables)
+        engine.clock.$bufferedPosition.receive(on: DispatchQueue.main).sink { [weak self] in
+            self?.bufferedPosition = $0
         }.store(in: &cancellables)
         engine.$duration.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.duration = $0
