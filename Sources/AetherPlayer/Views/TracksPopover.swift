@@ -11,7 +11,7 @@ struct TracksPopover: View {
     }
     private var subtitleRows: [SubtitleMenuRow] {
         subtitleMenuRows(model.subtitleTracks,
-                         selectedEngineIndex: model.selectedSubtitleIndex,
+                         selectedEngineIndex: model.activeSubtitleTrackIndex,
                          isActive: model.isSubtitleActive)
     }
     private var titleRows: [TitleMenuRow] {

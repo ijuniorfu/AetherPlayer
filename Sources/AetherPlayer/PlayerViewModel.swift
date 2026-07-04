@@ -19,6 +19,7 @@ final class PlayerViewModel {
     private(set) var backend: PlaybackBackend = .none
     private(set) var subtitleCues: [SubtitleCue] = []
     private(set) var isSubtitleActive: Bool = false
+    private(set) var activeSubtitleTrackIndex: Int?
     private(set) var metadata: MediaMetadata?
     // Disc titles + chapters (#67); empty for non-disc sources.
     private(set) var discTitles: [TitleInfo] = []
@@ -28,9 +29,6 @@ final class PlayerViewModel {
     // Host-only state.
     private(set) var loadedURL: URL?
     private(set) var loadError: String?
-    /// Engine index of the subtitle track the user picked (no published
-    /// active-subtitle index exists, so we track it here).
-    private(set) var selectedSubtitleIndex: Int?
 
     private(set) var playlist: Playlist?
     private var folderScoped: ScopedResource?
@@ -169,6 +167,7 @@ final class PlayerViewModel {
         engine.$playbackBackend.receive(on: DispatchQueue.main).sink { [weak self] in self?.backend = $0 }.store(in: &cancellables)
         engine.$subtitleCues.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleCues = $0 }.store(in: &cancellables)
         engine.$isSubtitleActive.receive(on: DispatchQueue.main).sink { [weak self] in self?.isSubtitleActive = $0 }.store(in: &cancellables)
+        engine.$activeSubtitleTrackIndex.receive(on: DispatchQueue.main).sink { [weak self] in self?.activeSubtitleTrackIndex = $0 }.store(in: &cancellables)
         engine.$metadata.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.metadata = $0
             self?.pushNowPlaying()
@@ -192,13 +191,12 @@ final class PlayerViewModel {
         scrubPreview.reset()
         if let previousExtractor { Task { await previousExtractor.shutdown() } }
         do {
-            let options = LoadOptions(audioOnly: isAudioExtension(url))
+            let options = LoadOptions(audioOnly: isAudioExtension(url), preferredAudioLanguages:["en", "eng"], preferredSubtitleLanguages: ["ch", "chi", "zh", "zho"])
             try await engine.load(url: url, startPosition: resume, options: options)
             engine.play()
             loadedURL = url
             frameExtractor = engine.makeFrameExtractor()
             scrubPreview.configure(extractor: frameExtractor, enabled: frameExtractor != nil)
-            selectedSubtitleIndex = nil
             rate = 1.0
             engine.setRate(1.0)
             if let bm = BookmarkAccess.bookmark(for: url) {
@@ -298,16 +296,16 @@ final class PlayerViewModel {
 
     func selectSubtitle(engineIndex: Int) {
         engine.selectSubtitleTrack(index: engineIndex)
-        selectedSubtitleIndex = engineIndex
     }
 
     func disableSubtitle() {
         engine.clearSubtitle()
-        selectedSubtitleIndex = nil
     }
 
     func loadSidecarSubtitle(url: URL) {
-        engine.selectSidecarSubtitle(url: url)
+        let track = engine.addExternalSubtitleTrack(
+            ExternalSubtitleTrack(url: url, name: "English", language: "en"))
+        engine.selectSubtitleTrack(index: track.id)
     }
 
     // MARK: - Snapshot

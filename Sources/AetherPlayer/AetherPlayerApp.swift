@@ -73,7 +73,7 @@ struct AetherPlayerApp: App {
             CommandMenu("Subtitles") {
                 if let model {
                     ForEach(subtitleMenuRows(model.subtitleTracks,
-                                             selectedEngineIndex: model.selectedSubtitleIndex,
+                                             selectedEngineIndex: model.activeSubtitleTrackIndex,
                                              isActive: model.isSubtitleActive)) { row in
                         Button(action: {
                             switch row.kind {
