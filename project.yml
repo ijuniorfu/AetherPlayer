@@ -16,7 +16,7 @@ settings:
 packages:
   AetherEngine:
     url: https://github.com/superuser404notfound/AetherEngine
-    revision: 3401864f5e4e0f1e3cd0cebe75c707c951e97c40
+    revision: c381751dbf84b7c6781d9cf4088f7027d66c9cc7
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
     from: "2.6.0"
