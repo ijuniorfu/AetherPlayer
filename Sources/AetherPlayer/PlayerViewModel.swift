@@ -195,7 +195,7 @@ final class PlayerViewModel {
         scrubPreview.reset()
         if let previousExtractor { Task { await previousExtractor.shutdown() } }
         do {
-            let options = LoadOptions(audioOnly: isAudioExtension(url), preferredAudioLanguages:["en", "eng"], preferredSubtitleLanguages: ["ch", "chi", "zh", "zho"])
+            let options = LoadOptions(audioOnly: isAudioExtension(url), preferredAudioLanguages:["en"], preferredSubtitleLanguages: ["ch", "zh"])
             try await engine.load(url: url, startPosition: resume, options: options)
             engine.play()
             loadedURL = url
