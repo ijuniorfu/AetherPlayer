@@ -110,7 +110,7 @@ struct ContentView: View {
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
-        panel.allowedContentTypes = [.movie, .video, .mpeg4Movie, .audio]
+        panel.allowedContentTypes = [.movie, .video, .mpeg4Movie, .audio, .discImage]
         if panel.runModal() == .OK, let url = panel.url {
             Task { await model.open(url: url) }
         }

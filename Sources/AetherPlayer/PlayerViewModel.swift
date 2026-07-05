@@ -192,7 +192,9 @@ final class PlayerViewModel {
         scrubPreview.reset()
         if let previousExtractor { Task { await previousExtractor.shutdown() } }
         do {
-            let options = LoadOptions(audioOnly: isAudioExtension(url))
+            var options = LoadOptions(audioOnly: isAudioExtension(url))
+            let bufferSegments = UserDefaults.standard.integer(forKey: "playback.forwardBufferSegments")
+            if bufferSegments > 0 { options.forwardBufferSegments = bufferSegments }
             try await engine.load(url: url, startPosition: resume, options: options)
             engine.play()
             loadedURL = url

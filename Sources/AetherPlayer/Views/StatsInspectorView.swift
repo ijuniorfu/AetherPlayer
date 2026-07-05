@@ -26,7 +26,7 @@ struct StatsInspectorView: View {
                     row("Resolution", formatResolution(
                         width: Int(model.engine.sourceVideoWidth),
                         height: Int(model.engine.sourceVideoHeight)))
-                    row("HDR", videoFormatLabel(model.engine.sourceVideoFormat))
+                    row("HDR", hdrLabel(model.engine.sourceVideoFormat, dvProfile: model.engine.sourceDVProfile))
                     row("Decoder", model.engine.activeVideoDecoder ?? "\u{2012}")
                     row("Backend", formatBackend(model.backend))
                 }
