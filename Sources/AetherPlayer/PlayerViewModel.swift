@@ -195,7 +195,13 @@ final class PlayerViewModel {
         scrubPreview.reset()
         if let previousExtractor { Task { await previousExtractor.shutdown() } }
         do {
-            var options = LoadOptions(audioOnly: isAudioExtension(url), preferredAudioLanguages:["en"], preferredSubtitleLanguages: ["ch", "zh"])
+            var options = LoadOptions(
+                audioOnly: isAudioExtension(url),
+                probesize:2097152,
+                maxAnalyzeDuration:2000000,
+                preferredAudioLanguages:["en"],
+                preferredSubtitleLanguages: ["ch", "zh"]
+            )
             let bufferSegments = UserDefaults.standard.integer(forKey: "playback.forwardBufferSegments")
             if bufferSegments > 0 { options.forwardBufferSegments = bufferSegments }
             try await engine.load(url: url, startPosition: resume, options: options)
