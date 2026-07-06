@@ -113,6 +113,10 @@ struct AetherPlayerApp: App {
         }
         .windowResizability(.contentMinSize)
         .defaultPosition(.topTrailing)
+
+        Settings {
+            PreferencesView()
+        }
     }
 
     private func openFile() {
@@ -120,7 +124,7 @@ struct AetherPlayerApp: App {
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
-        panel.allowedContentTypes = [.movie, .video, .audio]
+        panel.allowedContentTypes = [.movie, .video, .audio, .discImage]
         if panel.runModal() == .OK, let url = panel.url {
             Task { await model.open(url: url) }
         }
@@ -148,4 +152,35 @@ private struct StatsCommands: Commands {
                 .keyboardShortcut("i", modifiers: [.command, .shift])
         }
     }
+}
+
+/// Preferences window (Cmd-,). Currently the forward-buffer depth; a home for future settings.
+private struct PreferencesView: View {
+    // 0 == Auto (engine default); otherwise a forward-buffer segment count
+    // (AetherEngine #102, engine clamps to 4...150). Applied on the next open.
+    @AppStorage("playback.forwardBufferSegments") private var forwardBufferSegments = 0
+
+    var body: some View {
+        Form {
+            Picker("Forward buffer", selection: $forwardBufferSegments) {
+                Text("Auto").tag(0)
+                Text("Small (8 segments)").tag(8)
+                Text("Default (30 segments)").tag(30)
+                Text("Large (60 segments)").tag(60)
+                Text("Maximum (120 segments)").tag(120)
+            }
+            Text("How far ahead to buffer. Higher values help slow or unstable sources at the cost of memory, and apply to the next file you open.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(20)
+        .frame(width: 440)
+    }
+}
+
+extension UTType {
+    /// ISO 9660 / UDF disc image (DVD / Blu-ray). Falls back to the `.iso` extension when the
+    /// system UTI is unavailable, so the open panel and Finder association still work.
+    static let discImage = UTType("public.iso-image") ?? UTType(filenameExtension: "iso") ?? .data
 }

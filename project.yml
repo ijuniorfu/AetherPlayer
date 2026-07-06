@@ -6,8 +6,8 @@ options:
   createIntermediateGroups: true
 settings:
   base:
-    MARKETING_VERSION: "0.8.1"
-    CURRENT_PROJECT_VERSION: "21"
+    MARKETING_VERSION: "0.9.0"
+    CURRENT_PROJECT_VERSION: "22"
     SWIFT_VERSION: "6.0"
     ARCHS: "$(ARCHS_STANDARD)"
     ONLY_ACTIVE_ARCH: NO
@@ -47,6 +47,11 @@ targets:
               - public.video
               - org.matroska.mkv
               - public.mpeg-4
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+          - CFBundleTypeName: Disc Image
+            LSItemContentTypes:
+              - public.iso-image
             CFBundleTypeRole: Viewer
             LSHandlerRank: Alternate
           - CFBundleTypeName: Audio
