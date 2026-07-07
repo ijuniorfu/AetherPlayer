@@ -71,6 +71,10 @@ final class PlayerViewModel {
     /// and shared by scrub preview and snapshot. Released (and shut down) on
     /// the next load and on stop().
     @ObservationIgnored private var frameExtractor: FrameExtractor?
+    /// The disc title the current `frameExtractor` was built for. A disc still is pinned to the title
+    /// its extractor opened, so switching titles must rebuild the extractor or snapshots keep showing
+    /// the previous title (AetherEngine #105). nil for non-disc sources.
+    @ObservationIgnored private var frameExtractorTitleID: Int?
     /// Scrub-preview source, reconfigured on each load.
     let scrubPreview = ScrubPreviewProvider()
     /// Decode + disk-cached thumbnails for the recents list.
@@ -208,6 +212,7 @@ final class PlayerViewModel {
             engine.play()
             loadedURL = url
             frameExtractor = engine.makeFrameExtractor()
+            frameExtractorTitleID = engine.selectedDiscTitle?.id
             scrubPreview.configure(extractor: frameExtractor, enabled: frameExtractor != nil)
             rate = 1.0
             engine.setRate(1.0)
@@ -274,6 +279,7 @@ final class PlayerViewModel {
         engine.stop()
         let extractorToClose = frameExtractor
         frameExtractor = nil
+        frameExtractorTitleID = nil
         scrubPreview.reset()
         if let extractorToClose { Task { await extractorToClose.shutdown() } }
         scoped?.stop(); scoped = nil
@@ -325,8 +331,23 @@ final class PlayerViewModel {
     /// Capture the current frame at full resolution. Nil when nothing is
     /// loaded. Uses the session extractor's frame-accurate path.
     func snapshotCurrentFrame() async -> CGImage? {
+        rebuildFrameExtractorIfDiscTitleChanged()
         guard let frameExtractor else { return nil }
         return await frameExtractor.snapshot(at: currentTime)
+    }
+
+    /// A disc title switch reloads the engine but keeps the session extractor, which is pinned to the
+    /// title it opened, so its stills would keep showing the previous title (AetherEngine #105). Rebuild
+    /// the extractor when the active disc title changed. Lazily invoked from the snapshot path, which the
+    /// user triggers after the switch has settled, so `selectedDiscTitle` is already current.
+    private func rebuildFrameExtractorIfDiscTitleChanged() {
+        let currentTitleID = engine.selectedDiscTitle?.id
+        guard currentTitleID != frameExtractorTitleID else { return }
+        let previous = frameExtractor
+        frameExtractor = engine.makeFrameExtractor()
+        frameExtractorTitleID = currentTitleID
+        scrubPreview.configure(extractor: frameExtractor, enabled: frameExtractor != nil)
+        if let previous { Task { await previous.shutdown() } }
     }
 
     // MARK: - Folder / Playlist
