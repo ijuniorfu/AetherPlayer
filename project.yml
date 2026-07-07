@@ -6,8 +6,8 @@ options:
   createIntermediateGroups: true
 settings:
   base:
-    MARKETING_VERSION: "0.9.10"
-    CURRENT_PROJECT_VERSION: "31"
+    MARKETING_VERSION: "0.9.11"
+    CURRENT_PROJECT_VERSION: "32"
     SWIFT_VERSION: "6.0"
     ARCHS: "$(ARCHS_STANDARD)"
     ONLY_ACTIVE_ARCH: NO
