@@ -1,6 +1,28 @@
 import SwiftUI
 import AetherEngine
 
+/// Observes the subtitle state in isolation so the parent `PlayerContainerView`
+/// body does not depend on the ~10 Hz `subtitleTime` clock. Reading that clock
+/// high in the tree made the whole container ZStack (engine surface, click /
+/// mouse / key NSViews, popover) re-evaluate 10x/sec during undisturbed
+/// playback. Here the 10 Hz read is confined to this small view, and gated on
+/// non-empty cues: with subtitles off the body reads neither `subtitleTime` nor
+/// size, so idle playback establishes no per-tick dependency at all. (issue #2)
+struct SubtitleOverlay: View {
+    let model: PlayerViewModel
+
+    var body: some View {
+        let cues = model.subtitleCues
+        if cues.isEmpty {
+            Color.clear
+        } else {
+            SubtitleOverlayView(cues: cues,
+                                subtitleTime: model.subtitleTime,
+                                userScale: model.subtitleSize.scale)
+        }
+    }
+}
+
 /// Renders subtitle cues active at the current playback time on top of
 /// the video. Text cues: centered semi-transparent box near the bottom.
 /// Image cues (PGS / DVB): bitmap positioned by its normalized rect.

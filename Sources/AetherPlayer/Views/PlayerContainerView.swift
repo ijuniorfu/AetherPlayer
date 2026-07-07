@@ -30,9 +30,10 @@ struct PlayerContainerView: View {
                 onDouble: { toggleFullScreen(); bumpActivity() }
             )
 
-            SubtitleOverlayView(cues: model.subtitleCues,
-                                subtitleTime: model.subtitleTime,
-                                userScale: model.subtitleSize.scale)
+            // Subtitle state (incl. the ~10 Hz subtitleTime clock) is observed
+            // inside SubtitleOverlay, not here, so this container body does not
+            // re-evaluate every tick during undisturbed playback. (issue #2)
+            SubtitleOverlay(model: model)
                 .allowsHitTesting(false)
 
             if controlsVisible {
