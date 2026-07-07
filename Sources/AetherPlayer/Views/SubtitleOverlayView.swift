@@ -6,12 +6,14 @@ import AetherEngine
 /// Image cues (PGS / DVB): bitmap positioned by its normalized rect.
 struct SubtitleOverlayView: View {
     let cues: [SubtitleCue]
-    let currentTime: Double
+    /// Source-PTS clock (engine.sourceTime), the axis cue start/end times live on. NOT currentTime,
+    /// which is shifted by the disc clip-0 STC origin and would offset cues on Blu-ray. (#112)
+    let subtitleTime: Double
     /// User size multiplier (from PlayerViewModel.subtitleSize.scale).
     var userScale: CGFloat = 1.0
 
     private var activeCues: [SubtitleCue] {
-        cues.filter { currentTime >= $0.startTime && currentTime <= $0.endTime }
+        cues.filter { subtitleTime >= $0.startTime && subtitleTime <= $0.endTime }
     }
 
     var body: some View {
