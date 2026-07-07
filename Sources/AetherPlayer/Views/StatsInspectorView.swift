@@ -13,6 +13,12 @@ struct StatsInspectorView: View {
         _diagnostics = ObservedObject(wrappedValue: model.engine.diagnostics)
     }
 
+    /// The engine's TrackInfo for the playing audio track (channels + Atmos + declared bitrate). nil during the
+    /// brief session-start window before the engine resolves one, or for video-only sources.
+    private var activeAudioTrack: TrackInfo? {
+        model.audioTracks.first { $0.id == model.activeAudioTrackIndex }
+    }
+
     var body: some View {
         let tele = diagnostics.liveTelemetry
         ScrollView {
@@ -26,12 +32,25 @@ struct StatsInspectorView: View {
                     row("Resolution", formatResolution(
                         width: Int(model.engine.sourceVideoWidth),
                         height: Int(model.engine.sourceVideoHeight)))
-                    row("HDR", hdrLabel(model.engine.sourceVideoFormat, dvProfile: model.engine.sourceDVProfile))
+                    row("Frame rate", formatFrameRate(model.engine.sourceVideoFrameRate))
+                    row("Dynamic range", dynamicRangeLabel(
+                        source: model.engine.sourceVideoFormat,
+                        effective: model.engine.videoFormat,
+                        dvProfile: model.engine.sourceDVProfile))
+                    row("Display mode", currentDisplayModeLabel())
                     row("Decoder", model.engine.activeVideoDecoder ?? "\u{2012}")
                     row("Backend", formatBackend(model.backend))
                 }
                 section("Audio") {
                     row("Decoder", model.engine.activeAudioDecoder ?? "\u{2012}")
+                    if let track = activeAudioTrack {
+                        row("Codec", track.codec.uppercased())
+                        row("Channels", formatChannels(track.channels, isAtmos: track.isAtmos))
+                        row("Bitrate", formatBitrateBps(track.bitrate))
+                    }
+                    if let bridge = tele?.audioBridgeBitrateMbps {
+                        row("Bridge output", formatMbps(bridge))
+                    }
                     row("Tracks", "\(model.audioTracks.count)")
                 }
                 section("Live") {
