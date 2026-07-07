@@ -31,7 +31,7 @@ struct PlayerContainerView: View {
             )
 
             SubtitleOverlayView(cues: model.subtitleCues,
-                                currentTime: model.currentTime,
+                                subtitleTime: model.subtitleTime,
                                 userScale: model.subtitleSize.scale)
                 .allowsHitTesting(false)
 
