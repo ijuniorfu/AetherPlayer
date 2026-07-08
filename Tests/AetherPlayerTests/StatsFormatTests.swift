@@ -35,4 +35,34 @@ final class StatsFormatTests: XCTestCase {
         XCTAssertEqual(formatBackend(.aether), "Aether")
         XCTAssertEqual(formatBackend(.none), "\u{2012}")
     }
+
+    func testFrameRate() {
+        XCTAssertEqual(formatFrameRate(23.976), "23.976 fps")
+        XCTAssertEqual(formatFrameRate(24.0), "24 fps")
+        XCTAssertEqual(formatFrameRate(59.94), "59.940 fps")
+        XCTAssertEqual(formatFrameRate(0), "\u{2012}")
+        XCTAssertEqual(formatFrameRate(nil), "\u{2012}")
+    }
+
+    func testChannels() {
+        XCTAssertEqual(formatChannels(2, isAtmos: false), "Stereo")
+        XCTAssertEqual(formatChannels(6, isAtmos: false), "5.1")
+        XCTAssertEqual(formatChannels(6, isAtmos: true), "5.1 \u{00B7} Atmos")
+        XCTAssertEqual(formatChannels(8, isAtmos: false), "7.1")
+        XCTAssertEqual(formatChannels(7, isAtmos: false), "7ch")
+        XCTAssertEqual(formatChannels(0, isAtmos: false), "\u{2012}")
+    }
+
+    func testBitrateBps() {
+        XCTAssertEqual(formatBitrateBps(384_000), "384 kbps")
+        XCTAssertEqual(formatBitrateBps(1_500_000), "1.5 Mbps")
+        XCTAssertEqual(formatBitrateBps(0), "\u{2012}")
+    }
+
+    func testDynamicRangeLabel() {
+        XCTAssertEqual(dynamicRangeLabel(source: .dolbyVision, effective: .sdr, dvProfile: 5),
+                       "Dolby Vision P5 \u{2192} SDR")
+        XCTAssertEqual(dynamicRangeLabel(source: .hdr10, effective: .hdr10, dvProfile: nil), "HDR10")
+        XCTAssertEqual(dynamicRangeLabel(source: .sdr, effective: .sdr, dvProfile: nil), "SDR")
+    }
 }

@@ -12,6 +12,9 @@ final class PlayerViewModel {
     // Mirrored engine state (kept in sync via Combine).
     private(set) var state: PlaybackState = .idle
     private(set) var currentTime: Double = 0
+    /// Source-PTS clock for subtitle cue visibility. Differs from currentTime on disc titles,
+    /// where currentTime is shifted by the clip-0 STC origin (sourcePresentationOrigin). (#112)
+    private(set) var subtitleTime: Double = 0
     private(set) var duration: Double = 0
     private(set) var bufferedPosition: Double = 0
     private(set) var audioTracks: [TrackInfo] = []
@@ -161,6 +164,13 @@ final class PlayerViewModel {
         }.store(in: &cancellables)
         engine.clock.$bufferedPosition.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.bufferedPosition = $0
+        }.store(in: &cancellables)
+        // Subtitle cue startTime/endTime are absolute source PTS (engine.sourceTime axis). On a
+        // Blu-ray/disc title currentTime is source PTS minus the clip-0 STC origin, so comparing cues
+        // against currentTime offsets them by that origin (11.6s / ~600s observed on #112 discs).
+        // Drive the overlay off sourceTime so cues line up on discs and normal files alike.
+        engine.clock.$sourceTime.receive(on: DispatchQueue.main).sink { [weak self] in
+            self?.subtitleTime = $0
         }.store(in: &cancellables)
         engine.$duration.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.duration = $0

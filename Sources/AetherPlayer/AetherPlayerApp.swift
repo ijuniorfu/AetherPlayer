@@ -113,6 +113,10 @@ struct AetherPlayerApp: App {
         }
         .windowResizability(.contentMinSize)
         .defaultPosition(.topTrailing)
+        // SwiftUI auto-adds a Window-menu item for every Window scene, using its title. That collided with the
+        // explicit StatsCommands button (which carries the Cmd-Shift-I shortcut), showing "Stats for Nerds" twice.
+        // commandsRemoved() drops the auto item so only the explicit, shortcut-bearing entry remains.
+        .commandsRemoved()
 
         Settings {
             PreferencesView()
