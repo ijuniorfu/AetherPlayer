@@ -33,6 +33,7 @@ struct StatsInspectorView: View {
                         width: Int(model.engine.sourceVideoWidth),
                         height: Int(model.engine.sourceVideoHeight)))
                     row("Frame rate", formatFrameRate(model.engine.sourceVideoFrameRate))
+                    row("Bitrate", formatBitrateBps(model.engine.sourceVideoBitrate))
                     row("Dynamic range", dynamicRangeLabel(
                         source: model.engine.sourceVideoFormat,
                         effective: model.engine.videoFormat,
