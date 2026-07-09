@@ -6,8 +6,8 @@ options:
   createIntermediateGroups: true
 settings:
   base:
-    MARKETING_VERSION: "0.9.20"
-    CURRENT_PROJECT_VERSION: "41"
+    MARKETING_VERSION: "0.9.21"
+    CURRENT_PROJECT_VERSION: "42"
     SWIFT_VERSION: "6.0"
     ARCHS: "$(ARCHS_STANDARD)"
     ONLY_ACTIVE_ARCH: NO
@@ -16,7 +16,7 @@ settings:
 packages:
   AetherEngine:
     url: https://github.com/superuser404notfound/AetherEngine
-    revision: 2506796608217929c8cc34033298499e92b96ae2
+    revision: 865bad321f22141728ebe3889778424ea7b76ec0
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
     from: "2.6.0"
