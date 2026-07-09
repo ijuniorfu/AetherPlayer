@@ -13,6 +13,8 @@ settings:
     ONLY_ACTIVE_ARCH: NO
     CODE_SIGN_ENTITLEMENTS: Sources/AetherPlayer/Resources/AetherPlayer.entitlements
     ENABLE_HARDENED_RUNTIME: YES
+    # No AppIntents in this app; skips the appintentsmetadataprocessor warning.
+    LM_SKIP_METADATA_EXTRACTION: YES
 packages:
   AetherEngine:
     url: https://github.com/superuser404notfound/AetherEngine
