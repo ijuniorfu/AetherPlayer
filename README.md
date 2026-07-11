@@ -13,6 +13,7 @@
 <p align="center">
   <a href="https://github.com/superuser404notfound/AetherPlayer/releases/latest"><img src="https://img.shields.io/github/v/release/superuser404notfound/AetherPlayer?label=release&color=blue"></a>
   <a href="https://github.com/superuser404notfound/AetherPlayer/actions/workflows/release-dmg.yml"><img src="https://github.com/superuser404notfound/AetherPlayer/actions/workflows/release-dmg.yml/badge.svg"></a>
+  <a href="https://testflight.apple.com/join/rgrjZ98V"><img src="https://img.shields.io/badge/iOS-TestFlight-0D96F6?logo=apple&logoColor=white"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-black?logo=apple">
   <img src="https://img.shields.io/badge/iOS%2FiPadOS-17%2B-black?logo=apple">
   <img src="https://img.shields.io/badge/Swift-6.0%2B-F05138?logo=swift&logoColor=white">
@@ -26,7 +27,7 @@
 
 **macOS:** grab the latest notarized `.dmg` from the [Releases page](https://github.com/superuser404notfound/AetherPlayer/releases), drag AetherPlayer to your Applications folder, and launch it. The app keeps itself current through built-in auto-updates (Sparkle), so you only have to download it once.
 
-**iOS/iPadOS:** the iOS app is not yet on the App Store or TestFlight; build and run it from source (see [Build](#build) below).
+**iOS/iPadOS:** join the public [TestFlight beta](https://testflight.apple.com/join/rgrjZ98V) (an App Store release is on the way), or build and run it from source (see [Build](#build) below).
 
 ## macOS features
 
