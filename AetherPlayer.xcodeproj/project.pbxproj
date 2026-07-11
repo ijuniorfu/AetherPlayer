@@ -76,6 +76,7 @@
 		C3F61046316EFB1DB8E4756B /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A68802EC677C97886B469 /* EmptyStateView.swift */; };
 		C5E1F4F2E24186239DF48E61 /* RepeatMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D1F0BA9870F05C6E4C790B /* RepeatMode.swift */; };
 		C8FEC43F220F0692553C0EC1 /* Timecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9B310577BF206A568A8F47 /* Timecode.swift */; };
+		CA9B252D21393FEDC76068E6 /* RecentsGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A32AE76CE0CEACEF128BD3 /* RecentsGrid.swift */; };
 		D49ECD5C7B4D7EB3C652EF47 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C83243B99DC03593BA27FD0 /* Assets.xcassets */; };
 		D4E65258F5ADB0DD399A417A /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD1AA1DA044FD139582A22E /* PlayerViewModel.swift */; };
 		D99EF75F0D51FC11290956D6 /* TracksPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2588343DEF8BDD7262D38D0 /* TracksPopover.swift */; };
@@ -153,6 +154,7 @@
 		9F41670E23F316F7DBD632FB /* PlaylistTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTests.swift; sourceTree = "<group>"; };
 		A3D408FE0AD42CD1C921A2CC /* TracksPopoverLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksPopoverLayout.swift; sourceTree = "<group>"; };
 		AAC23E95A223EDA9374CBC13 /* KeyCatcherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCatcherView.swift; sourceTree = "<group>"; };
+		B1A32AE76CE0CEACEF128BD3 /* RecentsGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsGrid.swift; sourceTree = "<group>"; };
 		BF037FE3C070110E14F06FE3 /* NowPlayingText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingText.swift; sourceTree = "<group>"; };
 		C47FF5223601E1C4A19A9340 /* AetherPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AetherPlayerApp.swift; sourceTree = "<group>"; };
 		C54C9AE216A1762DA49ED195 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -363,6 +365,7 @@
 			children = (
 				28D3465CFF5F0495D9AEEBA2 /* HomeView.swift */,
 				733C2CC2BC1883D498A71C92 /* OpenURLSheet.swift */,
+				B1A32AE76CE0CEACEF128BD3 /* RecentsGrid.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -621,6 +624,7 @@
 				D4E65258F5ADB0DD399A417A /* PlayerViewModel.swift in Sources */,
 				4901A590916A5CF70AADF663 /* Playlist.swift in Sources */,
 				ED1821E80966D5FE5D191B6C /* RecentItem.swift in Sources */,
+				CA9B252D21393FEDC76068E6 /* RecentsGrid.swift in Sources */,
 				BB10656AAB0F86864E0C53D5 /* RecentsStore.swift in Sources */,
 				BB2BF88F1F891BF28137C3C6 /* RecentsThumbnailProvider.swift in Sources */,
 				C5E1F4F2E24186239DF48E61 /* RepeatMode.swift in Sources */,

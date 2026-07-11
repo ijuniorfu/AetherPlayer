@@ -19,7 +19,7 @@ struct HomeView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .padding()
-                // RecentsGrid(model: model) added in Task 1.4
+                RecentsGrid(model: model)
             }
             .navigationTitle("AetherPlayer")
         }
