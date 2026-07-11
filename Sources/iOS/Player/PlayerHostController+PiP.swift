@@ -30,6 +30,10 @@ extension PlayerHostController: AVPlayerViewControllerDelegate {
     }
 
     nonisolated func playerViewControllerDidStopPictureInPicture(_ playerViewController: AVPlayerViewController) {
+        // Reset the latch synchronously (mirrors willStart). Without this, pipActive stays true
+        // after a normal PiP stop and viewWillDisappear's `!pipActive` guard would skip model.stop()
+        // on the next real dismissal, leaking the engine session.
+        pipActive = false
         Task { @MainActor [weak self] in self?.model.engine.pictureInPictureActive = false }
     }
 
