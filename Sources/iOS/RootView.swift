@@ -1,5 +1,4 @@
 import SwiftUI
-import AVKit
 
 struct RootView: View {
     @Bindable var model: PlayerViewModel

@@ -68,11 +68,10 @@ The system media keys and Control Center transport also drive play / pause and t
 A universal iPhone + iPad app (same source tree, sharing the playback core with the macOS app):
 
 - **Open local files or a URL.** Pick a video or audio file from the Files app, or paste an `http`/`https` URL.
-- **AVKit-hosted playback.** Video plays through an `AVPlayerViewController`, so you get Picture in Picture, AirPlay, and lock-screen / Control Center Now Playing for free, with AVKit's default transport chrome.
+- **Custom playback chrome, matching the macOS design.** A transport bar with a scrubber (monospaced leading/trailing timecodes), a floating scrub-thumbnail preview while dragging, play/pause, and -/+10s skip. A top bar with Close, AirPlay, and Tracks. Controls tap to show/hide and auto-hide during playback, and a replay button appears when playback reaches the end.
+- **Picture in Picture, AirPlay, and lock-screen Now Playing.** Playback is still hosted in an `AVPlayerViewController` under the hood, so PiP, AirPlay routing, and Control Center / lock-screen Now Playing come for free. Only AVKit's own visible chrome is hidden; its backend stays in place.
 - **Track switching.** A tracks sheet lists audio and subtitle tracks, with an "Off" option for subtitles and support for attaching a sidecar `.srt`.
 - **Recents.** Recently opened files show up on Home with cached thumbnails for quick re-open.
-
-This is the current foundation. Custom playback chrome and scrub-preview thumbnails, like on macOS, are not built yet on iOS.
 
 ## Build
 

@@ -124,6 +124,8 @@ final class PlayerHostController: AVPlayerViewController {
         let typeName = String(describing: type(of: v))
         // Keywords matched against AVKit's runtime view hierarchy: Controls (_AVPlayerControlsView),
         // Transport (scrubber), Info (title/_AVPlayerInfoView), Menu (picker rows), Focus (focus container).
+        // Verified in production on tvOS (Sodalite) and device-verified on iOS 17 (iPhone 17 Pro):
+        // AVKit's chrome is fully hidden on both platforms with this keyword set.
         let isChrome = typeName.contains("Controls")
             || typeName.contains("Transport")
             || typeName.contains("Chrome")
