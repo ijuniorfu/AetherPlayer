@@ -54,12 +54,14 @@
 		BE290CC516BBF1F04EF1F3F5 /* RecentsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DF027E0C8A452E79A82DC39 /* RecentsStoreTests.swift */; };
 		C381691519E3D99902A62562 /* RecentsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A242920ECAE4DF2BCC1AAD1 /* RecentsStore.swift */; };
 		C7C20203E8378D5EEF7EF741 /* StatsInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A47454A92526D44ED95DED /* StatsInspectorView.swift */; };
+		CBC76D10E3F9DF9DC147B39F /* PlatformImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E936426CD4E096C4542865 /* PlatformImage.swift */; };
 		D3BC9E17B2391B5DF5ED6ED9 /* AetherPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFF5940111B0337F712DDF /* AetherPlayerApp.swift */; };
 		DE92143A4ADD0201A9AB1843 /* AudioDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00875B74FCCF3AC1D2AD59D9 /* AudioDetection.swift */; };
 		E1FE9B0FD84DE2758E92753A /* NowPlayingText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85D014653AFF073855375B63 /* NowPlayingText.swift */; };
 		E7F2AAFDB6A45862E2D5B02B /* SubtitleLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7F491313B24CBDDB44433C /* SubtitleLayoutTests.swift */; };
 		F6716D6A28440962D624926C /* AutoHide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B86576A26F61BD21676054F /* AutoHide.swift */; };
 		FDACA56A5BF560C84BEBDBDB /* StatsFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C9C0EEE978CA9D22A43C66 /* StatsFormat.swift */; };
+		FDBB7B52D48490DAC878FC1A /* PlatformImageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17295E22783B1BF2B378C1D /* PlatformImageTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,11 +118,13 @@
 		9F41670E23F316F7DBD632FB /* PlaylistTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTests.swift; sourceTree = "<group>"; };
 		AC8F888DB3F6F552B95C5CA7 /* RecentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsListView.swift; sourceTree = "<group>"; };
 		AFD5E80A91B6289EBDA31026 /* RecentsThumbnailProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsThumbnailProvider.swift; sourceTree = "<group>"; };
+		B6E936426CD4E096C4542865 /* PlatformImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformImage.swift; sourceTree = "<group>"; };
 		C2AEE5FD726115B38F37F88D /* FrameHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameHelpers.swift; sourceTree = "<group>"; };
 		C3FEFE70E236F61EFF3FACE4 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMenuModelTests.swift; sourceTree = "<group>"; };
 		CC865F7686A9533FA69E135B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CCC54EC90821C436C01FEA25 /* SubtitleLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleLayout.swift; sourceTree = "<group>"; };
+		D17295E22783B1BF2B378C1D /* PlatformImageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformImageTests.swift; sourceTree = "<group>"; };
 		D6A5F4D0C3E4DB98E768BA0C /* AetherPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AetherPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF8F7197D56D73713E1AC322 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		E18E793A6CF747DF8329B3DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -151,6 +155,7 @@
 				93824C28886D126A5CFA790B /* FrameHelpersTests.swift */,
 				12A68F5A4C570AB63B8EDB54 /* NowPlayingInfoTests.swift */,
 				8FCDFE4C1B93640EA9246DEB /* NowPlayingTextTests.swift */,
+				D17295E22783B1BF2B378C1D /* PlatformImageTests.swift */,
 				9F41670E23F316F7DBD632FB /* PlaylistTests.swift */,
 				9DF027E0C8A452E79A82DC39 /* RecentsStoreTests.swift */,
 				78BEA53895E7E40BF129B1C2 /* RepeatModeTests.swift */,
@@ -183,6 +188,7 @@
 				5E66D6A2624B3B7F4C178D8D /* FrameExtraction */,
 				288ABE75999DAD841D2D96A7 /* Library */,
 				EE77D585F7A8B0EBEC257144 /* NowPlaying */,
+				764BD8CC1B5932D81013AD81 /* Platform */,
 				3D2F448BCA022A6383DC172B /* Resources */,
 				F4CC0980753F865352BA2244 /* Views */,
 			);
@@ -236,6 +242,14 @@
 				0A94BCC751151DB0639F5183 /* AetherPlayerTests */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		764BD8CC1B5932D81013AD81 /* Platform */ = {
+			isa = PBXGroup;
+			children = (
+				B6E936426CD4E096C4542865 /* PlatformImage.swift */,
+			);
+			path = Platform;
 			sourceTree = "<group>";
 		};
 		A394F955E3998BF0D78C9ACC = {
@@ -382,6 +396,7 @@
 				6FBBD1001F9F6A7D114635CB /* FrameHelpersTests.swift in Sources */,
 				765C3F6F5868875F50607BA4 /* NowPlayingInfoTests.swift in Sources */,
 				036CDF97E55D38E210922056 /* NowPlayingTextTests.swift in Sources */,
+				FDBB7B52D48490DAC878FC1A /* PlatformImageTests.swift in Sources */,
 				85C0AE7328F9CFA7E91E7BCF /* PlaylistTests.swift in Sources */,
 				BE290CC516BBF1F04EF1F3F5 /* RecentsStoreTests.swift in Sources */,
 				60548C8382031267A0C8083F /* RepeatModeTests.swift in Sources */,
@@ -411,6 +426,7 @@
 				6EDF82B8914C67D7AB9CDD5C /* NowPlayingInfo.swift in Sources */,
 				E1FE9B0FD84DE2758E92753A /* NowPlayingText.swift in Sources */,
 				14D2DE1CA56C63C4BE1D74B3 /* NowPlayingView.swift in Sources */,
+				CBC76D10E3F9DF9DC147B39F /* PlatformImage.swift in Sources */,
 				3E1688066219B7C4D1750EEF /* PlayerContainerView.swift in Sources */,
 				911776C7C8307451CDC0A026 /* PlayerViewModel.swift in Sources */,
 				8C3C05EC6A3BCC6A6195C0CF /* Playlist.swift in Sources */,
