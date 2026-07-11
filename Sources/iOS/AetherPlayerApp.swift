@@ -9,7 +9,7 @@ struct AetherPlayerApp: App {
             if let model {
                 RootView(model: model)
                     .onOpenURL { url in
-                        Task { await model.open(url: url) }
+                        DocumentOpen.open(url, model: model)
                     }
             } else {
                 Text("AetherEngine failed to initialize.")

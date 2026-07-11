@@ -10,19 +10,29 @@ struct RootView: View {
             .fullScreenCover(isPresented: Binding(
                 get: { model.hasMedia },
                 set: { if !$0 { model.stop() } })) {
-                ZStack(alignment: .topTrailing) {
-                    PlayerPresenter(model: model).ignoresSafeArea()
-                    Button {
-                        showTracks = true
-                    } label: {
-                        Image(systemName: "list.bullet").padding(12)
+                PlayerPresenter(model: model)
+                    .ignoresSafeArea()
+                    .overlay(alignment: .topLeading) {
+                        Button {
+                            model.stop()
+                        } label: {
+                            Image(systemName: "xmark").padding(12)
+                        }
+                        .background(.ultraThinMaterial, in: Circle())
+                        .padding()
                     }
-                    .background(.ultraThinMaterial, in: Circle())
-                    .padding()
-                }
-                .sheet(isPresented: $showTracks) {
-                    TracksSheet(model: model)
-                }
+                    .overlay(alignment: .topTrailing) {
+                        Button {
+                            showTracks = true
+                        } label: {
+                            Image(systemName: "list.bullet").padding(12)
+                        }
+                        .background(.ultraThinMaterial, in: Circle())
+                        .padding()
+                    }
+                    .sheet(isPresented: $showTracks) {
+                        TracksSheet(model: model)
+                    }
             }
     }
 }
