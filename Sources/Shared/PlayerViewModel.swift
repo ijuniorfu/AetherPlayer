@@ -1,6 +1,10 @@
 import Foundation
 import Combine
+#if os(macOS)
 import AppKit
+#else
+import UIKit
+#endif
 import CoreGraphics
 import AetherEngine
 
@@ -106,8 +110,11 @@ final class PlayerViewModel {
     var isMuted: Bool { volume == 0 }
 
     /// Held while playing to keep the display and system awake during
-    /// playback; released as soon as playback is not active.
+    /// playback; released as soon as playback is not active. macOS only;
+    /// iOS uses UIApplication.shared.isIdleTimerDisabled instead.
+    #if os(macOS)
     private var sleepAssertion: NSObjectProtocol?
+    #endif
 
     var isPlaying: Bool { state == .playing }
     var hasMedia: Bool { loadedURL != nil }
@@ -221,7 +228,9 @@ final class PlayerViewModel {
             if let bm = BookmarkAccess.bookmark(for: url) {
                 recents.record(url: url, bookmarkData: bm, duration: duration)
             }
+            #if os(macOS)
             NSDocumentController.shared.noteNewRecentDocumentURL(url)
+            #endif
             if let resume { resumeMessage = "Resuming from \(formatTimecode(resume))" }
             else { resumeMessage = nil }
         } catch {
@@ -510,6 +519,7 @@ final class PlayerViewModel {
     /// Disables idle display/system sleep while playing so the screen does
     /// not dim mid-video; releases the assertion the moment playback stops.
     private func updateSleepAssertion() {
+        #if os(macOS)
         if state == .playing {
             if sleepAssertion == nil {
                 // Video keeps the display awake; audio only blocks system
@@ -524,5 +534,10 @@ final class PlayerViewModel {
             ProcessInfo.processInfo.endActivity(token)
             sleepAssertion = nil
         }
+        #else
+        // iOS: ProcessInfo.idleDisplaySleepDisabled has no effect; use the idle timer.
+        // Audio-only playback lets the screen dim, so only video holds the timer.
+        UIApplication.shared.isIdleTimerDisabled = (state == .playing && backend != .audio)
+        #endif
     }
 }

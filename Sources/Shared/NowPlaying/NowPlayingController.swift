@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 import MediaPlayer
 import AppKit
@@ -83,3 +84,33 @@ final class NowPlayingController {
         let seekTo: (Double) -> Void
     }
 }
+#else
+import Foundation
+import AetherEngine
+
+/// iOS no-op: Now Playing is owned by AVPlayerViewController via
+/// AVPlayerItem.externalMetadata (Task 2.4). Manual MPNowPlayingInfoCenter
+/// writes crash against the engine's HLS loopback (_dispatch_assert_queue_fail),
+/// so this stub keeps `PlayerViewModel`'s calls valid without touching MediaPlayer.
+@MainActor
+final class NowPlayingController {
+    struct Actions {
+        let play: () -> Void
+        let pause: () -> Void
+        let toggle: () -> Void
+        let skip: (Double) -> Void
+        let next: () -> Void
+        let previous: () -> Void
+        let seekTo: (Double) -> Void
+    }
+
+    func configure(actions: Actions) {}
+
+    func updateAvailability(hasNext: Bool, hasPrevious: Bool) {}
+
+    func update(metadata: MediaMetadata?, fallbackTitle: String,
+                duration: Double, elapsed: Double, rate: Float) {}
+
+    func clear() {}
+}
+#endif
