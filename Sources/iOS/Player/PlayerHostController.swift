@@ -1,3 +1,4 @@
+import AetherEngine
 import AVKit
 import Combine
 
@@ -8,6 +9,8 @@ final class PlayerHostController: AVPlayerViewController {
     /// True while a PiP handoff is dismissing the VC, so viewWillDisappear
     /// does not tear playback down. Set synchronously in the PiP delegate.
     nonisolated(unsafe) var pipActive = false
+    private let aetherView = AetherPlayerView()
+    private var aetherMounted = false
 
     init(model: PlayerViewModel) {
         self.model = model
@@ -38,6 +41,40 @@ final class PlayerHostController: AVPlayerViewController {
                 }
             }
             .store(in: &cancellables)
+
+        // Software-decode path (dav1d AV1, VP9): AetherPlayerView renders into
+        // AVKit's content overlay. Also mounted for the legacy `.aether` case.
+        model.engine.$playbackBackend
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] backend in
+                guard let self else { return }
+                switch backend {
+                case .software, .aether: self.mountAetherIfNeeded()
+                case .native, .none, .audio: self.unmountAether()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func mountAetherIfNeeded() {
+        guard !aetherMounted, let overlay = contentOverlayView else { return }
+        aetherView.translatesAutoresizingMaskIntoConstraints = false
+        overlay.insertSubview(aetherView, at: 0)
+        NSLayoutConstraint.activate([
+            aetherView.leadingAnchor.constraint(equalTo: overlay.leadingAnchor),
+            aetherView.trailingAnchor.constraint(equalTo: overlay.trailingAnchor),
+            aetherView.topAnchor.constraint(equalTo: overlay.topAnchor),
+            aetherView.bottomAnchor.constraint(equalTo: overlay.bottomAnchor),
+        ])
+        model.engine.bind(view: aetherView)
+        aetherMounted = true
+    }
+
+    private func unmountAether() {
+        guard aetherMounted else { return }
+        model.engine.unbind(view: aetherView)
+        aetherView.removeFromSuperview()
+        aetherMounted = false
     }
 
     override func viewWillDisappear(_ animated: Bool) {
