@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct HomeView: View {
     let model: PlayerViewModel
@@ -22,6 +23,13 @@ struct HomeView: View {
             }
             .navigationTitle("AetherPlayer")
         }
-        // .fileImporter added in Task 1.2, .sheet added in Task 1.3
+        .fileImporter(
+            isPresented: $showFileImporter,
+            allowedContentTypes: [.movie, .video, .audio],
+            allowsMultipleSelection: false
+        ) { result in
+            DocumentOpen.handlePicked(result, model: model)
+        }
+        // .sheet added in Task 1.3
     }
 }
