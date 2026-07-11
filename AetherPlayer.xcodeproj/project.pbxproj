@@ -31,6 +31,7 @@
 		3573351499DFA82C74C4E70A /* RecentsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6830DEE6BFE30DE2D65F8E30 /* RecentsStore.swift */; };
 		359351C0EF376B0EA6A28014 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6411EF50AAD74BC82EF909A4 /* Theme.swift */; };
 		37A084ACC8457457E9CDEEDA /* TrackMenuModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E0203CEACD715E2952920A0 /* TrackMenuModel.swift */; };
+		3F28E327585F5EA23B90C03C /* PlayerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AC25205E8861A04AF4FBA5 /* PlayerPresenter.swift */; };
 		3F8D429EA937F104E52CFC4B /* TimecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233D66079A84FB8F2D75E290 /* TimecodeTests.swift */; };
 		4406DB7A9F0C551BB256BD91 /* MediaURLValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E539D00C05E8347B2ECB7D7B /* MediaURLValidation.swift */; };
 		4660BF300099999142660CF0 /* AudioDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55EDD8AACE0F8656B606E9E3 /* AudioDetection.swift */; };
@@ -48,6 +49,7 @@
 		6FBBD1001F9F6A7D114635CB /* FrameHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93824C28886D126A5CFA790B /* FrameHelpersTests.swift */; };
 		765C3F6F5868875F50607BA4 /* NowPlayingInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A68F5A4C570AB63B8EDB54 /* NowPlayingInfoTests.swift */; };
 		78C6C0C695CCAC4331057E3D /* AutoHideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A80F72F03FB387443963F /* AutoHideTests.swift */; };
+		7CF419157386C4D61EBE7145 /* PlayerHostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C93E7A328900B3E6E557922 /* PlayerHostController.swift */; };
 		804A8EED9CDD79EE6FCC9219 /* FrameHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07527B623022238E917E772C /* FrameHelpers.swift */; };
 		8261B7E3227BAADBB7ACE9DC /* TrackMenuModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB52AA48E644CC4872D15095 /* TrackMenuModelTests.swift */; };
 		844865F8513C24B7DD7C6F00 /* RepeatMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D1F0BA9870F05C6E4C790B /* RepeatMode.swift */; };
@@ -130,8 +132,10 @@
 		57EA3A61BD39779C11069DD8 /* AetherPlayer-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "AetherPlayer-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B9B310577BF206A568A8F47 /* Timecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timecode.swift; sourceTree = "<group>"; };
 		5BD1AA1DA044FD139582A22E /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
+		5C93E7A328900B3E6E557922 /* PlayerHostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHostController.swift; sourceTree = "<group>"; };
 		62D1F0BA9870F05C6E4C790B /* RepeatMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatMode.swift; sourceTree = "<group>"; };
 		6411EF50AAD74BC82EF909A4 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		66AC25205E8861A04AF4FBA5 /* PlayerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerPresenter.swift; sourceTree = "<group>"; };
 		671C05102B6D3D4AEAA5F575 /* AetherPlayer-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "AetherPlayer-iOS.entitlements"; sourceTree = "<group>"; };
 		6830DEE6BFE30DE2D65F8E30 /* RecentsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsStore.swift; sourceTree = "<group>"; };
 		6C7F491313B24CBDDB44433C /* SubtitleLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleLayoutTests.swift; sourceTree = "<group>"; };
@@ -350,6 +354,15 @@
 			path = Library;
 			sourceTree = "<group>";
 		};
+		B67B42C0DFEA7FDD8F0362E2 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				5C93E7A328900B3E6E557922 /* PlayerHostController.swift */,
+				66AC25205E8861A04AF4FBA5 /* PlayerPresenter.swift */,
+			);
+			path = Player;
+			sourceTree = "<group>";
+		};
 		BF370B6736AAC1829A07CB0E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -405,6 +418,7 @@
 				757D2F72AFE981617FA7706C /* RootView.swift */,
 				CF43056DE1F6AC5DCB821A8C /* Home */,
 				69C8B572B6A136628A07DC97 /* Input */,
+				B67B42C0DFEA7FDD8F0362E2 /* Player */,
 				BF370B6736AAC1829A07CB0E /* Resources */,
 			);
 			path = iOS;
@@ -621,6 +635,8 @@
 				0401C2F315A2813171D5A46C /* NowPlayingText.swift in Sources */,
 				6206A834C2C2AE1F3A7E0C4F /* OpenURLSheet.swift in Sources */,
 				20C7302CD11CD131C2B132E5 /* PlatformImage.swift in Sources */,
+				7CF419157386C4D61EBE7145 /* PlayerHostController.swift in Sources */,
+				3F28E327585F5EA23B90C03C /* PlayerPresenter.swift in Sources */,
 				D4E65258F5ADB0DD399A417A /* PlayerViewModel.swift in Sources */,
 				4901A590916A5CF70AADF663 /* Playlist.swift in Sources */,
 				ED1821E80966D5FE5D191B6C /* RecentItem.swift in Sources */,
