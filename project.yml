@@ -96,6 +96,8 @@ targets:
         CFBundleName: AetherPlayer
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        # Only standard HTTPS/TLS (exempt); skips the export-compliance prompt on upload.
+        ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
         UISupportedInterfaceOrientations~ipad:
           - UIInterfaceOrientationPortrait
