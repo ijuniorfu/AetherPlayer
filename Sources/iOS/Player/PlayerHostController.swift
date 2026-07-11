@@ -25,6 +25,8 @@ final class PlayerHostController: AVPlayerViewController {
         allowsPictureInPicturePlayback = true
         canStartPictureInPictureAutomaticallyFromInline = true
         videoGravity = .resizeAspect
+        delegate = self
+        model.engine.backgroundPlaybackEnabled = true
         bindEngine()
     }
 
