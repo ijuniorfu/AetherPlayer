@@ -118,10 +118,18 @@ final class PlayerViewModel {
 
     var isPlaying: Bool { state == .playing }
     var hasMedia: Bool { loadedURL != nil }
-    /// A loaded file that has played to its natural end. The engine flips
-    /// `state` back to `.idle` on end-of-stream (both backends), and our
-    /// `loadedURL` only clears on `stop()`, so "loaded but idle" means ended.
-    var isEnded: Bool { hasMedia && state == .idle }
+    /// A loaded file that has played to its natural end. The engine parks at
+    /// `.ended` on end-of-stream (both backends); `.idle` is reserved for
+    /// `stop()`/teardown but is included too since `loadedURL` only clears on
+    /// `stop()`, so "loaded but idle" also reads as ended.
+    var isEnded: Bool { Self.isEndedPlayback(state: state, hasMedia: hasMedia) }
+    /// Natural end-of-playback: the engine parks at `.ended` on end-of-stream (and `.idle` is
+    /// reserved for stop()/teardown). Kept as a static pure function so it is unit-testable.
+    /// `nonisolated`: it touches no actor state, and the class's `@MainActor` default would
+    /// otherwise force every call site (including plain synchronous unit tests) through await.
+    nonisolated static func isEndedPlayback(state: PlaybackState, hasMedia: Bool) -> Bool {
+        hasMedia && (state == .ended || state == .idle)
+    }
     /// True when the session is presenting as audio-only (see isAudioPlayback).
     var isAudioOnly: Bool { isAudioPlayback(backend: backend, url: loadedURL) }
 
@@ -157,7 +165,7 @@ final class PlayerViewModel {
         engine.$state.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.state = $0
             self?.updateSleepAssertion()
-            if $0 == .idle, self?.hasMedia == true {
+            if ($0 == .idle || $0 == .ended), self?.hasMedia == true {
                 self?.handleTrackEnded()
             }
             self?.pushNowPlaying()
@@ -201,10 +209,12 @@ final class PlayerViewModel {
     }
 
     /// Shared open path. Fresh opens make a new bookmark; reopening from a recent
-    /// resolves a ScopedResource first (see openRecent).
-    private func openInternal(url: URL, recordPlaylistRelative: Bool) async {
+    /// resolves a ScopedResource first (see openRecent). `startOverride` forces the
+    /// start position (used by `restart()` to reload-to-replay at end-of-stream)
+    /// instead of resolving a recents resume point.
+    private func openInternal(url: URL, recordPlaylistRelative: Bool, startOverride: Double? = nil) async {
         loadError = nil
-        let resume = recents.position(for: url).flatMap { resumeTarget(lastPosition: $0.position, duration: $0.duration) }
+        let resume = startOverride ?? recents.position(for: url).flatMap { resumeTarget(lastPosition: $0.position, duration: $0.duration) }
         // Tear down the previous session's extractor up front so a failed
         // re-open does not strand it (it would otherwise linger until the
         // engine's 10 s idle-close).
@@ -231,7 +241,7 @@ final class PlayerViewModel {
             #if os(macOS)
             NSDocumentController.shared.noteNewRecentDocumentURL(url)
             #endif
-            if let resume { resumeMessage = "Resuming from \(formatTimecode(resume))" }
+            if startOverride == nil, let resume { resumeMessage = "Resuming from \(formatTimecode(resume))" }
             else { resumeMessage = nil }
         } catch {
             loadError = "Could not play \(url.lastPathComponent): \(error.localizedDescription)"
@@ -267,13 +277,12 @@ final class PlayerViewModel {
         }
     }
 
-    /// Replay from the beginning. Used when the video has reached its end.
-    /// Resets the speed to 1x so the rate menu and actual playback agree
-    /// (the engine's play() drops back to 1x on replay).
+    /// Replay from the beginning after the video has ended. The engine ignores seek()/play()
+    /// from a parked `.ended` session (its contract is reload-to-replay), so re-open from 0.
     func restart() {
+        guard let url = loadedURL else { return }
         Task {
-            await engine.seek(to: 0)
-            engine.play()
+            await openInternal(url: url, recordPlaylistRelative: false, startOverride: 0)
             setRate(1.0)
         }
     }
