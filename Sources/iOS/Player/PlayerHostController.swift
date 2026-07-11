@@ -40,8 +40,19 @@ final class PlayerHostController: AVPlayerViewController {
                 if let avPlayer {
                     avPlayer.allowsExternalPlayback = true
                     avPlayer.usesExternalPlaybackWhileExternalScreenIsActive = true
+                    // A new load's player is ready; stage Now Playing even if this
+                    // file carries no container metadata (falls back to filename).
+                    self.stageNowPlaying()
                 }
             }
+            .store(in: &cancellables)
+
+        // Stage Now Playing via externalMetadata whenever the engine resolves media
+        // metadata; the engine replays it across audio-switch reloads. We never touch
+        // MPNowPlayingInfoCenter directly, AVKit owns Now Playing on iOS.
+        model.engine.$metadata
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.stageNowPlaying() }
             .store(in: &cancellables)
 
         // Software-decode path (dav1d AV1, VP9): AetherPlayerView renders into
@@ -83,5 +94,13 @@ final class PlayerHostController: AVPlayerViewController {
         super.viewWillDisappear(animated)
         guard !pipActive else { return }   // PiP handoff, keep playing
         model.stop()
+    }
+
+    /// Idempotent: safe to call from both the metadata sink and the currentAVPlayer
+    /// sink. Title-only for v1; artwork enrichment is a later refinement.
+    private func stageNowPlaying() {
+        guard let url = model.loadedURL else { return }
+        let title = model.metadata?.title ?? url.deletingPathExtension().lastPathComponent
+        model.engine.setExternalMetadata(NowPlayingMetadata.items(title: title, artwork: nil))
     }
 }
