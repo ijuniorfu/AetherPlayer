@@ -25,7 +25,7 @@
 
 ## Install
 
-**macOS:** grab the latest notarized `.dmg` from the [Releases page](https://github.com/superuser404notfound/AetherPlayer/releases), drag AetherPlayer to your Applications folder, and launch it. The app keeps itself current through built-in auto-updates (Sparkle), so you only have to download it once.
+**macOS:** grab the latest notarized `.dmg` from the [Releases page](https://github.com/superuser404notfound/AetherPlayer/releases), drag AetherPlayer to your Applications folder, and launch it. The `.dmg` keeps itself current through built-in auto-updates (Sparkle), so you only have to download it once. You can also try the beta on [TestFlight](https://testflight.apple.com/join/rgrjZ98V) (an App Store release is on the way).
 
 **iOS/iPadOS:** join the public [TestFlight beta](https://testflight.apple.com/join/rgrjZ98V) (an App Store release is on the way), or build and run it from source (see [Build](#build) below).
 
