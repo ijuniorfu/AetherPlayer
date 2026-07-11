@@ -90,10 +90,53 @@ final class PlayerHostController: AVPlayerViewController {
         aetherMounted = false
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        suppressAVKitChrome()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // AVKit fades its chrome back in on layout passes (and rebuilds it lazily after a
+        // player swap), so re-suppress every pass rather than once.
+        suppressAVKitChrome()
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         guard !pipActive else { return }   // PiP handoff, keep playing
         model.stop()
+    }
+
+    /// alpha=0 AVKit's own chrome views. `showsPlaybackControls` stays true (it gates the Now
+    /// Playing session; setting it false kills Now Playing); only the visible chrome is hidden.
+    /// Our own overlay (Plan 1's Close/Tracks buttons, Phase B's custom chrome) is not affected,
+    /// it lives outside AVKit's view hierarchy. Class-name matching is runtime introspection, not
+    /// private-API dispatch, which App Store review allows.
+    private func suppressAVKitChrome() {
+        var preserved: Set<ObjectIdentifier> = [ObjectIdentifier(aetherView)]
+        if let overlay = contentOverlayView { preserved.insert(ObjectIdentifier(overlay)) }
+        hideChrome(on: view, preserve: preserved)
+    }
+
+    private func hideChrome(on v: UIView, preserve: Set<ObjectIdentifier>) {
+        if preserve.contains(ObjectIdentifier(v)) { return }
+        let typeName = String(describing: type(of: v))
+        // Keywords matched against AVKit's runtime view hierarchy: Controls (_AVPlayerControlsView),
+        // Transport (scrubber), Info (title/_AVPlayerInfoView), Menu (picker rows), Focus (focus container).
+        let isChrome = typeName.contains("Controls")
+            || typeName.contains("Transport")
+            || typeName.contains("Chrome")
+            || typeName.contains("Info")
+            || typeName.contains("Focus")
+            || typeName.contains("Menu")
+        if isChrome {
+            v.alpha = 0
+            return
+        }
+        for sub in v.subviews {
+            hideChrome(on: sub, preserve: preserve)
+        }
     }
 
     /// Idempotent: safe to call from both the metadata sink and the currentAVPlayer
