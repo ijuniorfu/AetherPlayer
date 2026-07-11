@@ -26,18 +26,21 @@ struct PlayerTransportBar: View {
                 Text(formatTimecode(model.duration))
                     .font(.system(.caption, design: .monospaced)).foregroundStyle(.white)
             }
-            HStack(spacing: 40) {
-                skipButton(system: "gobackward.10") { model.seek(by: -10) }
-                Button(action: { model.primaryAction() }) {
-                    Image(systemName: playButtonSymbol).font(.system(size: 34))
+            // ZStack: the skip/play group stays centered while the badge floats to the
+            // bar's trailing edge (via maxWidth alignment) so it never overlaps +10s.
+            ZStack {
+                HStack(spacing: 40) {
+                    skipButton(system: "gobackward.10") { model.seek(by: -10) }
+                    Button(action: { model.primaryAction() }) {
+                        Image(systemName: playButtonSymbol).font(.system(size: 34))
+                    }
+                    .buttonStyle(.plain).foregroundStyle(.white)
+                    .shadow(color: .aetherPurple.opacity(0.6), radius: 6)
+                    skipButton(system: "goforward.10") { model.seek(by: 10) }
                 }
-                .buttonStyle(.plain).foregroundStyle(.white)
-                .shadow(color: .aetherPurple.opacity(0.6), radius: 6)
-                skipButton(system: "goforward.10") { model.seek(by: 10) }
-            }
-            .overlay(alignment: .trailing) {
                 if !backendBadge.isEmpty {
                     Text(backendBadge).font(.system(.caption2, design: .monospaced)).aetherBadge()
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
         }
