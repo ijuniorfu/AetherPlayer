@@ -11,7 +11,7 @@ settings:
     SWIFT_VERSION: "6.0"
     ARCHS: "$(ARCHS_STANDARD)"
     ONLY_ACTIVE_ARCH: NO
-    CODE_SIGN_ENTITLEMENTS: Sources/AetherPlayer/Resources/AetherPlayer.entitlements
+    CODE_SIGN_ENTITLEMENTS: Sources/macOS/Resources/AetherPlayer.entitlements
     ENABLE_HARDENED_RUNTIME: YES
     # No AppIntents in this app; skips the appintentsmetadataprocessor warning.
     LM_SKIP_METADATA_EXTRACTION: YES
@@ -27,9 +27,10 @@ targets:
     type: application
     platform: macOS
     sources:
-      - path: Sources/AetherPlayer
+      - path: Sources/Shared
+      - path: Sources/macOS
     info:
-      path: Sources/AetherPlayer/Resources/Info.plist
+      path: Sources/macOS/Resources/Info.plist
       properties:
         CFBundleDisplayName: AetherPlayer
         CFBundleName: AetherPlayer
