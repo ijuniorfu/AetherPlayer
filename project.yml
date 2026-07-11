@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: de.superuser404
   deploymentTarget:
     macOS: "14.0"
+    iOS: "17.0"
   createIntermediateGroups: true
 settings:
   base:
@@ -82,6 +83,55 @@ targets:
     dependencies:
       - package: AetherEngine
       - package: Sparkle
+  AetherPlayer-iOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources/Shared
+      - path: Sources/iOS
+    info:
+      path: Sources/iOS/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: AetherPlayer
+        CFBundleName: AetherPlayer
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UIBackgroundModes:
+          - audio
+        UISupportsDocumentBrowser: false
+        LSSupportsOpeningDocumentsInPlace: true
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: Video
+            LSItemContentTypes: [public.movie, public.video, org.matroska.mkv, public.mpeg-4]
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+          - CFBundleTypeName: Disc Image
+            LSItemContentTypes: [public.iso-image]
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+          - CFBundleTypeName: Audio
+            LSItemContentTypes: [public.audio, public.mp3, public.mpeg-4-audio, com.apple.m4a-audio, org.xiph.flac, com.microsoft.waveform-audio, public.aiff-audio, org.xiph.opus, org.xiph.ogg]
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.superuser404.AetherPlayer
+        CODE_SIGN_ENTITLEMENTS: Sources/iOS/Resources/AetherPlayer-iOS.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1,2"
+        # No DIRECT_DISTRIBUTION, no Sparkle: App Store handles updates.
+    dependencies:
+      - package: AetherEngine
   AetherPlayerTests:
     type: bundle.unit-test
     platform: macOS

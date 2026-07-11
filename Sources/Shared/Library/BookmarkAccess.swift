@@ -4,11 +4,19 @@ import Foundation
 /// an open panel / drop / Finder open is only reachable for this launch;
 /// a security-scoped bookmark lets us reopen it later.
 enum BookmarkAccess {
-    /// Create security-scoped bookmark data for a file or folder.
+    /// Create security-scoped bookmark data for a file or folder. `.withSecurityScope` is a
+    /// macOS App Sandbox option and is unavailable on iOS; iOS grants security scope on
+    /// resolution for URLs handed out by the document picker without that creation flag.
     static func bookmark(for url: URL) -> Data? {
+        #if os(macOS)
         try? url.bookmarkData(options: .withSecurityScope,
                               includingResourceValuesForKeys: nil,
                               relativeTo: nil)
+        #else
+        try? url.bookmarkData(options: [],
+                              includingResourceValuesForKeys: nil,
+                              relativeTo: nil)
+        #endif
     }
 }
 
@@ -21,10 +29,17 @@ final class ScopedResource {
 
     init?(bookmark data: Data) {
         var stale = false
+        #if os(macOS)
         guard let resolved = try? URL(resolvingBookmarkData: data,
                                       options: .withSecurityScope,
                                       relativeTo: nil,
                                       bookmarkDataIsStale: &stale) else { return nil }
+        #else
+        guard let resolved = try? URL(resolvingBookmarkData: data,
+                                      options: [],
+                                      relativeTo: nil,
+                                      bookmarkDataIsStale: &stale) else { return nil }
+        #endif
         guard resolved.startAccessingSecurityScopedResource() else { return nil }
         self.url = resolved
         self.isStale = stale
