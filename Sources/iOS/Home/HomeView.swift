@@ -30,6 +30,6 @@ struct HomeView: View {
         ) { result in
             DocumentOpen.handlePicked(result, model: model)
         }
-        // .sheet added in Task 1.3
+        .sheet(isPresented: $showURLSheet) { OpenURLSheet(model: model) }
     }
 }
