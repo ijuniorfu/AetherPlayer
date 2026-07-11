@@ -129,7 +129,11 @@ targets:
         CODE_SIGN_ENTITLEMENTS: Sources/iOS/Resources/AetherPlayer-iOS.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         TARGETED_DEVICE_FAMILY: "1,2"
-        # No DIRECT_DISTRIBUTION, no Sparkle: App Store handles updates.
+        # Automatic signing with the team: Xcode manages the development and
+        # App Store distribution certs/profiles (Archive -> Distribute). No
+        # DIRECT_DISTRIBUTION, no Sparkle: the App Store handles updates.
+        DEVELOPMENT_TEAM: 4NY63S72W9
+        CODE_SIGN_STYLE: Automatic
     dependencies:
       - package: AetherEngine
   AetherPlayerTests:
