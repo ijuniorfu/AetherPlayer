@@ -30,10 +30,11 @@
 		2EE125C67E5A5BE2D65A70BE /* TracksPopoverLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D408FE0AD42CD1C921A2CC /* TracksPopoverLayout.swift */; };
 		30EF435C47FB2C2E9DF993E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E06ADC032DFF906EFCD8C903 /* Assets.xcassets */; };
 		3573351499DFA82C74C4E70A /* RecentsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6830DEE6BFE30DE2D65F8E30 /* RecentsStore.swift */; };
-		359351C0EF376B0EA6A28014 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6411EF50AAD74BC82EF909A4 /* Theme.swift */; };
 		37A084ACC8457457E9CDEEDA /* TrackMenuModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E0203CEACD715E2952920A0 /* TrackMenuModel.swift */; };
+		3BA68305878BD9ED17B82F90 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476E467BD2ECDE79034721F /* Theme.swift */; };
 		3F28E327585F5EA23B90C03C /* PlayerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AC25205E8861A04AF4FBA5 /* PlayerPresenter.swift */; };
 		3F8D429EA937F104E52CFC4B /* TimecodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233D66079A84FB8F2D75E290 /* TimecodeTests.swift */; };
+		4209E251F54A8DBB85434FD6 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476E467BD2ECDE79034721F /* Theme.swift */; };
 		4406DB7A9F0C551BB256BD91 /* MediaURLValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E539D00C05E8347B2ECB7D7B /* MediaURLValidation.swift */; };
 		4660BF300099999142660CF0 /* AudioDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55EDD8AACE0F8656B606E9E3 /* AudioDetection.swift */; };
 		4901A590916A5CF70AADF663 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CA4926E8D060AEB32D7726 /* Playlist.swift */; };
@@ -123,6 +124,7 @@
 		217C351450619AFE9A1BCEA8 /* NowPlayingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingController.swift; sourceTree = "<group>"; };
 		233D66079A84FB8F2D75E290 /* TimecodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimecodeTests.swift; sourceTree = "<group>"; };
 		28D3465CFF5F0495D9AEEBA2 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		3476E467BD2ECDE79034721F /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		359C1A26BC80A9CB3E38E842 /* StatsFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsFormat.swift; sourceTree = "<group>"; };
 		37DE17D6F34C0B2F6318275A /* NowPlayingMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingMetadata.swift; sourceTree = "<group>"; };
 		439CC143FE95F00283D3643A /* RecentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsListView.swift; sourceTree = "<group>"; };
@@ -138,7 +140,6 @@
 		5BD1AA1DA044FD139582A22E /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		5C93E7A328900B3E6E557922 /* PlayerHostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHostController.swift; sourceTree = "<group>"; };
 		62D1F0BA9870F05C6E4C790B /* RepeatMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatMode.swift; sourceTree = "<group>"; };
-		6411EF50AAD74BC82EF909A4 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		66AC25205E8861A04AF4FBA5 /* PlayerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerPresenter.swift; sourceTree = "<group>"; };
 		671C05102B6D3D4AEAA5F575 /* AetherPlayer-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "AetherPlayer-iOS.entitlements"; sourceTree = "<group>"; };
 		6830DEE6BFE30DE2D65F8E30 /* RecentsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsStore.swift; sourceTree = "<group>"; };
@@ -253,7 +254,6 @@
 				94A41313B2B883A8EF3F25B1 /* ResumeToastView.swift */,
 				13830D3893514D5090007A20 /* StatsInspectorView.swift */,
 				54F9C1815A4A38E23202B029 /* SubtitleOverlayView.swift */,
-				6411EF50AAD74BC82EF909A4 /* Theme.swift */,
 				D2588343DEF8BDD7262D38D0 /* TracksPopover.swift */,
 				FF3FBB8A2D4A77E2E70F5402 /* TransportBar.swift */,
 			);
@@ -270,6 +270,7 @@
 				62D1F0BA9870F05C6E4C790B /* RepeatMode.swift */,
 				359C1A26BC80A9CB3E38E842 /* StatsFormat.swift */,
 				F280F56F19B82579EFD6A016 /* SubtitleLayout.swift */,
+				3476E467BD2ECDE79034721F /* Theme.swift */,
 				5B9B310577BF206A568A8F47 /* Timecode.swift */,
 				9E0203CEACD715E2952920A0 /* TrackMenuModel.swift */,
 				A3D408FE0AD42CD1C921A2CC /* TracksPopoverLayout.swift */,
@@ -617,7 +618,7 @@
 				6F7870FC43F51046AD12B99C /* StatsInspectorView.swift in Sources */,
 				0D4A41E95DB1C26A106EFB46 /* SubtitleLayout.swift in Sources */,
 				D9D72C5CDA05EF1FE78EE08B /* SubtitleOverlayView.swift in Sources */,
-				359351C0EF376B0EA6A28014 /* Theme.swift in Sources */,
+				4209E251F54A8DBB85434FD6 /* Theme.swift in Sources */,
 				C8FEC43F220F0692553C0EC1 /* Timecode.swift in Sources */,
 				37A084ACC8457457E9CDEEDA /* TrackMenuModel.swift in Sources */,
 				D99EF75F0D51FC11290956D6 /* TracksPopover.swift in Sources */,
@@ -660,6 +661,7 @@
 				5DC3C06DB2CE5395C9501A18 /* ScrubPreviewProvider.swift in Sources */,
 				19E322325DD76EF4471FD1D8 /* StatsFormat.swift in Sources */,
 				0CD6631D47CFC045789FC4DA /* SubtitleLayout.swift in Sources */,
+				3BA68305878BD9ED17B82F90 /* Theme.swift in Sources */,
 				52644B403EB3A37512677022 /* Timecode.swift in Sources */,
 				1398F80589624C2DDB808EAB /* TrackMenuModel.swift in Sources */,
 				2EE125C67E5A5BE2D65A70BE /* TracksPopoverLayout.swift in Sources */,
