@@ -1,6 +1,8 @@
 import AetherEngine
-#if canImport(AppKit)
+#if os(macOS)
 import AppKit
+#else
+import UIKit
 #endif
 
 /// Figure-dash placeholder for an unavailable value.
@@ -73,7 +75,7 @@ func formatBitrateBps(_ bps: Int64) -> String {
 /// Current panel dynamic-range mode from the display's EDR headroom. `> 1.0` means the built-in/external
 /// display is in its extended-range (HDR/Dolby Vision) mode; the exact "+DV" split lives in the Dynamic Range row.
 func currentDisplayModeLabel() -> String {
-    #if canImport(AppKit)
+    #if os(macOS)
     guard let screen = NSScreen.main else { return statsPlaceholder }
     let edr = screen.maximumExtendedDynamicRangeColorComponentValue
     if edr > 1.0 {
@@ -81,6 +83,8 @@ func currentDisplayModeLabel() -> String {
     }
     return "SDR"
     #else
+    // iOS: no NSScreen/EDR-headroom equivalent is wired up yet; the Stats
+    // panel shows a placeholder here until an iOS dynamic-range read exists.
     return statsPlaceholder
     #endif
 }
