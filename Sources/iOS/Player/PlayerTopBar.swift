@@ -15,11 +15,19 @@ struct PlayerTopBar: View {
             AirPlayRouteButton().frame(width: 44, height: 44)
                 .background(.ultraThinMaterial, in: Circle())
             if PlayerOrientation.isPhone {
-                circle { Image(systemName: model.playerRotationLocked ? "lock.rotation" : "lock.open.rotation") }
+                // Fill the circle with the accent gradient when engaged (Control Center pattern); the two
+                // padlock glyphs alone read too similarly to tell locked from open at a glance.
+                let locked = model.playerRotationLocked
+                Image(systemName: locked ? "lock.rotation" : "lock.open.rotation")
+                    .font(.title3).foregroundStyle(.white).frame(width: 44, height: 44)
+                    .background {
+                        if locked { Circle().fill(LinearGradient.aetherAccent) }
+                        else { Circle().fill(.ultraThinMaterial) }
+                    }
                     .onTapGesture {
-                        let locked = !model.playerRotationLocked
-                        model.setPlayerRotationLocked(locked)
-                        if locked { PlayerOrientation.lockToCurrent() } else { PlayerOrientation.follow() }
+                        let newLocked = !locked
+                        model.setPlayerRotationLocked(newLocked)
+                        if newLocked { PlayerOrientation.lockToCurrent() } else { PlayerOrientation.follow() }
                     }
             }
             circle { Image(systemName: "list.bullet") }.onTapGesture { onTracks() }
