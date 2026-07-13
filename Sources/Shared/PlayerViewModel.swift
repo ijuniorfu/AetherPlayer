@@ -4,6 +4,7 @@ import Combine
 import AppKit
 #else
 import UIKit
+import AVFoundation
 #endif
 import CoreGraphics
 import AetherEngine
@@ -169,6 +170,11 @@ final class PlayerViewModel {
                 self?.handleTrackEnded()
             }
             self?.pushNowPlaying()
+            #if os(iOS)
+            // Take over the native volume overlay once playback is up so hardware volume presses show
+            // our HUD. activate() is idempotent. During load the host is not parked (see startVolumeObservation).
+            if $0 == .playing { PlayerSystemVolume.activate() }
+            #endif
         }.store(in: &cancellables)
         // The playback clock lives on engine.clock (a separate
         // ObservableObject since AetherEngine#29) so its ~10 Hz ticks
@@ -309,6 +315,10 @@ final class PlayerViewModel {
         loadError = nil
         resumeMessage = nil
         nowPlaying.clear()
+        #if os(iOS)
+        hudKind = nil
+        hudHideTask?.cancel()
+        #endif
     }
 
     func seek(by delta: Double) {
@@ -549,4 +559,69 @@ final class PlayerViewModel {
         UIApplication.shared.isIdleTimerDisabled = (state == .playing && backend != .audio)
         #endif
     }
+
+    #if os(iOS)
+    enum PlayerHUDKind: Equatable { case brightness, volume, skipForward, skipBackward }
+
+    /// Transient touch HUD (brightness/volume swipe, skip ripple); the overlay observes hudKind.
+    var hudKind: PlayerHUDKind?
+    var hudLevel: Double = 0
+    /// The last shown kind, kept while the HUD is hidden. The overlay is permanently mounted and falls
+    /// back to this when hudKind is nil, so it fades out on the same glyph it showed and never reveals
+    /// an unrelated icon (the skip symbol) on the way in or out.
+    var lastHudKind: PlayerHUDKind = .volume
+    @ObservationIgnored private var hudHideTask: Task<Void, Never>?
+
+    func flashHUD(_ kind: PlayerHUDKind, level: Double = 0) {
+        hudKind = kind
+        lastHudKind = kind
+        hudLevel = level
+        hudHideTask?.cancel()
+        hudHideTask = Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(900))
+            guard !Task.isCancelled else { return }
+            self?.hudKind = nil
+        }
+    }
+
+    func setBrightness(_ value: CGFloat) {
+        let clamped = min(max(value, 0), 1)
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }.first?.screen.brightness = clamped
+        flashHUD(.brightness, level: Double(clamped))
+    }
+
+    func setVolume(_ value: Float) {
+        let clamped = min(max(value, 0), 1)
+        PlayerSystemVolume.set(clamped)
+        flashHUD(.volume, level: Double(clamped))
+    }
+
+    @ObservationIgnored private var volumeObservation: NSKeyValueObservation?
+
+    /// Mirror the system volume overlay with our own HUD on hardware volume-button presses, but only once
+    /// we have taken over the native overlay (PlayerSystemVolume.isActive, i.e. the hidden MPVolumeView is
+    /// parked, which happens at first `.playing` or on a volume swipe). While the video is still loading
+    /// the host is not parked, so the native iOS overlay shows and this stays silent. Gating on isActive
+    /// also swallows the activation-time settle callback without a timer.
+    func startVolumeObservation() {
+        volumeObservation?.invalidate()
+        // @Sendable so the KVO callback is nonisolated (KVO fires off the main actor); it hops back via Task.
+        let handler: @Sendable (AVAudioSession, NSKeyValueObservedChange<Float>) -> Void = { [weak self] _, change in
+            guard let newValue = change.newValue else { return }
+            Task { @MainActor in
+                guard let self, PlayerSystemVolume.isActive else { return }
+                self.flashHUD(.volume, level: Double(newValue))
+            }
+        }
+        volumeObservation = AVAudioSession.sharedInstance().observe(\.outputVolume, options: [.new], changeHandler: handler)
+    }
+
+    func stopVolumeObservation() {
+        volumeObservation?.invalidate()
+        volumeObservation = nil
+        // Restore the native volume overlay for the rest of the app now that the player is gone.
+        PlayerSystemVolume.deactivate()
+    }
+    #endif
 }

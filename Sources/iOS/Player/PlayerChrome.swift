@@ -13,8 +13,10 @@ struct PlayerChrome: View {
         ZStack {
             PlayerGestureCatcher(
                 onToggleControls: { toggleControls() },
-                onSkip: { model.seek(by: $0); bumpActivity() },
-                onTogglePlayPause: { model.togglePlayPause(); bumpActivity() }
+                onSkip: { model.flashHUD($0 >= 0 ? .skipForward : .skipBackward); model.seek(by: $0); bumpActivity() },
+                onTogglePlayPause: { model.togglePlayPause(); bumpActivity() },
+                onSetBrightness: { model.setBrightness($0) },
+                onSetVolume: { model.setVolume($0) }
             )
             if controlsVisible {
                 VStack {
@@ -24,6 +26,18 @@ struct PlayerChrome: View {
                 }
                 .transition(.opacity)
             }
+            // Edge affordances hinting the vertical brightness/volume swipes. Shown with the controls,
+            // hidden while scrubbing so they do not clutter the scrub preview.
+            if controlsVisible && !scrubbing {
+                PlayerSwipeHints()
+                    .transition(.opacity)
+            }
+            // Touch/volume HUD: mounted above the chrome so it shows while controls are hidden (volume is
+            // usually changed with the chrome down). Non-hittable so its 0-opacity frame never eats gestures.
+            PlayerHUD(kind: model.hudKind ?? model.lastHudKind, level: model.hudLevel)
+                .opacity(model.hudKind == nil ? 0 : 1)
+                .animation(.easeInOut(duration: 0.2), value: model.hudKind)
+                .allowsHitTesting(false)
         }
         .sheet(isPresented: $showTracks) { TracksSheet(model: model) }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
