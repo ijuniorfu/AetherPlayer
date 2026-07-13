@@ -38,10 +38,28 @@ struct PlayerTransportBar: View {
                     .shadow(color: .aetherPurple.opacity(0.6), radius: 6)
                     skipButton(system: "goforward.10") { model.seek(by: 10) }
                 }
-                if !backendBadge.isEmpty {
-                    Text(backendBadge).font(.system(.caption2, design: .monospaced)).aetherBadge()
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                // Rate pill + backend badge, floated to the trailing edge (the centered skip/play
+                // group is a separate ZStack layer, so it stays put). Rate applies to every backend,
+                // so the pill is always shown; the backend badge stays conditional.
+                HStack(spacing: 8) {
+                    Menu {
+                        ForEach(PlayerViewModel.availableRates, id: \.self) { r in
+                            Button { model.setRate(r) } label: {
+                                Text((model.rate == r ? "\u{2713} " : "") + rateLabel(r))
+                            }
+                        }
+                    } label: {
+                        Text(rateLabel(model.rate))
+                            .font(.system(.caption2, design: .monospaced))
+                            .aetherBadge()
+                    }
+                    .menuIndicator(.hidden)
+
+                    if !backendBadge.isEmpty {
+                        Text(backendBadge).font(.system(.caption2, design: .monospaced)).aetherBadge()
+                    }
                 }
+                .frame(maxWidth: .infinity, alignment: .trailing)
             }
         }
         .padding(.horizontal, 24).padding(.top, 20).padding(.bottom, 28)
