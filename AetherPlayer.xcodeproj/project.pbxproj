@@ -111,6 +111,7 @@
 		B4709F3CF66CCD1E5604C00A /* KeyCatcherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC23E95A223EDA9374CBC13 /* KeyCatcherView.swift */; };
 		B547967C15BA5A650B1C66FC /* NowPlayingInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2838BBF6A13734278373BC /* NowPlayingInfo.swift */; };
 		B57918314852295B89312E9A /* PlayerGestureCatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2DDBBBB6312540B5B08CCF /* PlayerGestureCatcher.swift */; };
+		B9E22158D68355A5770250B8 /* PlayerSystemVolume.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE35CB3815E68298357E951 /* PlayerSystemVolume.swift */; };
 		BB10656AAB0F86864E0C53D5 /* RecentsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6830DEE6BFE30DE2D65F8E30 /* RecentsStore.swift */; };
 		BB2BF88F1F891BF28137C3C6 /* RecentsThumbnailProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0321F9F3D323D122E187C9A /* RecentsThumbnailProvider.swift */; };
 		BD5C4CA808EAB889E146D925 /* PlayerTouchInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 462B46AD9B4539E1EB94945C /* PlayerTouchInput.swift */; };
@@ -245,6 +246,7 @@
 		E8CA4926E8D060AEB32D7726 /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		F280F56F19B82579EFD6A016 /* SubtitleLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleLayout.swift; sourceTree = "<group>"; };
 		F3F383828AE63B4C10F0BD63 /* TracksPopoverLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksPopoverLayoutTests.swift; sourceTree = "<group>"; };
+		FCE35CB3815E68298357E951 /* PlayerSystemVolume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSystemVolume.swift; sourceTree = "<group>"; };
 		FF3FBB8A2D4A77E2E70F5402 /* TransportBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -441,6 +443,7 @@
 				BC925D4282CAE12C28EFE9B9 /* PlayerHostController+PiP.swift */,
 				66AC25205E8861A04AF4FBA5 /* PlayerPresenter.swift */,
 				D48C1CB9ED2221C6976C2089 /* PlayerScrubBar.swift */,
+				FCE35CB3815E68298357E951 /* PlayerSystemVolume.swift */,
 				0D36BC08BAF1C10AD8A74814 /* PlayerTopBar.swift */,
 				5CD83E72C558EAC70EE674C5 /* PlayerTransportBar.swift */,
 				CA025D523D30164C998D8104 /* TracksSheet.swift */,
@@ -814,6 +817,7 @@
 				7CF419157386C4D61EBE7145 /* PlayerHostController.swift in Sources */,
 				3F28E327585F5EA23B90C03C /* PlayerPresenter.swift in Sources */,
 				E42B4D886240BD80B67841DB /* PlayerScrubBar.swift in Sources */,
+				B9E22158D68355A5770250B8 /* PlayerSystemVolume.swift in Sources */,
 				5F7EB14E2389F7447FC8287E /* PlayerTopBar.swift in Sources */,
 				CDBEA67B7831BEF45F6ED576 /* PlayerTouchInput.swift in Sources */,
 				BE1F41A968EC21F1F9B7D3D8 /* PlayerTransportBar.swift in Sources */,
