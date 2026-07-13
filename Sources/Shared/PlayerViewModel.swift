@@ -85,6 +85,16 @@ final class PlayerViewModel {
         UserDefaults.standard.set(size.rawValue, forKey: "player.subtitleSize")
     }
 
+    #if os(iOS)
+    /// Player rotation lock (lock-to-current). Persisted; default off (free rotation).
+    private(set) var playerRotationLocked: Bool = UserDefaults.standard.bool(forKey: "player.rotationLocked")
+
+    func setPlayerRotationLocked(_ locked: Bool) {
+        playerRotationLocked = locked
+        UserDefaults.standard.set(locked, forKey: "player.rotationLocked")
+    }
+    #endif
+
     let recents = RecentsStore()
     private let nowPlaying = NowPlayingController()
     /// One frame extractor per playback session, built from the playing file
