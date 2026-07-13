@@ -1178,7 +1178,7 @@
 			repositoryURL = "https://github.com/superuser404notfound/AetherEngine";
 			requirement = {
 				kind = revision;
-				revision = 312c8098198e5bda438a7f45bb60a0145924c3bf;
+				revision = 6682cdfdbfd7c1fade7289c8a7fd55e4eef434ff;
 			};
 		};
 		5F7234CE368E530069027164 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
