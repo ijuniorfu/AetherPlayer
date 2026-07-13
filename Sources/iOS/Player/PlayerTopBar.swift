@@ -14,6 +14,14 @@ struct PlayerTopBar: View {
             Spacer()
             AirPlayRouteButton().frame(width: 44, height: 44)
                 .background(.ultraThinMaterial, in: Circle())
+            if PlayerOrientation.isPhone {
+                circle { Image(systemName: model.playerRotationLocked ? "lock.rotation" : "lock.open.rotation") }
+                    .onTapGesture {
+                        let locked = !model.playerRotationLocked
+                        model.setPlayerRotationLocked(locked)
+                        if locked { PlayerOrientation.lockToCurrent() } else { PlayerOrientation.follow() }
+                    }
+            }
             circle { Image(systemName: "list.bullet") }.onTapGesture { onTracks() }
         }
         .padding(.horizontal, 16).padding(.top, 8)
