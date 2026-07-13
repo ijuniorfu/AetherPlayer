@@ -18,7 +18,8 @@ struct SubtitleOverlay: View {
         } else {
             SubtitleOverlayView(cues: cues,
                                 subtitleTime: model.subtitleTime,
-                                userScale: model.subtitleSize.scale)
+                                userScale: model.subtitleSize.scale,
+                                videoSize: model.videoSize)
         }
     }
 }
@@ -33,6 +34,8 @@ struct SubtitleOverlayView: View {
     let subtitleTime: Double
     /// User size multiplier (from PlayerViewModel.subtitleSize.scale).
     var userScale: CGFloat = 1.0
+    /// Coded video size, for aspect-fitting bitmap (PGS/DVB) cues into the letterboxed video rect.
+    var videoSize: CGSize = .zero
 
     private var activeCues: [SubtitleCue] {
         cues.filter { subtitleTime >= $0.startTime && subtitleTime <= $0.endTime }
@@ -67,13 +70,47 @@ struct SubtitleOverlayView: View {
     }
 
     private func imageCue(_ image: SubtitleImage, in size: CGSize) -> some View {
-        let rect = CGRect(x: image.position.minX * size.width,
-                          y: image.position.minY * size.height,
-                          width: image.position.width * size.width,
-                          height: image.position.height * size.height)
+        // Bitmap cue positions are normalized to the subtitle composition canvas (often 16:9 even
+        // when the video is scope-cropped). Map the canvas onto the aspect-fit video rect so cues
+        // land where they were authored (including the letterbox bar) instead of stretching to the
+        // full overlay bounds. On a matching aspect this reduces to the old full-bounds layout; in
+        // portrait it pins cues to the video band, not the screen bottom.
+        let videoRect = Self.aspectFitRect(videoSize: videoSize, in: size)
+        let canvas = image.canvasSize
+        let canvasRect: CGRect
+        if videoRect.width > 0, canvas.width > 0, canvas.height > 0, videoSize.width > 0 {
+            let scale = videoRect.width / videoSize.width
+            let w = canvas.width * scale
+            let h = canvas.height * scale
+            canvasRect = CGRect(x: videoRect.midX - w / 2, y: videoRect.midY - h / 2, width: w, height: h)
+        } else {
+            canvasRect = CGRect(origin: .zero, size: size)
+        }
+        let frameW = image.position.width * canvasRect.width
+        let frameH = image.position.height * canvasRect.height
+        let originX = canvasRect.minX + image.position.minX * canvasRect.width
+        let originY = canvasRect.minY + image.position.minY * canvasRect.height
         return Image(decorative: image.cgImage, scale: 1.0)
             .resizable()
-            .frame(width: rect.width, height: rect.height)
-            .offset(x: rect.minX, y: rect.minY)
+            .interpolation(.high)
+            .frame(width: frameW, height: frameH)
+            .offset(x: originX, y: originY)
+    }
+
+    /// Aspect-fit rect of the video plane within the overlay bounds. Full bounds when the video
+    /// dimensions are unknown (pre-load or older cues).
+    private static func aspectFitRect(videoSize: CGSize, in bounds: CGSize) -> CGRect {
+        guard videoSize.width > 0, videoSize.height > 0, bounds.width > 0, bounds.height > 0 else {
+            return CGRect(origin: .zero, size: bounds)
+        }
+        let videoAspect = videoSize.width / videoSize.height
+        let boundsAspect = bounds.width / bounds.height
+        if boundsAspect > videoAspect {
+            let w = bounds.height * videoAspect
+            return CGRect(x: (bounds.width - w) / 2, y: 0, width: w, height: bounds.height)
+        } else {
+            let h = bounds.width / videoAspect
+            return CGRect(x: 0, y: (bounds.height - h) / 2, width: bounds.width, height: h)
+        }
     }
 }
