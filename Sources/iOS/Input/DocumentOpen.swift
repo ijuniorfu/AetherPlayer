@@ -21,4 +21,18 @@ enum DocumentOpen {
         guard case let .success(urls) = result, let url = urls.first else { return }
         open(url, model: model)
     }
+
+    /// Open a folder as a playlist. Unlike a single file, the folder's files are opened lazily as
+    /// the playlist advances, so its security scope is captured into a bookmark the view model holds
+    /// for the session (folderScoped); the transient picker scope is released once openFolder returns.
+    @MainActor
+    static func openFolder(_ result: Result<[URL], Error>, model: PlayerViewModel) {
+        guard case let .success(urls) = result, let url = urls.first else { return }
+        let didScope = url.startAccessingSecurityScopedResource()
+        let bookmark = BookmarkAccess.bookmark(for: url)
+        Task {
+            await model.openFolder(url, bookmarkData: bookmark)
+            if didScope { url.stopAccessingSecurityScopedResource() }
+        }
+    }
 }

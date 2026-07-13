@@ -30,6 +30,15 @@ struct PlayerTransportBar: View {
             // below stays truly centered and never overlaps them on a narrow portrait width. Rate
             // applies to every backend, so the pill is always shown; the backend badge is conditional.
             HStack(spacing: 8) {
+                if model.playlist != nil {
+                    Button { model.toggleShuffle() } label: {
+                        Image(systemName: "shuffle")
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundStyle(model.shuffleEnabled ? Color.aetherPurple : .white.opacity(0.6))
+                    }
+                    .buttonStyle(.plain)
+                    Spacer(minLength: 0)
+                }
                 Menu {
                     ForEach(PlayerViewModel.availableRates, id: \.self) { r in
                         Button { model.setRate(r) } label: {
@@ -49,7 +58,12 @@ struct PlayerTransportBar: View {
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
 
-            HStack(spacing: 40) {
+            HStack(spacing: model.playlist != nil ? 24 : 40) {
+                if model.playlist != nil {
+                    skipButton(system: "backward.end.fill") { Task { await model.playPrevious() } }
+                        .disabled(!model.hasPrevious)
+                        .opacity(model.hasPrevious ? 1 : 0.35)
+                }
                 skipButton(system: "gobackward.10") { model.seek(by: -10) }
                 Button(action: { model.primaryAction() }) {
                     Image(systemName: playButtonSymbol).font(.system(size: 34))
@@ -57,6 +71,11 @@ struct PlayerTransportBar: View {
                 .buttonStyle(.plain).foregroundStyle(.white)
                 .shadow(color: .aetherPurple.opacity(0.6), radius: 6)
                 skipButton(system: "goforward.10") { model.seek(by: 10) }
+                if model.playlist != nil {
+                    skipButton(system: "forward.end.fill") { Task { await model.playNext() } }
+                        .disabled(!model.hasNext)
+                        .opacity(model.hasNext ? 1 : 0.35)
+                }
             }
         }
         .padding(.horizontal, 24).padding(.top, 20).padding(.bottom, 28)
