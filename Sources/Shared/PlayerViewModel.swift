@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import SwiftAssRenderer
 #if os(macOS)
 import AppKit
 #else
@@ -43,6 +44,12 @@ final class PlayerViewModel {
     /// Engine index of the subtitle track the user picked (no published
     /// active-subtitle index exists, so we track it here).
     private(set) var selectedSubtitleIndex: Int?
+    private(set) var activeSubtitleCodec: String?
+    @ObservationIgnored private lazy var assCoordinator = ASSRenderCoordinator(player: engine)
+    private(set) var assRenderer: AssSubtitlesRenderer?
+    @ObservationIgnored private var sidecarASSHeaderCancellable: AnyCancellable?
+    var assReloadSignal: PassthroughSubject<Void, Never> { assCoordinator.reloadSignal }
+    private var assItemID: String { loadedURL?.lastPathComponent ?? "item" }
 
     private(set) var playlist: Playlist?
     private var folderScoped: ScopedResource?
@@ -236,6 +243,7 @@ final class PlayerViewModel {
             var options = LoadOptions(audioOnly: isAudioExtension(url))
             let bufferSegments = UserDefaults.standard.integer(forKey: "playback.forwardBufferSegments")
             if bufferSegments > 0 { options.forwardBufferSegments = bufferSegments }
+            options.preserveASSMarkup = true
             try await engine.load(url: url, startPosition: resume, options: options)
             engine.play()
             loadedURL = url
@@ -243,6 +251,8 @@ final class PlayerViewModel {
             frameExtractorTitleID = engine.selectedDiscTitle?.id
             scrubPreview.configure(extractor: frameExtractor, enabled: frameExtractor != nil)
             selectedSubtitleIndex = nil
+            activeSubtitleCodec = nil
+            deactivateASSRendering()
             rate = 1.0
             engine.setRate(1.0)
             if let bm = BookmarkAccess.bookmark(for: url) {
@@ -319,6 +329,8 @@ final class PlayerViewModel {
         loadError = nil
         resumeMessage = nil
         nowPlaying.clear()
+        activeSubtitleCodec = nil
+        deactivateASSRendering()
         #if os(iOS)
         hudKind = nil
         hudHideTask?.cancel()
@@ -349,15 +361,55 @@ final class PlayerViewModel {
     func selectSubtitle(engineIndex: Int) {
         engine.selectSubtitleTrack(index: engineIndex)
         selectedSubtitleIndex = engineIndex
+        let track = engine.subtitleTracks.first { $0.id == engineIndex }
+        activeSubtitleCodec = track?.codec.lowercased()
+        if activeSubtitleCodec == "ass" || activeSubtitleCodec == "ssa",
+           let header = track?.assHeader, !header.isEmpty {
+            assCoordinator.onRendererChanged = { [weak self] renderer in self?.assRenderer = renderer }
+            assCoordinator.activate(header: header, itemID: assItemID)
+            assRenderer = assCoordinator.renderer
+        } else {
+            deactivateASSRendering()
+        }
     }
 
     func disableSubtitle() {
         engine.clearSubtitle()
         selectedSubtitleIndex = nil
+        activeSubtitleCodec = nil
+        deactivateASSRendering()
     }
 
     func loadSidecarSubtitle(url: URL) {
         engine.selectSidecarSubtitle(url: url)
+        activeSubtitleCodec = url.pathExtension.lowercased()
+        if activeSubtitleCodec == "ass" || activeSubtitleCodec == "ssa" {
+            activateSidecarASSWhenHeaderArrives()
+        } else {
+            deactivateASSRendering()
+        }
+    }
+
+    /// Activate styled ASS for a sidecar once the engine publishes its async header; strip fallback else.
+    private func activateSidecarASSWhenHeaderArrives() {
+        sidecarASSHeaderCancellable?.cancel()
+        assCoordinator.onRendererChanged = { [weak self] renderer in self?.assRenderer = renderer }
+        sidecarASSHeaderCancellable = engine.$sidecarASSHeader
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .first()
+            .sink { [weak self] header in
+                guard let self else { return }
+                self.assCoordinator.activate(header: header, itemID: self.assItemID)
+                self.assRenderer = self.assCoordinator.renderer
+            }
+    }
+
+    func deactivateASSRendering() {
+        sidecarASSHeaderCancellable?.cancel()
+        sidecarASSHeaderCancellable = nil
+        assCoordinator.deactivate()
+        assRenderer = nil
     }
 
     // MARK: - Snapshot
