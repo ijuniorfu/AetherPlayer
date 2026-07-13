@@ -37,6 +37,16 @@ struct TracksSheet: View {
                         showSRTImporter = true
                     }
                 }
+                Section("Subtitle Size") {
+                    Picker("Size", selection: Binding(
+                        get: { model.subtitleSize },
+                        set: { model.setSubtitleSize($0) }
+                    )) {
+                        ForEach(SubtitleSize.allCases) { size in
+                            Text(size.label).tag(size)
+                        }
+                    }
+                }
             }
             .navigationTitle("Tracks")
             .toolbar {
