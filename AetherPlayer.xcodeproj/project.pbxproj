@@ -131,6 +131,7 @@
 		D49ECD5C7B4D7EB3C652EF47 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C83243B99DC03593BA27FD0 /* Assets.xcassets */; };
 		D4E65258F5ADB0DD399A417A /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD1AA1DA044FD139582A22E /* PlayerViewModel.swift */; };
 		D4FC820054DC4FA5F25D77D3 /* PlaybackEndedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9209F5B86360F69FA283B5 /* PlaybackEndedTests.swift */; };
+		D7C0BAE929E86E337CD15374 /* PlayerSwipeHints.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCA1A079A237DDD7A36E423 /* PlayerSwipeHints.swift */; };
 		D99EF75F0D51FC11290956D6 /* TracksPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2588343DEF8BDD7262D38D0 /* TracksPopover.swift */; };
 		D9D72C5CDA05EF1FE78EE08B /* SubtitleOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F9C1815A4A38E23202B029 /* SubtitleOverlayView.swift */; };
 		D9F7AD8C9408D2BF3CC35CCC /* SnapshotSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9ACE200E4FCF252E69C38E /* SnapshotSaver.swift */; };
@@ -246,6 +247,7 @@
 		E539D00C05E8347B2ECB7D7B /* MediaURLValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaURLValidation.swift; sourceTree = "<group>"; };
 		E8A25FC6F24413CB30BBB817 /* AutoHide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoHide.swift; sourceTree = "<group>"; };
 		E8CA4926E8D060AEB32D7726 /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
+		EFCA1A079A237DDD7A36E423 /* PlayerSwipeHints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSwipeHints.swift; sourceTree = "<group>"; };
 		F280F56F19B82579EFD6A016 /* SubtitleLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleLayout.swift; sourceTree = "<group>"; };
 		F3F383828AE63B4C10F0BD63 /* TracksPopoverLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksPopoverLayoutTests.swift; sourceTree = "<group>"; };
 		FCE35CB3815E68298357E951 /* PlayerSystemVolume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSystemVolume.swift; sourceTree = "<group>"; };
@@ -446,6 +448,7 @@
 				6093AE89E2B49F7AC939DDB6 /* PlayerHUD.swift */,
 				66AC25205E8861A04AF4FBA5 /* PlayerPresenter.swift */,
 				D48C1CB9ED2221C6976C2089 /* PlayerScrubBar.swift */,
+				EFCA1A079A237DDD7A36E423 /* PlayerSwipeHints.swift */,
 				FCE35CB3815E68298357E951 /* PlayerSystemVolume.swift */,
 				0D36BC08BAF1C10AD8A74814 /* PlayerTopBar.swift */,
 				5CD83E72C558EAC70EE674C5 /* PlayerTransportBar.swift */,
@@ -821,6 +824,7 @@
 				7CF419157386C4D61EBE7145 /* PlayerHostController.swift in Sources */,
 				3F28E327585F5EA23B90C03C /* PlayerPresenter.swift in Sources */,
 				E42B4D886240BD80B67841DB /* PlayerScrubBar.swift in Sources */,
+				D7C0BAE929E86E337CD15374 /* PlayerSwipeHints.swift in Sources */,
 				B9E22158D68355A5770250B8 /* PlayerSystemVolume.swift in Sources */,
 				5F7EB14E2389F7447FC8287E /* PlayerTopBar.swift in Sources */,
 				CDBEA67B7831BEF45F6ED576 /* PlayerTouchInput.swift in Sources */,
