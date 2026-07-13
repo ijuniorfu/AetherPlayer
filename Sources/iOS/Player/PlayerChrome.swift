@@ -18,6 +18,10 @@ struct PlayerChrome: View {
                 onSetBrightness: { model.setBrightness($0) },
                 onSetVolume: { model.setVolume($0) }
             )
+            // On-frame subtitles: above the video/catcher, below the controls and HUD. Non-hittable so
+            // it never intercepts taps; the transport bar sits above it when controls are shown.
+            SubtitleOverlay(model: model)
+                .allowsHitTesting(false)
             if controlsVisible {
                 VStack {
                     PlayerTopBar(model: model, onTracks: { showTracks = true; bumpActivity() })
