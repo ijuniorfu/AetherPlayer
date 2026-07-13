@@ -266,6 +266,8 @@ final class PlayerViewModel {
         } catch {
             loadError = "Could not play \(url.lastPathComponent): \(error.localizedDescription)"
             loadedURL = nil
+            activeSubtitleCodec = nil
+            deactivateASSRendering()
         }
     }
 
