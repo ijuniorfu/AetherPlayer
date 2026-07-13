@@ -93,6 +93,7 @@ final class PlayerHostController: AVPlayerViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         suppressAVKitChrome()
+        model.startVolumeObservation()
     }
 
     override func viewDidLayoutSubviews() {
@@ -105,6 +106,7 @@ final class PlayerHostController: AVPlayerViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         guard !pipActive else { return }   // PiP handoff, keep playing
+        model.stopVolumeObservation()
         model.stop()
     }
 
