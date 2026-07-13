@@ -128,7 +128,7 @@ struct AetherPlayerApp: App {
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
-        panel.allowedContentTypes = [.movie, .video, .audio, .discImage]
+        panel.allowedContentTypes = [.movie, .video, .matroska, .audio, .discImage]
         if panel.runModal() == .OK, let url = panel.url {
             Task { await model.open(url: url) }
         }
@@ -187,4 +187,8 @@ extension UTType {
     /// ISO 9660 / UDF disc image (DVD / Blu-ray). Falls back to the `.iso` extension when the
     /// system UTI is unavailable, so the open panel and Finder association still work.
     static let discImage = UTType("public.iso-image") ?? UTType(filenameExtension: "iso") ?? .data
+    /// Matroska video. The system does not reliably conform .mkv to public.movie in the open panel,
+    /// so list it explicitly (paired with the UTImportedTypeDeclarations in the Info.plist) to
+    /// un-gray .mkv files and let Finder associate the app.
+    static let matroska = UTType("org.matroska.mkv") ?? UTType(filenameExtension: "mkv") ?? .movie
 }
