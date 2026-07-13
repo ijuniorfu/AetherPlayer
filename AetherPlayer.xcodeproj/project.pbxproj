@@ -50,6 +50,7 @@
 		462A3970A6365C009F6BCDA7 /* PlayerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16395C04CD0A2CB440938CFB /* PlayerContainerView.swift */; };
 		4660BF300099999142660CF0 /* AudioDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55EDD8AACE0F8656B606E9E3 /* AudioDetection.swift */; };
 		4901A590916A5CF70AADF663 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CA4926E8D060AEB32D7726 /* Playlist.swift */; };
+		4B733D3EE962EFF60E10AFAD /* PlayerHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6093AE89E2B49F7AC939DDB6 /* PlayerHUD.swift */; };
 		4EA859026A2842AC528B7952 /* AutoHide.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A25FC6F24413CB30BBB817 /* AutoHide.swift */; };
 		4FBC90EFE8D3C7125CDE6DD6 /* AetherPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044E627C4FAE4B1B16C2D88 /* AetherPlayerApp.swift */; };
 		52644B403EB3A37512677022 /* Timecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9B310577BF206A568A8F47 /* Timecode.swift */; };
@@ -196,6 +197,7 @@
 		5BD1AA1DA044FD139582A22E /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		5C93E7A328900B3E6E557922 /* PlayerHostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHostController.swift; sourceTree = "<group>"; };
 		5CD83E72C558EAC70EE674C5 /* PlayerTransportBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTransportBar.swift; sourceTree = "<group>"; };
+		6093AE89E2B49F7AC939DDB6 /* PlayerHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHUD.swift; sourceTree = "<group>"; };
 		62D1F0BA9870F05C6E4C790B /* RepeatMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatMode.swift; sourceTree = "<group>"; };
 		66AC25205E8861A04AF4FBA5 /* PlayerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerPresenter.swift; sourceTree = "<group>"; };
 		671C05102B6D3D4AEAA5F575 /* AetherPlayer-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "AetherPlayer-iOS.entitlements"; sourceTree = "<group>"; };
@@ -441,6 +443,7 @@
 				CE2DDBBBB6312540B5B08CCF /* PlayerGestureCatcher.swift */,
 				5C93E7A328900B3E6E557922 /* PlayerHostController.swift */,
 				BC925D4282CAE12C28EFE9B9 /* PlayerHostController+PiP.swift */,
+				6093AE89E2B49F7AC939DDB6 /* PlayerHUD.swift */,
 				66AC25205E8861A04AF4FBA5 /* PlayerPresenter.swift */,
 				D48C1CB9ED2221C6976C2089 /* PlayerScrubBar.swift */,
 				FCE35CB3815E68298357E951 /* PlayerSystemVolume.swift */,
@@ -813,6 +816,7 @@
 				20C7302CD11CD131C2B132E5 /* PlatformImage.swift in Sources */,
 				258B3112C7C258E4A1B53779 /* PlayerChrome.swift in Sources */,
 				B57918314852295B89312E9A /* PlayerGestureCatcher.swift in Sources */,
+				4B733D3EE962EFF60E10AFAD /* PlayerHUD.swift in Sources */,
 				0A32436687A3A4717EF3407F /* PlayerHostController+PiP.swift in Sources */,
 				7CF419157386C4D61EBE7145 /* PlayerHostController.swift in Sources */,
 				3F28E327585F5EA23B90C03C /* PlayerPresenter.swift in Sources */,
