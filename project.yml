@@ -77,6 +77,18 @@ targets:
               - org.xiph.ogg
             CFBundleTypeRole: Viewer
             LSHandlerRank: Alternate
+        # Matroska has no reliable system UTI conforming .mkv to public.movie, so import it
+        # ourselves; without this Finder and the open panel gray out .mkv files.
+        UTImportedTypeDeclarations:
+          - UTTypeIdentifier: org.matroska.mkv
+            UTTypeDescription: Matroska Video
+            UTTypeConformsTo:
+              - public.movie
+            UTTypeTagSpecification:
+              public.filename-extension:
+                - mkv
+              public.mime-type:
+                - video/x-matroska
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: de.superuser404.AetherPlayer
@@ -123,6 +135,15 @@ targets:
             LSItemContentTypes: [public.audio, public.mp3, public.mpeg-4-audio, com.apple.m4a-audio, org.xiph.flac, com.microsoft.waveform-audio, public.aiff-audio, org.xiph.opus, org.xiph.ogg]
             CFBundleTypeRole: Viewer
             LSHandlerRank: Alternate
+        # Matroska has no reliable system UTI conforming .mkv to public.movie, so import it
+        # ourselves; without this Finder and the open panel gray out .mkv files.
+        UTImportedTypeDeclarations:
+          - UTTypeIdentifier: org.matroska.mkv
+            UTTypeDescription: Matroska Video
+            UTTypeConformsTo: [public.movie]
+            UTTypeTagSpecification:
+              public.filename-extension: [mkv]
+              public.mime-type: [video/x-matroska]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: de.superuser404.AetherPlayer
