@@ -12,15 +12,26 @@ struct SubtitleOverlay: View {
     let model: PlayerViewModel
 
     var body: some View {
-        let cues = model.subtitleCues
-        if cues.isEmpty {
-            Color.clear
+        if let renderer = model.assRenderer {
+            ASSRenderedSubtitles(renderer: renderer,
+                                 reloadSignal: model.assReloadSignal,
+                                 currentOffset: model.subtitleTime)
+                .allowsHitTesting(false)
         } else {
-            SubtitleOverlayView(cues: cues,
-                                subtitleTime: model.subtitleTime,
-                                userScale: model.subtitleSize.scale,
-                                videoSize: model.videoSize)
+            let cues = model.subtitleCues
+            if cues.isEmpty {
+                Color.clear
+            } else {
+                SubtitleOverlayView(cues: cues,
+                                    subtitleTime: model.subtitleTime,
+                                    userScale: model.subtitleSize.scale,
+                                    videoSize: model.videoSize,
+                                    stripASSMarkup: isASSFallback)
+            }
         }
+    }
+    private var isASSFallback: Bool {
+        (model.activeSubtitleCodec == "ass" || model.activeSubtitleCodec == "ssa") && model.assRenderer == nil
     }
 }
 
@@ -36,6 +47,8 @@ struct SubtitleOverlayView: View {
     var userScale: CGFloat = 1.0
     /// Coded video size, for aspect-fitting bitmap (PGS/DVB) cues into the letterboxed video rect.
     var videoSize: CGSize = .zero
+    /// True when an ASS track is active but the styled renderer bailed: text cues are raw event lines.
+    var stripASSMarkup: Bool = false
 
     private var activeCues: [SubtitleCue] {
         cues.filter { subtitleTime >= $0.startTime && subtitleTime <= $0.endTime }
@@ -57,7 +70,8 @@ struct SubtitleOverlayView: View {
     }
 
     private func textCue(_ text: String, in size: CGSize) -> some View {
-        Text(text)
+        let shown = stripASSMarkup ? Self.strippedASSText(text) : text
+        return Text(shown)
             .font(.system(size: subtitleFontSize(surfaceHeight: size.height, userScale: userScale),
                           weight: .medium))
             .multilineTextAlignment(.center)
@@ -67,6 +81,26 @@ struct SubtitleOverlayView: View {
             .frame(maxWidth: max(0, size.width - 160))
             .frame(width: size.width, height: size.height, alignment: .bottom)
             .padding(.bottom, 48)
+    }
+
+    /// Fallback when the styled renderer is unavailable: raw event lines
+    /// must never reach the screen. Mirrors the engine's cleanASSBody.
+    static func strippedASSText(_ raw: String) -> String {
+        var lines: [String] = []
+        for line in raw.split(separator: "\n") {
+            // ReadOrder,Layer,Style,Name,MarginL,MarginR,MarginV,Effect,Text
+            // Integer ReadOrder gate so clean sidecar text with 8+ commas isn't truncated.
+            let fields = line.split(separator: ",", maxSplits: 8, omittingEmptySubsequences: false)
+            guard fields.count == 9, Int(fields[0]) != nil else { lines.append(String(line)); continue }
+            var text = String(fields[8])
+            text = text.replacingOccurrences(of: "\\N", with: "\n")
+            text = text.replacingOccurrences(of: "\\n", with: "\n")
+            text = text.replacingOccurrences(of: "\\h", with: " ")
+            text = text.replacingOccurrences(of: "\\{[^}]*\\}", with: "", options: .regularExpression)
+            let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !trimmed.isEmpty { lines.append(trimmed) }
+        }
+        return lines.joined(separator: "\n")
     }
 
     private func imageCue(_ image: SubtitleImage, in size: CGSize) -> some View {
