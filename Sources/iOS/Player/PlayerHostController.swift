@@ -94,6 +94,11 @@ final class PlayerHostController: AVPlayerViewController {
         super.viewDidAppear(animated)
         suppressAVKitChrome()
         model.startVolumeObservation()
+        PlayerOrientation.engage(locked: model.playerRotationLocked)
+    }
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        PlayerOrientation.playerMask ?? .allButUpsideDown
     }
 
     override func viewDidLayoutSubviews() {
@@ -107,6 +112,7 @@ final class PlayerHostController: AVPlayerViewController {
         super.viewWillDisappear(animated)
         guard !pipActive else { return }   // PiP handoff, keep playing
         model.stopVolumeObservation()
+        PlayerOrientation.unlock()
         model.stop()
     }
 
