@@ -27,6 +27,10 @@ final class PlayerViewModel {
     private(set) var backend: PlaybackBackend = .none
     private(set) var subtitleCues: [SubtitleCue] = []
     private(set) var isSubtitleActive: Bool = false
+    /// Coded video dimensions for the subtitle overlay's bitmap-canvas mapping (.zero before load).
+    var videoSize: CGSize {
+        CGSize(width: Int(engine.sourceVideoWidth), height: Int(engine.sourceVideoHeight))
+    }
     private(set) var metadata: MediaMetadata?
     // Disc titles + chapters (#67); empty for non-disc sources.
     private(set) var discTitles: [TitleInfo] = []
