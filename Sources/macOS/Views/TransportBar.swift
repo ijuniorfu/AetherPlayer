@@ -143,13 +143,6 @@ struct TransportBar: View {
     }
 
     /// "1x", "1.5x", "0.5x" -- drops trailing ".0" for whole rates.
-    private func rateLabel(_ r: Float) -> String {
-        if r == r.rounded() {
-            return "\(Int(r))x"
-        }
-        return "\(String(format: "%g", r))x"
-    }
-
     private var playButtonSymbol: String {
         if model.isEnded { return "arrow.counterclockwise" }
         return model.isPlaying ? "pause.fill" : "play.fill"
