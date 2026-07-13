@@ -26,22 +26,37 @@ struct PlayerTransportBar: View {
                 Text(formatTimecode(model.duration))
                     .font(.system(.caption, design: .monospaced)).foregroundStyle(.white)
             }
-            // ZStack: the skip/play group stays centered while the badge floats to the
-            // bar's trailing edge (via maxWidth alignment) so it never overlaps +10s.
-            ZStack {
-                HStack(spacing: 40) {
-                    skipButton(system: "gobackward.10") { model.seek(by: -10) }
-                    Button(action: { model.primaryAction() }) {
-                        Image(systemName: playButtonSymbol).font(.system(size: 34))
+            // Rate pill + backend badge on their own trailing row, so the centered skip/play group
+            // below stays truly centered and never overlaps them on a narrow portrait width. Rate
+            // applies to every backend, so the pill is always shown; the backend badge is conditional.
+            HStack(spacing: 8) {
+                Menu {
+                    ForEach(PlayerViewModel.availableRates, id: \.self) { r in
+                        Button { model.setRate(r) } label: {
+                            Text((model.rate == r ? "\u{2713} " : "") + rateLabel(r))
+                        }
                     }
-                    .buttonStyle(.plain).foregroundStyle(.white)
-                    .shadow(color: .aetherPurple.opacity(0.6), radius: 6)
-                    skipButton(system: "goforward.10") { model.seek(by: 10) }
+                } label: {
+                    Text(rateLabel(model.rate))
+                        .font(.system(.caption2, design: .monospaced))
+                        .aetherBadge()
                 }
+                .menuIndicator(.hidden)
+
                 if !backendBadge.isEmpty {
                     Text(backendBadge).font(.system(.caption2, design: .monospaced)).aetherBadge()
-                        .frame(maxWidth: .infinity, alignment: .trailing)
                 }
+            }
+            .frame(maxWidth: .infinity, alignment: .trailing)
+
+            HStack(spacing: 40) {
+                skipButton(system: "gobackward.10") { model.seek(by: -10) }
+                Button(action: { model.primaryAction() }) {
+                    Image(systemName: playButtonSymbol).font(.system(size: 34))
+                }
+                .buttonStyle(.plain).foregroundStyle(.white)
+                .shadow(color: .aetherPurple.opacity(0.6), radius: 6)
+                skipButton(system: "goforward.10") { model.seek(by: 10) }
             }
         }
         .padding(.horizontal, 24).padding(.top, 20).padding(.bottom, 28)

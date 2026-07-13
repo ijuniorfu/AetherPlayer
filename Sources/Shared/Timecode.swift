@@ -13,3 +13,10 @@ func formatTimecode(_ seconds: Double) -> String {
     }
     return String(format: "%d:%02d", m, s)
 }
+
+/// Formats a playback rate as a compact multiplier: integer rates drop the decimal
+/// ("1x", "2x"), others use the shortest representation ("0.5x", "1.25x").
+func rateLabel(_ r: Float) -> String {
+    if r == r.rounded() { return "\(Int(r))x" }
+    return "\(String(format: "%g", r))x"
+}
