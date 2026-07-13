@@ -84,6 +84,7 @@ final class ASSFrameHostView: ASSHostBase {
         // upright. See the class-level geometry note in the task report.
         wantsLayer = true
         layer?.isGeometryFlipped = true
+        layer?.backgroundColor = NSColor.clear.cgColor
         layer?.addSublayer(imageLayer)
         #else
         backgroundColor = .clear
@@ -120,6 +121,8 @@ final class ASSFrameHostView: ASSHostBase {
 
     #if os(macOS)
     override var isFlipped: Bool { true }
+    /// Never swallow mouse events meant for the video / chrome beneath (iOS uses isUserInteractionEnabled).
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
     override func layout() {
         super.layout()
         handleLayout()
