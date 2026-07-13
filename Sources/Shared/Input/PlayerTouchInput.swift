@@ -12,7 +12,7 @@ enum PlayerTouchInput {
         return nil
     }
 
-    /// Upward drag raises the level. Returned delta is a 0...1-scaled fraction of the drag height.
+    /// Upward drag raises the level. Returns a signed fraction of the drag height (unclamped; callers clamp).
     static func levelDelta(translationY: CGFloat, height: CGFloat) -> Double {
         guard height > 0 else { return 0 }
         return Double(-translationY / height)

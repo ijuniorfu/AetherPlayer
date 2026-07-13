@@ -37,6 +37,12 @@ struct PlayerTouchInputTests {
         // edge = 300 * 0.18 = 54; x = 53 is inside the brightness strip.
         #expect(PlayerTouchInput.zone(forStartX: 53, width: 300) == .brightness)
     }
+    @Test func zoneRightBoundaryJustInsideEdge() {
+        #expect(PlayerTouchInput.zone(forStartX: 247, width: 300) == .volume)
+    }
+    @Test func zoneRightBoundaryAtEdgeIsNone() {
+        #expect(PlayerTouchInput.zone(forStartX: 246, width: 300) == .none)
+    }
     @Test func zoneZeroWidthIsNone() {
         #expect(PlayerTouchInput.zone(forStartX: 10, width: 0) == .none)
     }

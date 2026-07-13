@@ -315,6 +315,10 @@ final class PlayerViewModel {
         loadError = nil
         resumeMessage = nil
         nowPlaying.clear()
+        #if os(iOS)
+        hudKind = nil
+        hudHideTask?.cancel()
+        #endif
     }
 
     func seek(by delta: Double) {
