@@ -6,6 +6,7 @@ struct PlayerChrome: View {
     @State private var lastActivity = Date()
     @State private var scrubbing = false
     @State private var showTracks = false
+    @State private var showStats = false
 
     private let hideInterval: TimeInterval = 3.5
 
@@ -22,6 +23,18 @@ struct PlayerChrome: View {
             // it never intercepts taps; the transport bar sits above it when controls are shown.
             SubtitleOverlay(model: model)
                 .allowsHitTesting(false)
+            // Stats for Nerds: a top-leading translucent panel over the video, toggled from the Tracks
+            // sheet. Mounted below the controls so the transport bar and HUD stay on top. Stays visible
+            // while toggled on (independent of controlsVisible). Scrolls internally if content overflows.
+            if showStats {
+                StatsInspectorView(model: model)
+                    .frame(maxWidth: 340, maxHeight: .infinity, alignment: .top)
+                    .background(Color.black.opacity(0.6))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .padding(.top, 60)
+                    .padding([.leading, .bottom], 16)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            }
             if controlsVisible {
                 VStack {
                     PlayerTopBar(model: model, onTracks: { showTracks = true; bumpActivity() })
@@ -43,7 +56,7 @@ struct PlayerChrome: View {
                 .animation(.easeInOut(duration: 0.2), value: model.hudKind)
                 .allowsHitTesting(false)
         }
-        .sheet(isPresented: $showTracks) { TracksSheet(model: model) }
+        .sheet(isPresented: $showTracks) { TracksSheet(model: model, showStats: $showStats) }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
             guard controlsVisible else { return }          // hidden: leave hidden
             if scrubbing || showTracks {                   // keep up while scrubbing / sheet open

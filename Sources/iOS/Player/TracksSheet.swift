@@ -3,6 +3,7 @@ import UniformTypeIdentifiers
 
 struct TracksSheet: View {
     let model: PlayerViewModel
+    @Binding var showStats: Bool
     @Environment(\.dismiss) private var dismiss
     @State private var showSRTImporter = false
 
@@ -46,6 +47,9 @@ struct TracksSheet: View {
                             Text(size.label).tag(size)
                         }
                     }
+                }
+                Section {
+                    Toggle("Stats for Nerds", isOn: $showStats)
                 }
             }
             .navigationTitle("Tracks")
