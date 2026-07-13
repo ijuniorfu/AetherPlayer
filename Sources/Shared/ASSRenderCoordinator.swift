@@ -71,10 +71,11 @@ final class ASSRenderCoordinator {
         } else {
             Task.detached(priority: .userInitiated) { [weak self] in
                 Self.writeFontAttachments(fonts, to: fontsDir)
-                await MainActor.run {
-                    guard let self, self.activationGeneration == generation else { return }
-                    self.installRenderer(fontsDir: fontsDir)
-                }
+                // Hop back via an isolated method rather than `MainActor.run { self... }`: capturing
+                // self inside a MainActor.run closure from a detached task trips "sending self risks
+                // data races" on some toolchains (Xcode 26.3). An await on a MainActor-isolated method
+                // of the (implicitly Sendable) @MainActor class is the concurrency-safe equivalent.
+                await self?.installRendererIfCurrent(generation: generation, fontsDir: fontsDir)
             }
         }
         let builder = ASSScriptBuilder(header: header)
@@ -119,6 +120,13 @@ final class ASSRenderCoordinator {
         onRendererChanged?(renderer)
         // Surface events that arrived in the builder while fonts were being written.
         flushPendingEventsIfDue()
+    }
+
+    /// Main-actor continuation of `activate` after off-main font writes; installs the renderer
+    /// unless a newer activation (or a deactivate) has superseded this one.
+    private func installRendererIfCurrent(generation: Int, fontsDir: URL) {
+        guard activationGeneration == generation else { return }
+        installRenderer(fontsDir: fontsDir)
     }
 
     private func consume(cues: [SubtitleCue]) {
