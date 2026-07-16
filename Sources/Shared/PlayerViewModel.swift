@@ -159,6 +159,11 @@ final class PlayerViewModel {
 
     init() throws {
         self.engine = try AetherEngine()
+        #if DEBUG
+        // Mirror engine diagnostics to stdout so `devicectl process launch --console`
+        // captures them on device without Xcode attached.
+        EngineLog.handler = { print($0) }
+        #endif
         bind()
         if UserDefaults.standard.object(forKey: "player.volume") != nil {
             engine.volume = UserDefaults.standard.float(forKey: "player.volume")
