@@ -68,7 +68,8 @@ The system media keys and Control Center transport also drive play / pause and t
 
 A universal iPhone + iPad app (same source tree, sharing the playback core with the macOS app):
 
-- **Open local files or a URL.** Pick a video or audio file from the Files app, or paste an `http`/`https` URL.
+- **Open local files or a URL.** Pick a video or audio file from the Files app, or paste an `http`/`https` URL. While a remote open is in flight (a live tuner can take a few seconds to tune), Home shows an "Opening stream" pill with a cancel button.
+- **Live streams (tuner / IPTV).** A "Live stream" toggle in Open URL loads straight on the engine's live path with a 30-minute DVR window, one tune-in, no size probing; URLs that resolved live once are remembered and open live automatically from then on. Sources that turn out live without the toggle are detected and reloaded. Live playback gets a live-aware transport bar: a behind-live offset instead of a duration, scrubbing across the DVR window, and a LIVE badge (red dot at the edge, gray while behind) that jumps back to the live edge. Teletext captions on live broadcasts render like any other subtitle track.
 - **Custom playback chrome, matching the macOS design.** A transport bar with a scrubber (monospaced leading/trailing timecodes), a floating scrub-thumbnail preview while dragging, play/pause, and -/+10s skip. A top bar with Close, AirPlay, and Tracks. Controls tap to show/hide and auto-hide during playback, and a replay button appears when playback reaches the end.
 - **Picture in Picture, AirPlay, and lock-screen Now Playing.** Playback is still hosted in an `AVPlayerViewController` under the hood, so PiP, AirPlay routing, and Control Center / lock-screen Now Playing come for free. Only AVKit's own visible chrome is hidden; its backend stays in place.
 - **Track switching.** A tracks sheet lists audio and subtitle tracks, with an "Off" option for subtitles and support for attaching a sidecar `.srt`.
