@@ -47,6 +47,11 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSMinimumSystemVersion: "14.0"
         NSHumanReadableCopyright: ""
+        # Open URL plays user-entered servers (LAN Jellyfin, HDHomeRun proxies,
+        # IPTV) that are commonly plain HTTP; the engine streams them through
+        # URLSession, so ATS needs the cleartext exemption.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
         SUFeedURL: https://superuser404notfound.github.io/AetherPlayer/appcast.xml
         SUPublicEDKey: svx1jSdcWBeRUDFkz79lK7yBgXbFu5GnVrm/G/xh3dE=
         SUEnableInstallerLauncherService: true
@@ -120,6 +125,9 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSMinimumSystemVersion: "14.0"
         NSHumanReadableCopyright: ""
+        # Cleartext media servers over URLSession, see the note on the macOS target.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
         LSApplicationCategoryType: public.app-category.video
         ITSAppUsesNonExemptEncryption: false
         CFBundleDocumentTypes:
@@ -174,6 +182,9 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         # Only standard HTTPS/TLS (exempt); skips the export-compliance prompt on upload.
         ITSAppUsesNonExemptEncryption: false
+        # Cleartext media servers over URLSession, see the note on the macOS target.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
         UILaunchScreen: {}
         UISupportedInterfaceOrientations~ipad:
           - UIInterfaceOrientationPortrait
