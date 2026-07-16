@@ -254,7 +254,16 @@ final class PlayerViewModel {
             let bufferSegments = UserDefaults.standard.integer(forKey: "playback.forwardBufferSegments")
             if bufferSegments > 0 { options.forwardBufferSegments = bufferSegments }
             options.preserveASSMarkup = true
-            try await engine.load(url: url, startPosition: resume, options: options)
+            let probe = try await engine.load(url: url, startPosition: resume, options: options)
+            // Raw live source (e.g. a tuner MPEG-TS over HTTP): the probe flags no-duration
+            // network streams; reload on the engine's live path so the clock, DVR ring, and
+            // subtitles run with live semantics. Costs one extra tune-in only for live sources.
+            if let probe, probe.isLive, !engine.isLive {
+                var liveOptions = options
+                liveOptions.isLive = true
+                liveOptions.dvrWindowSeconds = 1800
+                try await engine.load(url: url, options: liveOptions)
+            }
             engine.play()
             loadedURL = url
             frameExtractor = engine.makeFrameExtractor()
