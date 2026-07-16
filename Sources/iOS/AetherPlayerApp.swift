@@ -23,6 +23,15 @@ struct AetherPlayerApp: App {
                     .onOpenURL { url in
                         DocumentOpen.open(url, model: model)
                     }
+                    .task {
+                        // Diagnostics: `--open-url <url>` launch argument auto-opens a
+                        // remote URL (simulator / devicectl automation without UI scripting).
+                        let args = ProcessInfo.processInfo.arguments
+                        if let idx = args.firstIndex(of: "--open-url"), idx + 1 < args.count,
+                           let url = MediaURLValidation.normalized(args[idx + 1]) {
+                            await model.open(url: url)
+                        }
+                    }
             } else {
                 Text("AetherEngine failed to initialize.")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

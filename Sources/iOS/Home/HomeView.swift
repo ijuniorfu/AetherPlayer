@@ -42,5 +42,16 @@ struct HomeView: View {
             DocumentOpen.openFolder(result, model: model)
         }
         .sheet(isPresented: $showURLSheet) { OpenURLSheet(model: model) }
+        .alert(
+            "Playback Error",
+            isPresented: Binding(
+                get: { model.loadError != nil },
+                set: { if !$0 { model.clearLoadError() } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(model.loadError ?? "")
+        }
     }
 }
