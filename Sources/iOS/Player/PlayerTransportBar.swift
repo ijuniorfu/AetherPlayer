@@ -12,19 +12,59 @@ struct PlayerTransportBar: View {
     @Binding var scrubbing: Bool
     @State private var scrubFraction: Double = 0
 
-    private var playbackFraction: Double { model.duration > 0 ? model.currentTime / model.duration : 0 }
+    /// DVR window of a live session; nil on VOD (and on live before the first window publish).
+    private var liveRange: ClosedRange<Double>? {
+        guard model.isLive, let range = model.seekableLiveRange,
+              range.upperBound > range.lowerBound else { return nil }
+        return range
+    }
+    /// Seconds the scrubber spans: the DVR window on live, the duration on VOD.
+    private var scrubSpanSeconds: Double {
+        liveRange.map { $0.upperBound - $0.lowerBound } ?? model.duration
+    }
+    private var playbackFraction: Double {
+        if let range = liveRange {
+            let span = range.upperBound - range.lowerBound
+            return min(max((model.currentTime - range.lowerBound) / span, 0), 1)
+        }
+        return model.duration > 0 ? model.currentTime / model.duration : 0
+    }
     private var displayedTime: Double { scrubbing ? scrubFraction * model.duration : model.currentTime }
+    /// Live: offset behind the live edge ("-1:23"), empty at the edge. VOD: the position.
+    private var leadingLabel: String {
+        guard model.isLive else { return formatTimecode(displayedTime) }
+        let behind: Double
+        if scrubbing, let range = liveRange {
+            behind = (1 - scrubFraction) * (range.upperBound - range.lowerBound)
+        } else {
+            behind = model.behindLiveSeconds
+        }
+        return behind > 1 ? "-" + formatTimecode(behind) : ""
+    }
 
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
-                Text(formatTimecode(displayedTime))
+                Text(leadingLabel)
                     .font(.system(.caption, design: .monospaced)).foregroundStyle(.white)
-                PlayerScrubBar(progress: playbackFraction, duration: model.duration,
+                PlayerScrubBar(progress: playbackFraction, duration: scrubSpanSeconds,
                                scrubPreview: model.scrubPreview, scrubbing: $scrubbing,
-                               scrubFraction: $scrubFraction, onSeek: { model.seek(to: $0) })
-                Text(formatTimecode(model.duration))
-                    .font(.system(.caption, design: .monospaced)).foregroundStyle(.white)
+                               scrubFraction: $scrubFraction,
+                               onSeek: { model.seek(to: (liveRange?.lowerBound ?? 0) + $0) })
+                if model.isLive {
+                    Button { model.seekToLiveEdge() } label: {
+                        HStack(spacing: 5) {
+                            Circle().fill(model.isAtLiveEdge ? Color.red : Color.gray)
+                                .frame(width: 7, height: 7)
+                            Text("LIVE").font(.system(.caption, design: .monospaced)).bold()
+                        }
+                        .foregroundStyle(.white)
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Text(formatTimecode(model.duration))
+                        .font(.system(.caption, design: .monospaced)).foregroundStyle(.white)
+                }
             }
             // Rate pill + backend badge on their own trailing row, so the centered skip/play group
             // below stays truly centered and never overlaps them on a narrow portrait width. Rate

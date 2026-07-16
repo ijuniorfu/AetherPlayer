@@ -42,6 +42,23 @@ struct HomeView: View {
             DocumentOpen.openFolder(result, model: model)
         }
         .sheet(isPresented: $showURLSheet) { OpenURLSheet(model: model) }
+        .overlay(alignment: .bottom) {
+            // Remote opens can take 10-20 s (tuner tune-in + stream probe); without
+            // feedback the app reads as hung. Player cover only opens once loaded.
+            if model.state == .loading && !model.hasMedia {
+                HStack(spacing: 12) {
+                    ProgressView()
+                    Text("Opening stream…")
+                    Button("Cancel") { model.cancelLoading() }
+                        .buttonStyle(.bordered)
+                }
+                .padding(.horizontal, 16).padding(.vertical, 10)
+                .background(.regularMaterial, in: Capsule())
+                .padding(.bottom, 24)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: model.state == .loading)
         .alert(
             "Playback Error",
             isPresented: Binding(

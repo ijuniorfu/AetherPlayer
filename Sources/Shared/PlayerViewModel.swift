@@ -17,6 +17,8 @@ final class PlayerViewModel {
 
     // Mirrored engine state (kept in sync via Combine).
     private(set) var state: PlaybackState = .idle
+    /// Mirrors `engine.isLive`; drives the live transport bar (LIVE badge, DVR scrubbing).
+    private(set) var isLive: Bool = false
     private(set) var currentTime: Double = 0
     /// Source-PTS clock for subtitle cue visibility. Differs from currentTime on disc titles,
     /// where currentTime is shifted by the clip-0 STC origin (sourcePresentationOrigin). (#112)
@@ -189,6 +191,9 @@ final class PlayerViewModel {
     }
 
     private func bind() {
+        engine.$isLive.receive(on: DispatchQueue.main).sink { [weak self] in
+            self?.isLive = $0
+        }.store(in: &cancellables)
         engine.$state.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.state = $0
             self?.updateSleepAssertion()
@@ -236,17 +241,26 @@ final class PlayerViewModel {
         }.store(in: &cancellables)
     }
 
-    func open(url: URL) async {
-        await openInternal(url: url, recordPlaylistRelative: true)
+    func open(url: URL, forceLive: Bool = false) async {
+        await openInternal(url: url, recordPlaylistRelative: true, forceLive: forceLive)
     }
+
+    /// DVR rewind window for live sessions (seconds).
+    static let liveDVRWindowSeconds: Double = 1800
 
     /// Shared open path. Fresh opens make a new bookmark; reopening from a recent
     /// resolves a ScopedResource first (see openRecent). `startOverride` forces the
     /// start position (used by `restart()` to reload-to-replay at end-of-stream)
-    /// instead of resolving a recents resume point.
-    private func openInternal(url: URL, recordPlaylistRelative: Bool, startOverride: Double? = nil) async {
+    /// instead of resolving a recents resume point. `forceLive` (Open URL toggle)
+    /// loads straight on the engine's live path, skipping the VOD probe pass.
+    private func openInternal(url: URL, recordPlaylistRelative: Bool, startOverride: Double? = nil, forceLive: Bool = false) async {
         loadError = nil
-        let resume = startOverride ?? recents.position(for: url).flatMap { resumeTarget(lastPosition: $0.position, duration: $0.duration) }
+        // Known-live sources (user toggle or a previous session that resolved live) load
+        // directly on the live path: one tune-in, and the reader skips its size-probe
+        // ladder entirely. Everything else keeps the probe-then-reload fallback below.
+        let openAsLive = forceLive || (!url.isFileURL && LiveStreamMemory.isKnownLive(url))
+        let resume = openAsLive ? nil
+            : startOverride ?? recents.position(for: url).flatMap { resumeTarget(lastPosition: $0.position, duration: $0.duration) }
         // Tear down the previous session's extractor up front so a failed
         // re-open does not strand it (it would otherwise linger until the
         // engine's 10 s idle-close).
@@ -259,15 +273,24 @@ final class PlayerViewModel {
             let bufferSegments = UserDefaults.standard.integer(forKey: "playback.forwardBufferSegments")
             if bufferSegments > 0 { options.forwardBufferSegments = bufferSegments }
             options.preserveASSMarkup = true
+            if openAsLive {
+                options.isLive = true
+                options.dvrWindowSeconds = Self.liveDVRWindowSeconds
+            }
             let probe = try await engine.load(url: url, startPosition: resume, options: options)
             // Raw live source (e.g. a tuner MPEG-TS over HTTP): the probe flags no-duration
             // network streams; reload on the engine's live path so the clock, DVR ring, and
-            // subtitles run with live semantics. Costs one extra tune-in only for live sources.
+            // subtitles run with live semantics. Costs one extra tune-in only for live sources
+            // that were not already known live.
             if let probe, probe.isLive, !engine.isLive {
                 var liveOptions = options
                 liveOptions.isLive = true
-                liveOptions.dvrWindowSeconds = 1800
+                liveOptions.dvrWindowSeconds = Self.liveDVRWindowSeconds
                 try await engine.load(url: url, options: liveOptions)
+            }
+            // Remember resolved liveness so the next open of this URL skips the probe pass.
+            if engine.isLive, !url.isFileURL {
+                LiveStreamMemory.remember(url)
             }
             engine.play()
             loadedURL = url
@@ -287,12 +310,23 @@ final class PlayerViewModel {
             #endif
             if startOverride == nil, let resume { resumeMessage = "Resuming from \(formatTimecode(resume))" }
             else { resumeMessage = nil }
+        } catch is CancellationError {
+            // Superseded by a newer load or a deliberate cancel; not an error to surface.
+            loadedURL = nil
+            activeSubtitleCodec = nil
+            deactivateASSRendering()
         } catch {
             loadError = "Could not play \(url.lastPathComponent): \(error.localizedDescription)"
             loadedURL = nil
             activeSubtitleCodec = nil
             deactivateASSRendering()
         }
+    }
+
+    /// Abort an in-flight open (Home's loading indicator). The engine load unwinds
+    /// with CancellationError, which openInternal swallows.
+    func cancelLoading() {
+        engine.stop()
     }
 
     /// Reopen a recents entry: resolve its bookmark, hold scope, then load.
@@ -361,6 +395,16 @@ final class PlayerViewModel {
         hudKind = nil
         hudHideTask?.cancel()
         #endif
+    }
+
+    // MARK: - Live surfaces (session axis; the UI redraws on currentTime ticks)
+
+    var seekableLiveRange: ClosedRange<Double>? { engine.seekableLiveRange }
+    var isAtLiveEdge: Bool { engine.isAtLiveEdge }
+    var behindLiveSeconds: Double { engine.behindLiveSeconds }
+
+    func seekToLiveEdge() {
+        Task { await engine.seekToLiveEdge() }
     }
 
     func seek(by delta: Double) {
