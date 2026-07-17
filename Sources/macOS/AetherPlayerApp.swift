@@ -10,6 +10,7 @@ struct AetherPlayerApp: App {
         try? PlayerViewModel()
     }()
     @State private var alwaysOnTop = false
+    @Environment(\.openWindow) private var openWindow
 #if DIRECT_DISTRIBUTION
     @StateObject private var updater = Updater()
 #endif
@@ -48,6 +49,9 @@ struct AetherPlayerApp: App {
                 Button("Check for Updates\u{2026}") { updater.checkForUpdates() }
             }
 #endif
+            CommandGroup(after: .appInfo) {
+                Button("Open Source Licenses\u{2026}") { openWindow(id: "licenses") }
+            }
             CommandGroup(replacing: .newItem) {
                 Button("Open\u{2026}") { openFile() }
                     .keyboardShortcut("o", modifiers: .command)
@@ -116,6 +120,13 @@ struct AetherPlayerApp: App {
         // SwiftUI auto-adds a Window-menu item for every Window scene, using its title. That collided with the
         // explicit StatsCommands button (which carries the Cmd-Shift-I shortcut), showing "Stats for Nerds" twice.
         // commandsRemoved() drops the auto item so only the explicit, shortcut-bearing entry remains.
+        .commandsRemoved()
+
+        Window("Open Source Licenses", id: "licenses") {
+            LicensesView()
+        }
+        .defaultSize(width: 860, height: 560)
+        // App-menu button above is the entry point; drop the auto Window-menu item.
         .commandsRemoved()
 
         Settings {

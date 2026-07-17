@@ -1,6 +1,14 @@
 {
-  "originHash" : "340433f6454aa924e5768db3112fe50538079ab3883fa8c54ff1388b05f354e2",
+  "originHash" : "7a2c8ecb74b5e7f9f0fe30fa5dfcb04eaf4bc81e79e51e39afe91008e4592259",
   "pins" : [
+    {
+      "identity" : "aetherengine",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/superuser404notfound/AetherEngine",
+      "state" : {
+        "revision" : "8ebe9a433766592a398836e17880566e6e937b46"
+      }
+    },
     {
       "identity" : "combine-schedulers",
       "kind" : "remoteSourceControl",
