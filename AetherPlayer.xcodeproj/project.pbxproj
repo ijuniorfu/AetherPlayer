@@ -221,6 +221,7 @@
 		6C7F491313B24CBDDB44433C /* SubtitleLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleLayoutTests.swift; sourceTree = "<group>"; };
 		6F5A68802EC677C97886B469 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		733C2CC2BC1883D498A71C92 /* OpenURLSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenURLSheet.swift; sourceTree = "<group>"; };
+		73DB206B6EB1A0B760DB08B0 /* AetherEngine */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AetherEngine; path = ../AetherEngine; sourceTree = SOURCE_ROOT; };
 		757D2F72AFE981617FA7706C /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		77C9F4C51129E595CAEFB615 /* PlayerChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerChrome.swift; sourceTree = "<group>"; };
 		78BEA53895E7E40BF129B1C2 /* RepeatModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatModeTests.swift; sourceTree = "<group>"; };
@@ -339,6 +340,14 @@
 			path = NowPlaying;
 			sourceTree = "<group>";
 		};
+		3FA437010187A63704DBC549 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				73DB206B6EB1A0B760DB08B0 /* AetherEngine */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 		4A64F99ADAA658F8D13CDA3D /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -443,6 +452,7 @@
 		A394F955E3998BF0D78C9ACC = {
 			isa = PBXGroup;
 			children = (
+				3FA437010187A63704DBC549 /* Packages */,
 				60FF259B7339DD4122961B93 /* Sources */,
 				674897F3AAB002CA01D13E1F /* Tests */,
 				D89D6DC2B7ED0B934CE5E961 /* Products */,
@@ -667,9 +677,9 @@
 			mainGroup = A394F955E3998BF0D78C9ACC;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				01FD55D28DD498C42BB12330 /* XCRemoteSwiftPackageReference "AetherEngine" */,
 				5F7234CE368E530069027164 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				CCAFC7013C0AF1C5481CE284 /* XCRemoteSwiftPackageReference "swift-ass-renderer" */,
+				2E2D3D8B729FE148B38FD109 /* XCLocalSwiftPackageReference "/Users/vincentherbst/Dev/AetherEngine" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D89D6DC2B7ED0B934CE5E961 /* Products */;
@@ -1226,15 +1236,14 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		01FD55D28DD498C42BB12330 /* XCRemoteSwiftPackageReference "AetherEngine" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/superuser404notfound/AetherEngine";
-			requirement = {
-				kind = revision;
-				revision = 6f544f084259f77b7cd97144fbada0f8036bb132;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		2E2D3D8B729FE148B38FD109 /* XCLocalSwiftPackageReference "/Users/vincentherbst/Dev/AetherEngine" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = /Users/vincentherbst/Dev/AetherEngine;
 		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
 		5F7234CE368E530069027164 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
@@ -1261,7 +1270,6 @@
 		};
 		1C268231D2F08158858A8C07 /* AetherEngine */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 01FD55D28DD498C42BB12330 /* XCRemoteSwiftPackageReference "AetherEngine" */;
 			productName = AetherEngine;
 		};
 		8FE3F216F8B2322140246EA0 /* SwiftAssRenderer */ = {
@@ -1271,7 +1279,6 @@
 		};
 		BE33BD5FE909AF50F8938376 /* AetherEngine */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 01FD55D28DD498C42BB12330 /* XCRemoteSwiftPackageReference "AetherEngine" */;
 			productName = AetherEngine;
 		};
 		BE6437A6A5492A09DB0741D8 /* SwiftAssRenderer */ = {
@@ -1286,7 +1293,6 @@
 		};
 		ED443FBA5F61168DA684DB8A /* AetherEngine */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 01FD55D28DD498C42BB12330 /* XCRemoteSwiftPackageReference "AetherEngine" */;
 			productName = AetherEngine;
 		};
 /* End XCSwiftPackageProductDependency section */
