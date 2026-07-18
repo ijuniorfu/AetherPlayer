@@ -61,6 +61,8 @@ struct SubtitleOverlayView: View {
                     switch cue.body {
                     case .text(let text):
                         textCue(text, in: geo.size)
+                    case .richText(let runs):
+                        richCue(runs, in: geo.size)
                     case .image(let image):
                         imageCue(image, in: geo.size)
                     }
@@ -76,6 +78,24 @@ struct SubtitleOverlayView: View {
                           weight: .medium))
             .multilineTextAlignment(.center)
             .foregroundStyle(.white)
+            .padding(.horizontal, 12).padding(.vertical, 6)
+            .background(.black.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
+            .frame(maxWidth: max(0, size.width - 160))
+            .frame(width: size.width, height: size.height, alignment: .bottom)
+            .padding(.bottom, 48)
+    }
+
+    private static func color(_ c: SubtitleColor) -> Color {
+        Color(red: Double(c.r) / 255, green: Double(c.g) / 255, blue: Double(c.b) / 255)
+    }
+
+    private func richCue(_ runs: [SubtitleTextRun], in size: CGSize) -> some View {
+        let font = Font.system(size: subtitleFontSize(surfaceHeight: size.height, userScale: userScale), weight: .medium)
+        let colored = runs.reduce(Text("")) { acc, run in
+            acc + Text(run.text).font(font).foregroundColor(run.color.map(Self.color) ?? .white)
+        }
+        return colored
+            .multilineTextAlignment(.center)
             .padding(.horizontal, 12).padding(.vertical, 6)
             .background(.black.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
             .frame(maxWidth: max(0, size.width - 160))
