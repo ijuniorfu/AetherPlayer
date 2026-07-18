@@ -73,6 +73,7 @@ A universal iPhone + iPad app (same source tree, sharing the playback core with 
 - **Custom playback chrome, matching the macOS design.** A transport bar with a scrubber (monospaced leading/trailing timecodes), a floating scrub-thumbnail preview while dragging, play/pause, and -/+10s skip. A top bar with Close, AirPlay, and Tracks. Controls tap to show/hide and auto-hide during playback, and a replay button appears when playback reaches the end.
 - **Picture in Picture, AirPlay, and lock-screen Now Playing.** Playback is still hosted in an `AVPlayerViewController` under the hood, so PiP, AirPlay routing, and Control Center / lock-screen Now Playing come for free. Only AVKit's own visible chrome is hidden; its backend stays in place.
 - **Track switching.** A tracks sheet lists audio and subtitle tracks, with an "Off" option for subtitles and support for attaching a sidecar `.srt`.
+- **Edge-swipe gestures.** A vertical swipe on the left edge adjusts brightness, on the right edge volume; the wide center stays a dead zone so a tap or a minimize swipe never nudges a level.
 - **Recents.** Recently opened files show up on Home with cached thumbnails for quick re-open.
 
 ## Build
@@ -102,4 +103,4 @@ Vibe-coded and maintained by [Vincent Herbst](https://github.com/superuser404not
 
 ## License
 
-[LGPL-3.0](LICENSE), matching AetherEngine and upstream FFmpeg.
+[LGPL-3.0](LICENSE), matching AetherEngine. FFmpeg reaches the app through FFmpegBuild as dynamically linked frameworks under LGPL-2.1-or-later (no GPL components).
