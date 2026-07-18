@@ -464,9 +464,12 @@ final class PlayerViewModel {
         let track = engine.addExternalSubtitleTrack(
             ExternalSubtitleTrack(url: url, name: "English", language: "en"))
         engine.selectSubtitleTrack(index: track.id)
-        selectedSubtitleIndex = nil
-        activeSubtitleCodec = nil
-        deactivateASSRendering()
+        activeSubtitleCodec = url.pathExtension.lowercased()
+        if activeSubtitleCodec == "ass" || activeSubtitleCodec == "ssa" {
+            activateSidecarASSWhenHeaderArrives()
+        } else {
+            deactivateASSRendering()
+        }
     }
 
     func loadSidecarSubtitle(url: URL) {
