@@ -241,7 +241,10 @@ final class PlayerViewModel {
         engine.$playbackBackend.receive(on: DispatchQueue.main).sink { [weak self] in self?.backend = $0 }.store(in: &cancellables)
         engine.$subtitleCues.receive(on: DispatchQueue.main).sink { [weak self] in self?.subtitleCues = $0 }.store(in: &cancellables)
         engine.$isSubtitleActive.receive(on: DispatchQueue.main).sink { [weak self] in self?.isSubtitleActive = $0 }.store(in: &cancellables)
-        engine.$activeSubtitleTrackIndex.receive(on: DispatchQueue.main).sink { [weak self] in self?.activeSubtitleTrackIndex = $0 }.store(in: &cancellables)
+        engine.$activeSubtitleTrackIndex.receive(on: DispatchQueue.main).sink {
+            [weak self] in self?.activeSubtitleTrackIndex = $0
+            self?.toggleASSRender()
+        }.store(in: &cancellables)
         engine.$metadata.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.metadata = $0
             self?.pushNowPlaying()
@@ -444,7 +447,10 @@ final class PlayerViewModel {
     func selectSubtitle(engineIndex: Int) {
         engine.selectSubtitleTrack(index: engineIndex)
         selectedSubtitleIndex = engineIndex
-        let track = engine.subtitleTracks.first { $0.id == engineIndex }
+    }
+    
+    func toggleASSRender() {
+        let track = subtitleTracks.first { $0.id == activeSubtitleTrackIndex }
         activeSubtitleCodec = track?.codec.lowercased()
         if activeSubtitleCodec == "ass" || activeSubtitleCodec == "ssa",
            let header = track?.assHeader, !header.isEmpty {
@@ -464,12 +470,6 @@ final class PlayerViewModel {
         let track = engine.addExternalSubtitleTrack(
             ExternalSubtitleTrack(url: url, name: "English", language: "en"))
         engine.selectSubtitleTrack(index: track.id)
-        activeSubtitleCodec = url.pathExtension.lowercased()
-        if activeSubtitleCodec == "ass" || activeSubtitleCodec == "ssa" {
-            activateSidecarASSWhenHeaderArrives()
-        } else {
-            deactivateASSRendering()
-        }
     }
 
     func loadSidecarSubtitle(url: URL) {
