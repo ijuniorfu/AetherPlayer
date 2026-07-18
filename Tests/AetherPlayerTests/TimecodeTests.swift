@@ -17,4 +17,12 @@ final class TimecodeTests: XCTestCase {
         XCTAssertEqual(formatTimecode(.nan), "0:00")
         XCTAssertEqual(formatTimecode(.infinity), "0:00")
     }
+    func testRateLabel() {
+        XCTAssertEqual(rateLabel(1.0), "1x")
+        XCTAssertEqual(rateLabel(2.0), "2x")
+        XCTAssertEqual(rateLabel(0.5), "0.5x")
+        XCTAssertEqual(rateLabel(0.75), "0.75x")
+        XCTAssertEqual(rateLabel(1.25), "1.25x")
+        XCTAssertEqual(rateLabel(1.5), "1.5x")
+    }
 }

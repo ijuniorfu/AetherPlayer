@@ -4,9 +4,14 @@ ENGINE_REPO="${ENGINE_REPO:-$HOME/Dev/AetherEngine}"
 PROJECT_YML="project.yml"
 PBXPROJ="AetherPlayer.xcodeproj/project.pbxproj"
 RESOLVED="AetherPlayer.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
-SHA=$(git -C "$ENGINE_REPO" rev-parse origin/main)
-SUBJECT=$(git -C "$ENGINE_REPO" log -1 --format=%s origin/main)
-if grep -q "$SHA" "$PROJECT_YML"; then echo "Already at $SHA"; exit 0; fi
+# Consumers pin the latest RELEASE tag, not the main tip (Vincent,
+# 2026-07-15); unreleased engine commits are tested via a local
+# uncommitted pin instead.
+git -C "$ENGINE_REPO" fetch --tags --quiet origin
+TAG=$(git -C "$ENGINE_REPO" tag --list | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+SHA=$(git -C "$ENGINE_REPO" rev-parse "$TAG^{commit}")
+SUBJECT=$(git -C "$ENGINE_REPO" log -1 --format=%s "$SHA")
+if grep -q "$SHA" "$PROJECT_YML"; then echo "Already at release $TAG ($SHA)"; exit 0; fi
 
 # project.yml is the SOURCE OF TRUTH: CI runs `xcodegen generate`, which
 # rebuilds project.pbxproj from it, and AetherEngine is pinned there by
@@ -29,6 +34,6 @@ if grep -q "$SHA" "$PROJECT_YML"; then echo "Already at $SHA"; exit 0; fi
 # `git -C <DerivedData>/SourcePackages/repositories/AetherEngine-* fetch --all`.
 xcodebuild -project AetherPlayer.xcodeproj -scheme AetherPlayer -resolvePackageDependencies
 git add "$PROJECT_YML" "$PBXPROJ" "$RESOLVED"
-git commit -m "chore(deps): bump AetherEngine to $SHA -- $SUBJECT"
+git commit -m "chore(deps): bump AetherEngine to $TAG ($SHA) -- $SUBJECT"
 git push
-echo "Bumped to $SHA"
+echo "Bumped to release $TAG ($SHA)"
