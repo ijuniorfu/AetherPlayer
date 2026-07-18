@@ -21,7 +21,7 @@ struct TracksSheet: View {
                 }
                 Section("Subtitles") {
                     ForEach(subtitleMenuRows(model.subtitleTracks,
-                                             selectedEngineIndex: model.selectedSubtitleIndex,
+                                             selectedEngineIndex: model.activeSubtitleTrackIndex,
                                              isActive: model.isSubtitleActive)) { row in
                         Button {
                             switch row.kind {
