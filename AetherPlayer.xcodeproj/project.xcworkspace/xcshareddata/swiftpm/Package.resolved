@@ -6,7 +6,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/superuser404notfound/AetherEngine",
       "state" : {
-        "revision" : "b2256bebcd5b4ae118bd3ca2c3cc5d3b3bc6c24f"
+        "revision" : "3e6bdbc500967daa70628c61ab85164385db9c1e"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/superuser404notfound/FFmpegBuild",
       "state" : {
-        "revision" : "e8ae797a8ac9b715dfb6805b4929cc9f3e4173f2",
-        "version" : "2.1.0"
+        "revision" : "e832f22c89909297b7abe3a94c05b2816414b054",
+        "version" : "2.2.0"
       }
     },
     {
