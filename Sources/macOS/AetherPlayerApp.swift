@@ -10,6 +10,7 @@ struct AetherPlayerApp: App {
         try? PlayerViewModel()
     }()
     @State private var alwaysOnTop = false
+    @State private var showOpenURLSheet = false
     @Environment(\.openWindow) private var openWindow
 #if DIRECT_DISTRIBUTION
     @StateObject private var updater = Updater()
@@ -19,7 +20,12 @@ struct AetherPlayerApp: App {
         Window("AetherPlayer", id: "main") {
             Group {
                 if let model {
-                    ContentView(model: model)
+                    ContentView(model: model) {
+                        showOpenURLSheet = true
+                    }
+                    .sheet(isPresented: $showOpenURLSheet) {
+                        OpenURLSheet(model: model)
+                    }
                 } else {
                     Text("AetherEngine failed to initialize.")
                         .foregroundStyle(.white)
@@ -55,6 +61,9 @@ struct AetherPlayerApp: App {
             CommandGroup(replacing: .newItem) {
                 Button("Open\u{2026}") { openFile() }
                     .keyboardShortcut("o", modifiers: .command)
+                Button("Open URL\u{2026}") { showOpenURLSheet = true }
+                    .keyboardShortcut("l", modifiers: .command)
+                    .disabled(model == nil)
                 Button("Open Folder\u{2026}") { openFolderPanel() }
                     .keyboardShortcut("o", modifiers: [.command, .shift])
             }

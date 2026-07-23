@@ -6,9 +6,11 @@ import AetherEngine
 struct ContentView: View {
     @State private var model: PlayerViewModel
     @State private var isDropTargeted = false
+    let onOpenURL: () -> Void
 
-    init(model: PlayerViewModel) {
+    init(model: PlayerViewModel, onOpenURL: @escaping () -> Void) {
         _model = State(initialValue: model)
+        self.onOpenURL = onOpenURL
     }
 
     var body: some View {
@@ -27,12 +29,30 @@ struct ContentView: View {
                 EmptyStateView(
                     isDropTargeted: isDropTargeted,
                     onOpen: openPanel,
+                    onOpenURL: onOpenURL,
                     recents: model.recents.items,
                     thumbnails: model.recentsThumbnails,
                     onOpenRecent: { item in Task { await model.openRecent(item) } },
                     onRemoveRecent: { model.recents.remove($0) },
                     onClearRecents: { model.recents.clearAll() }
                 )
+            }
+
+            if model.state == .loading && !model.hasMedia {
+                VStack {
+                    Spacer()
+                    HStack(spacing: 12) {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text("Opening stream\u{2026}")
+                        Button("Cancel") { model.cancelLoading() }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(.regularMaterial, in: Capsule())
+                    .padding(.bottom, 24)
+                }
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
 
             if let err = model.loadError {
@@ -63,6 +83,7 @@ struct ContentView: View {
         }
         .animation(.easeInOut(duration: 0.25), value: model.loadError)
         .animation(.easeInOut(duration: 0.25), value: model.resumeMessage)
+        .animation(.easeInOut(duration: 0.2), value: model.state == .loading)
         .onDrop(of: [.fileURL], isTargeted: $isDropTargeted) { providers in
             guard let provider = providers.first else { return false }
             _ = provider.loadObject(ofClass: URL.self) { url, _ in
