@@ -52,6 +52,7 @@
 		3573351499DFA82C74C4E70A /* RecentsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6830DEE6BFE30DE2D65F8E30 /* RecentsStore.swift */; };
 		35FDDA2770B32B1ED5A91BB6 /* LicenseText-AetherEngine.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7B7B61B417291C603619BD6A /* LicenseText-AetherEngine.txt */; };
 		362709B283E545590B3A093D /* NowPlayingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217C351450619AFE9A1BCEA8 /* NowPlayingController.swift */; };
+		373DBBF1691967813DC0EF32 /* OpenURLSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06821F89AD260A5F822118F3 /* OpenURLSheet.swift */; };
 		37A084ACC8457457E9CDEEDA /* TrackMenuModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E0203CEACD715E2952920A0 /* TrackMenuModel.swift */; };
 		39E6A99680721D8C5E958EF4 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CA4926E8D060AEB32D7726 /* Playlist.swift */; };
 		3BA68305878BD9ED17B82F90 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476E467BD2ECDE79034721F /* Theme.swift */; };
@@ -157,6 +158,7 @@
 		C82B2C06030BB74EF77BA9AB /* PlayerTouchInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 462B46AD9B4539E1EB94945C /* PlayerTouchInput.swift */; };
 		C8FEC43F220F0692553C0EC1 /* Timecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9B310577BF206A568A8F47 /* Timecode.swift */; };
 		C975CCBC03EA46E182EF5C9A /* ASSRenderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1AEDEAC8AAB0301124E958 /* ASSRenderCoordinator.swift */; };
+		CA0E0D1387494FFEBE96BD8F /* OpenURLSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06821F89AD260A5F822118F3 /* OpenURLSheet.swift */; };
 		CA9B252D21393FEDC76068E6 /* RecentsGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A32AE76CE0CEACEF128BD3 /* RecentsGrid.swift */; };
 		CDBEA67B7831BEF45F6ED576 /* PlayerTouchInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 462B46AD9B4539E1EB94945C /* PlayerTouchInput.swift */; };
 		CF045248177D9E553A854F5A /* TransportBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3FBB8A2D4A77E2E70F5402 /* TransportBar.swift */; };
@@ -209,6 +211,7 @@
 
 /* Begin PBXFileReference section */
 		0044E627C4FAE4B1B16C2D88 /* AetherPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AetherPlayerApp.swift; sourceTree = "<group>"; };
+		06821F89AD260A5F822118F3 /* OpenURLSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenURLSheet.swift; sourceTree = "<group>"; };
 		07527B623022238E917E772C /* FrameHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameHelpers.swift; sourceTree = "<group>"; };
 		088343A60DB6EE54335AD638 /* RecentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentItem.swift; sourceTree = "<group>"; };
 		0A52E853D2B9309688FDC9C9 /* LicenseText-MIT.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "LicenseText-MIT.txt"; sourceTree = "<group>"; };
@@ -392,6 +395,7 @@
 				6F5A68802EC677C97886B469 /* EmptyStateView.swift */,
 				AAC23E95A223EDA9374CBC13 /* KeyCatcherView.swift */,
 				7EB60DA84476981F3BE35319 /* NowPlayingView.swift */,
+				06821F89AD260A5F822118F3 /* OpenURLSheet.swift */,
 				16395C04CD0A2CB440938CFB /* PlayerContainerView.swift */,
 				439CC143FE95F00283D3643A /* RecentsListView.swift */,
 				94A41313B2B883A8EF3F25B1 /* ResumeToastView.swift */,
@@ -842,6 +846,7 @@
 				A9117937B50F84CFD61E1E9F /* NowPlayingText.swift in Sources */,
 				0ABF90989D5F4FEF0E784B11 /* NowPlayingView.swift in Sources */,
 				FF8023EB7415554507A1F9ED /* OpenSourceLicenses.swift in Sources */,
+				CA0E0D1387494FFEBE96BD8F /* OpenURLSheet.swift in Sources */,
 				76A3383CCCED459BC7ECE2A5 /* PlatformImage.swift in Sources */,
 				462A3970A6365C009F6BCDA7 /* PlayerContainerView.swift in Sources */,
 				C82B2C06030BB74EF77BA9AB /* PlayerTouchInput.swift in Sources */,
@@ -893,6 +898,7 @@
 				EA7255472C958E9F0BCDC3DA /* NowPlayingText.swift in Sources */,
 				0975C09419C53B671E23A204 /* NowPlayingView.swift in Sources */,
 				5E9BE7FA8BCC960287C1C77B /* OpenSourceLicenses.swift in Sources */,
+				373DBBF1691967813DC0EF32 /* OpenURLSheet.swift in Sources */,
 				E8543C7413D23F5DBF081941 /* PlatformImage.swift in Sources */,
 				8D21D53DB9E3E57C7B10D4EA /* PlayerContainerView.swift in Sources */,
 				BD5C4CA808EAB889E146D925 /* PlayerTouchInput.swift in Sources */,
