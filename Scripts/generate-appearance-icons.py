@@ -2,9 +2,14 @@
 """Generate the iOS AppIcon appearance variants (light, dark, tinted) from the master art.
 
 The master carries a dark bloom baked into its alpha, authored for a black background, so
-compositing it onto a light one leaves a dirty ring. Two steps remove it: an alpha ramp on
-brightness (the orb sits well above the bloom's 32-63 band) plus a feathered circular mask,
-since the orb is geometrically round and anything outside its radius is bloom by definition.
+compositing it onto a light one leaves a dirty ring. A feathered circular mask removes it
+exactly: measured along the radius, alpha holds at 255 out to ~405 px and brightness stays
+above 210, then both collapse (77 by 410 px). That is the orb's edge, and everything past
+it is bloom.
+
+Deliberately NO brightness-based alpha ramp here. The orb's own interior contains dark
+navy nebula regions, so keying on brightness dissolved 9% of the pixels inside the orb and
+let the light background bleed through as milky patches.
 
 Usage: Scripts/generate-appearance-icons.py
 """
@@ -18,25 +23,12 @@ MASTER = REPO / "docs/images/aetherplayer-icon.png"
 OUT = REPO / "Sources/iOS/Resources/Assets.xcassets/AppIcon.appiconset"
 SIZE = 1024
 
-GLOW_LO, GLOW_HI = 70, 140
-ORB_CENTER, ORB_RADIUS, ORB_FEATHER = (512, 513), 422, 6
-
-
-def _smoothstep(edge0: int, edge1: int, x: int) -> float:
-    t = max(0.0, min(1.0, (x - edge0) / (edge1 - edge0)))
-    return t * t * (3 - 2 * t)
+ORB_CENTER, ORB_RADIUS, ORB_FEATHER = (512, 513), 406, 3
 
 
 def _isolate_orb(src: Image.Image) -> Image.Image:
+    """Keep the master's alpha inside the orb untouched, drop everything outside."""
     out = src.copy()
-    px = out.load()
-    for x in range(out.width):
-        for y in range(out.height):
-            r, g, b, a = px[x, y]
-            if a == 0:
-                continue
-            px[x, y] = (r, g, b, int(a * _smoothstep(GLOW_LO, GLOW_HI, max(r, g, b))))
-
     mask = Image.new("L", (SIZE, SIZE), 0)
     cx, cy = ORB_CENTER
     ImageDraw.Draw(mask).ellipse(
