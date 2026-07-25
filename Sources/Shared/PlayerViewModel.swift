@@ -289,6 +289,9 @@ final class PlayerViewModel {
             let bufferSegments = UserDefaults.standard.integer(forKey: "playback.forwardBufferSegments")
             if bufferSegments > 0 { options.forwardBufferSegments = bufferSegments }
             options.preserveASSMarkup = true
+            // No container reliably declares E-AC-3 JOC, so the Stats inspector's channel row and the
+            // track menu's Atmos label only mean anything if the session confirms it by decoding.
+            options.confirmAtmos = true
             if openAsLive {
                 options.isLive = true
                 options.dvrWindowSeconds = Self.liveDVRWindowSeconds

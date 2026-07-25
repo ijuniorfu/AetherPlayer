@@ -3,6 +3,7 @@ import SwiftUI
 struct EmptyStateView: View {
     let isDropTargeted: Bool
     let onOpen: () -> Void
+    let onOpenURL: () -> Void
     let recents: [RecentItem]
     let thumbnails: RecentsThumbnailProvider
     let onOpenRecent: (RecentItem) -> Void
@@ -28,8 +29,11 @@ struct EmptyStateView: View {
                             .foregroundStyle(isDropTargeted
                                 ? AnyShapeStyle(Color.aetherPurple)
                                 : AnyShapeStyle(.white.opacity(0.65)))
-                        Button("Open File\u{2026}", action: onOpen)
-                            .controlSize(.large)
+                        HStack {
+                            Button("Open File\u{2026}", action: onOpen)
+                            Button("Open URL\u{2026}", action: onOpenURL)
+                        }
+                        .controlSize(.large)
                         Text("MKV, MP4, WebM, AVI \u{00B7} MP3, FLAC, WAV, M4A, OGG")
                             .font(.caption)
                             .foregroundStyle(.white.opacity(0.35))

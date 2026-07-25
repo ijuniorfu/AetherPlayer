@@ -4,5 +4,6 @@
 *.xcuserstate
 xcuserdata/
 .swiftpm/
+.worktrees/
 docs/superpowers/
 CLAUDE.md
