@@ -2,9 +2,23 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct HomeView: View {
+    /// What the importer is currently asking for. Two `.fileImporter` modifiers on
+    /// one view do not both work, the later one wins and the earlier never presents,
+    /// so file and folder share a single importer and swap its content types.
+    private enum ImportKind {
+        case media, folder
+
+        var contentTypes: [UTType] {
+            switch self {
+            case .media: [.movie, .video, .audio]
+            case .folder: [.folder]
+            }
+        }
+    }
+
     let model: PlayerViewModel
-    @State private var showFileImporter = false
-    @State private var showFolderImporter = false
+    @State private var importKind: ImportKind = .media
+    @State private var showImporter = false
     @State private var showURLSheet = false
 
     var body: some View {
@@ -18,18 +32,14 @@ struct HomeView: View {
             .navigationTitle("AetherPlayer")
         }
         .fileImporter(
-            isPresented: $showFileImporter,
-            allowedContentTypes: [.movie, .video, .audio],
+            isPresented: $showImporter,
+            allowedContentTypes: importKind.contentTypes,
             allowsMultipleSelection: false
         ) { result in
-            DocumentOpen.handlePicked(result, model: model)
-        }
-        .fileImporter(
-            isPresented: $showFolderImporter,
-            allowedContentTypes: [.folder],
-            allowsMultipleSelection: false
-        ) { result in
-            DocumentOpen.openFolder(result, model: model)
+            switch importKind {
+            case .media: DocumentOpen.handlePicked(result, model: model)
+            case .folder: DocumentOpen.openFolder(result, model: model)
+            }
         }
         .sheet(isPresented: $showURLSheet) { OpenURLSheet(model: model) }
         .overlay(alignment: .bottom) {
@@ -78,15 +88,20 @@ struct HomeView: View {
 
     @ViewBuilder
     private func openButtons(fullWidth: Bool) -> some View {
-        Button { showFileImporter = true } label: {
+        Button { present(.media) } label: {
             openLabel("Open File", systemImage: "folder", fullWidth: fullWidth)
         }
-        Button { showFolderImporter = true } label: {
+        Button { present(.folder) } label: {
             openLabel("Open Folder", systemImage: "folder.badge.plus", fullWidth: fullWidth)
         }
         Button { showURLSheet = true } label: {
             openLabel("Open URL", systemImage: "link", fullWidth: fullWidth)
         }
+    }
+
+    private func present(_ kind: ImportKind) {
+        importKind = kind
+        showImporter = true
     }
 
     private func openLabel(_ title: LocalizedStringKey, systemImage: String, fullWidth: Bool) -> some View {
