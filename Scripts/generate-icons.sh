@@ -4,7 +4,7 @@
 set -euo pipefail
 
 MASTER="${1:-docs/images/aetherplayer-icon.png}"
-ICONSET_DIR="Sources/AetherPlayer/Resources/Assets.xcassets/AppIcon.appiconset"
+ICONSET_DIR="Sources/macOS/Resources/Assets.xcassets/AppIcon.appiconset"
 ICNS_OUT="docs/images/AppIcon.icns"
 
 if [[ "$(sips -g hasAlpha "$MASTER" | awk '/hasAlpha/{print $2}')" != "yes" ]]; then
