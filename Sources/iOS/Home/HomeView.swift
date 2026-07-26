@@ -92,6 +92,6 @@ struct HomeView: View {
     private func openLabel(_ title: LocalizedStringKey, systemImage: String, fullWidth: Bool) -> some View {
         Label(title, systemImage: systemImage)
             .lineLimit(fullWidth ? nil : 1)
-            .frame(maxWidth: fullWidth ? .infinity : nil, alignment: .leading)
+            .frame(maxWidth: fullWidth ? .infinity : nil)
     }
 }
