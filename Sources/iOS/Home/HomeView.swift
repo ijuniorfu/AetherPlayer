@@ -10,19 +10,9 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                HStack {
-                    Button { showFileImporter = true } label: {
-                        Label("Open File", systemImage: "folder")
-                    }
-                    Button { showFolderImporter = true } label: {
-                        Label("Open Folder", systemImage: "folder.badge.plus")
-                    }
-                    Button { showURLSheet = true } label: {
-                        Label("Open URL", systemImage: "link")
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-                .padding()
+                openActions
+                    .buttonStyle(.borderedProminent)
+                    .padding()
                 RecentsGrid(model: model)
             }
             .navigationTitle("AetherPlayer")
@@ -70,5 +60,38 @@ struct HomeView: View {
         } message: {
             Text(model.loadError ?? "")
         }
+    }
+
+    /// Three open actions side by side where the width allows (iPad, landscape),
+    /// stacked full width where it does not. A plain HStack wraps the labels on
+    /// iPhone portrait, since three icon-plus-text buttons do not fit ~358 pt.
+    private var openActions: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack {
+                openButtons(fullWidth: false)
+            }
+            VStack(spacing: 12) {
+                openButtons(fullWidth: true)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func openButtons(fullWidth: Bool) -> some View {
+        Button { showFileImporter = true } label: {
+            openLabel("Open File", systemImage: "folder", fullWidth: fullWidth)
+        }
+        Button { showFolderImporter = true } label: {
+            openLabel("Open Folder", systemImage: "folder.badge.plus", fullWidth: fullWidth)
+        }
+        Button { showURLSheet = true } label: {
+            openLabel("Open URL", systemImage: "link", fullWidth: fullWidth)
+        }
+    }
+
+    private func openLabel(_ title: LocalizedStringKey, systemImage: String, fullWidth: Bool) -> some View {
+        Label(title, systemImage: systemImage)
+            .lineLimit(fullWidth ? nil : 1)
+            .frame(maxWidth: fullWidth ? .infinity : nil, alignment: .leading)
     }
 }
