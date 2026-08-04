@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		023492C87675C8FF7964DA24 /* LicenseText-WTFPL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6CE2A60423950407199EAB30 /* LicenseText-WTFPL.txt */; };
+		028099001DBBB6965F41775D /* DiagnosticsLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FFD1A6AA0793487A486CBB /* DiagnosticsLog.swift */; };
 		0333AD9CE5F4E72BEF0285DA /* LicenseText-LGPL-2.1.txt in Resources */ = {isa = PBXBuildFile; fileRef = F4D42E8E69C213FC5252D867 /* LicenseText-LGPL-2.1.txt */; };
 		036CDF97E55D38E210922056 /* NowPlayingTextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FCDFE4C1B93640EA9246DEB /* NowPlayingTextTests.swift */; };
 		0401C2F315A2813171D5A46C /* NowPlayingText.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF037FE3C070110E14F06FE3 /* NowPlayingText.swift */; };
@@ -68,6 +69,7 @@
 		4A71DA3A94B198C4FB5C08C4 /* LicenseText-ISC-libass.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8259CDF81F750CA5F89DC1DA /* LicenseText-ISC-libass.txt */; };
 		4B733D3EE962EFF60E10AFAD /* PlayerHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6093AE89E2B49F7AC939DDB6 /* PlayerHUD.swift */; };
 		4C71E1474197353B4AEC5330 /* LicenseText-dav1d.txt in Resources */ = {isa = PBXBuildFile; fileRef = E9EFC745F474D4251FDF2AD6 /* LicenseText-dav1d.txt */; };
+		4E936A219A9F5FD42FAFC384 /* DiagnosticsShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C626EB46E30AD40CB83A265 /* DiagnosticsShare.swift */; };
 		4EA859026A2842AC528B7952 /* AutoHide.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A25FC6F24413CB30BBB817 /* AutoHide.swift */; };
 		4FBC90EFE8D3C7125CDE6DD6 /* AetherPlayerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044E627C4FAE4B1B16C2D88 /* AetherPlayerApp.swift */; };
 		52644B403EB3A37512677022 /* Timecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9B310577BF206A568A8F47 /* Timecode.swift */; };
@@ -171,10 +173,12 @@
 		D697337C2BBDCB597F108544 /* LicenseText-Sparkle.txt in Resources */ = {isa = PBXBuildFile; fileRef = B1F3FC537114C70E9C0E2F77 /* LicenseText-Sparkle.txt */; };
 		D7C0BAE929E86E337CD15374 /* PlayerSwipeHints.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCA1A079A237DDD7A36E423 /* PlayerSwipeHints.swift */; };
 		D82071F428C6F141CD8473D1 /* ASSSubtitleFrameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65874C404DF9FC1FFD48D734 /* ASSSubtitleFrameView.swift */; };
+		D8261A342486CA0C1CB9EAE7 /* DiagnosticsLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FFD1A6AA0793487A486CBB /* DiagnosticsLog.swift */; };
 		D99EF75F0D51FC11290956D6 /* TracksPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2588343DEF8BDD7262D38D0 /* TracksPopover.swift */; };
 		D9F7AD8C9408D2BF3CC35CCC /* SnapshotSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9ACE200E4FCF252E69C38E /* SnapshotSaver.swift */; };
 		DAE7D6B950B802E07BD7BA76 /* BookmarkAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D2433BC60C8A585F552D6C /* BookmarkAccess.swift */; };
 		DCB06FB865E7D0FEC4590589 /* LicenseText-Sparkle.txt in Resources */ = {isa = PBXBuildFile; fileRef = B1F3FC537114C70E9C0E2F77 /* LicenseText-Sparkle.txt */; };
+		E1E3A1C7125A9895C773AFAB /* DiagnosticsLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FFD1A6AA0793487A486CBB /* DiagnosticsLog.swift */; };
 		E42B4D886240BD80B67841DB /* PlayerScrubBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48C1CB9ED2221C6976C2089 /* PlayerScrubBar.swift */; };
 		E436095A369743D74C6324EA /* TransportBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3FBB8A2D4A77E2E70F5402 /* TransportBar.swift */; };
 		E57A473AA7AF0A61D24F69DA /* LicenseText-AetherEngine.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7B7B61B417291C603619BD6A /* LicenseText-AetherEngine.txt */; };
@@ -212,6 +216,7 @@
 
 /* Begin PBXFileReference section */
 		0044E627C4FAE4B1B16C2D88 /* AetherPlayerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AetherPlayerApp.swift; sourceTree = "<group>"; };
+		03FFD1A6AA0793487A486CBB /* DiagnosticsLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsLog.swift; sourceTree = "<group>"; };
 		06821F89AD260A5F822118F3 /* OpenURLSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenURLSheet.swift; sourceTree = "<group>"; };
 		07527B623022238E917E772C /* FrameHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameHelpers.swift; sourceTree = "<group>"; };
 		088343A60DB6EE54335AD638 /* RecentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentItem.swift; sourceTree = "<group>"; };
@@ -259,6 +264,7 @@
 		78BEA53895E7E40BF129B1C2 /* RepeatModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatModeTests.swift; sourceTree = "<group>"; };
 		7A6A849203457466945B5B25 /* StatsInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsInspectorView.swift; sourceTree = "<group>"; };
 		7B7B61B417291C603619BD6A /* LicenseText-AetherEngine.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "LicenseText-AetherEngine.txt"; sourceTree = "<group>"; };
+		7C626EB46E30AD40CB83A265 /* DiagnosticsShare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsShare.swift; sourceTree = "<group>"; };
 		7D803E053BB1BADF4754A4DF /* AetherPlayer-MAS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "AetherPlayer-MAS.entitlements"; sourceTree = "<group>"; };
 		7DB907EDE5B05AE6418F2A96 /* MediaURLValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaURLValidationTests.swift; sourceTree = "<group>"; };
 		7EB60DA84476981F3BE35319 /* NowPlayingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingView.swift; sourceTree = "<group>"; };
@@ -414,6 +420,7 @@
 				65874C404DF9FC1FFD48D734 /* ASSSubtitleFrameView.swift */,
 				55EDD8AACE0F8656B606E9E3 /* AudioDetection.swift */,
 				E8A25FC6F24413CB30BBB817 /* AutoHide.swift */,
+				03FFD1A6AA0793487A486CBB /* DiagnosticsLog.swift */,
 				BF037FE3C070110E14F06FE3 /* NowPlayingText.swift */,
 				5BD1AA1DA044FD139582A22E /* PlayerViewModel.swift */,
 				62D1F0BA9870F05C6E4C790B /* RepeatMode.swift */,
@@ -564,6 +571,7 @@
 		CF43056DE1F6AC5DCB821A8C /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				7C626EB46E30AD40CB83A265 /* DiagnosticsShare.swift */,
 				28D3465CFF5F0495D9AEEBA2 /* HomeView.swift */,
 				733C2CC2BC1883D498A71C92 /* OpenURLSheet.swift */,
 				B1A32AE76CE0CEACEF128BD3 /* RecentsGrid.swift */,
@@ -839,6 +847,7 @@
 				13505784F0D81A752DAD2523 /* AutoHide.swift in Sources */,
 				B3F56ADC1AA101EDDADB60D0 /* BookmarkAccess.swift in Sources */,
 				B401CC30DD59C5283D7026D1 /* ContentView.swift in Sources */,
+				D8261A342486CA0C1CB9EAE7 /* DiagnosticsLog.swift in Sources */,
 				5E65582A7608F355C9DAF31B /* EmptyStateView.swift in Sources */,
 				A17DF2841B401D645BE53AA5 /* FrameHelpers.swift in Sources */,
 				704103415097E7CEB5494EB3 /* KeyCatcherView.swift in Sources */,
@@ -891,6 +900,7 @@
 				A3071FD0450D2D814D05CD26 /* AutoHide.swift in Sources */,
 				AF324AD1AD686EC180B4DAFB /* BookmarkAccess.swift in Sources */,
 				6A32076311E31E4AB04A1240 /* ContentView.swift in Sources */,
+				E1E3A1C7125A9895C773AFAB /* DiagnosticsLog.swift in Sources */,
 				C3F61046316EFB1DB8E4756B /* EmptyStateView.swift in Sources */,
 				2CD508BDC3CED7F4DCD3C12F /* FrameHelpers.swift in Sources */,
 				B4709F3CF66CCD1E5604C00A /* KeyCatcherView.swift in Sources */,
@@ -941,6 +951,8 @@
 				4660BF300099999142660CF0 /* AudioDetection.swift in Sources */,
 				4EA859026A2842AC528B7952 /* AutoHide.swift in Sources */,
 				DAE7D6B950B802E07BD7BA76 /* BookmarkAccess.swift in Sources */,
+				028099001DBBB6965F41775D /* DiagnosticsLog.swift in Sources */,
+				4E936A219A9F5FD42FAFC384 /* DiagnosticsShare.swift in Sources */,
 				138F23A7937B52B5BF585705 /* DocumentOpen.swift in Sources */,
 				804A8EED9CDD79EE6FCC9219 /* FrameHelpers.swift in Sources */,
 				6584E543F4EA895D3FA94718 /* HomeView.swift in Sources */,

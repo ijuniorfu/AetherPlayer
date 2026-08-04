@@ -20,6 +20,7 @@ struct HomeView: View {
     @State private var importKind: ImportKind = .media
     @State private var showImporter = false
     @State private var showURLSheet = false
+    @State private var diagnosticsSnapshot: DiagnosticsSnapshot?
 
     var body: some View {
         NavigationStack {
@@ -30,7 +31,20 @@ struct HomeView: View {
                 RecentsGrid(model: model)
             }
             .navigationTitle("AetherPlayer")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    // The counterpart to the macOS Help-menu entries: a playback report costs one
+                    // share sheet instead of a debugger.
+                    Button {
+                        diagnosticsSnapshot = DiagnosticsLog.shared.exportSnapshot()
+                            .map(DiagnosticsSnapshot.init)
+                    } label: {
+                        Label("Share Diagnostics Log", systemImage: "doc.text.magnifyingglass")
+                    }
+                }
+            }
         }
+        .sheet(item: $diagnosticsSnapshot) { DiagnosticsShareSheet(url: $0.url) }
         .fileImporter(
             isPresented: $showImporter,
             allowedContentTypes: importKind.contentTypes,
