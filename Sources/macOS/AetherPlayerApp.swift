@@ -99,7 +99,9 @@ struct AetherPlayerApp: App {
                     }
                 }
             }
-            CommandMenu("Window") {
+            // Into the system Window menu, not next to it: a CommandMenu("Window") does not merge
+            // with the menu AppKit already provides, it adds a second one under the same name.
+            CommandGroup(after: .windowArrangement) {
                 Toggle("Always on Top", isOn: $alwaysOnTop)
                     .keyboardShortcut("t", modifiers: [.command, .shift])
                 Menu("Subtitle Size") {
