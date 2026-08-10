@@ -15,6 +15,17 @@ final class NowPlayingController {
     private let commands = MPRemoteCommandCenter.shared()
     private var configured = false
 
+    /// Decoded cover, kept across pushes and rebuilt only when the bytes change.
+    /// `update` runs on the throttled clock tick (about once a second for the
+    /// whole session), and decoding the embedded artwork there re-ran a full
+    /// image decode every second for artwork that never changes. On a file with
+    /// a poster-sized cover that dominated the process: measured 18.8% of a core
+    /// against 5.8% for the same A/V without one, with PNG decoding 60% of all
+    /// running samples (AetherPlayer#2). `NowPlayingView` already gates its own
+    /// copy on the artwork bytes; this is the same gate on the system surface.
+    private var artworkSource: Data?
+    private var artwork: MPMediaItemArtwork?
+
     /// Wire transport commands once. Each closure calls back into the
     /// supplied action set (the view model's methods).
     func configure(actions: Actions) {
@@ -52,8 +63,15 @@ final class NowPlayingController {
         var dict = nowPlayingInfo(
             metadata: metadata, fallbackTitle: fallbackTitle,
             duration: duration, elapsed: elapsed, rate: rate)
-        if let data = metadata?.artworkData, let image = NSImage(data: data) {
-            dict[MPMediaItemPropertyArtwork] = Self.makeArtwork(image)
+        if let data = metadata?.artworkData {
+            if artworkSource != data {
+                artworkSource = data
+                artwork = NSImage(data: data).map { Self.makeArtwork($0) }
+            }
+            if let artwork { dict[MPMediaItemPropertyArtwork] = artwork }
+        } else if artworkSource != nil {
+            artworkSource = nil
+            artwork = nil
         }
         info.nowPlayingInfo = dict
         info.playbackState = rate > 0 ? .playing : .paused
@@ -72,6 +90,8 @@ final class NowPlayingController {
     func clear() {
         info.nowPlayingInfo = nil
         info.playbackState = .stopped
+        artworkSource = nil
+        artwork = nil
     }
 
     struct Actions {
