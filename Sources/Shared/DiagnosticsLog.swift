@@ -200,6 +200,6 @@ final class DiagnosticsLog: @unchecked Sendable {
         if size == MemoryLayout<Int32>.size {
             return String(buffer.withUnsafeBytes { $0.load(as: Int32.self) })
         }
-        return String(cString: buffer)
+        return String(decoding: buffer.prefix { $0 != 0 }.map { UInt8(bitPattern: $0) }, as: UTF8.self)
     }
 }
