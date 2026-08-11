@@ -11,6 +11,9 @@ final class PlayerHostController: AVPlayerViewController {
     nonisolated(unsafe) var pipActive = false
     private let aetherView = AetherPlayerView()
     private var aetherMounted = false
+    /// Set on a real backgrounding, so the app switcher (which raises didBecomeActive without one)
+    /// does not look like a return from suspension.
+    private var wasFullyBackgrounded = false
 
     init(model: PlayerViewModel) {
         self.model = model
@@ -28,6 +31,37 @@ final class PlayerHostController: AVPlayerViewController {
         delegate = self
         model.engine.backgroundPlaybackEnabled = true
         bindEngine()
+        bindLifecycle()
+    }
+
+    /// AetherEngine #127: a paused session backgrounded past the grace window loses its video
+    /// pipeline, and only the host can ask for it back. Without this the app returns to a session
+    /// that is gone: no frame, and transport that does nothing. Sessions PiP or background audio
+    /// kept alive must NOT be reloaded, which the gate decides off the backend.
+    private func bindLifecycle() {
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.wasFullyBackgrounded = true }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.foregroundReturn() }
+            .store(in: &cancellables)
+    }
+
+    private func foregroundReturn() {
+        guard wasFullyBackgrounded else { return }   // app switcher, nothing was torn down
+        wasFullyBackgrounded = false
+        guard model.loadedURL != nil,
+              ForegroundReloadGate.needsReload(state: model.engine.state,
+                                               backend: model.engine.playbackBackend) else { return }
+        // Resumes paused on the frame it left: the engine settles a reload at readiness, and
+        // auto-resuming after a sleep gap would be startling. The pick the session was on rides
+        // along from AetherEngine 6.20.2, which is where a reload stopped losing it.
+        Task { @MainActor [engine = model.engine] in
+            try? await engine.reloadAtCurrentPosition()
+        }
     }
 
     private func bindEngine() {
