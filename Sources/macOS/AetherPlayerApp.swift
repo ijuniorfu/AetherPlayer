@@ -99,7 +99,9 @@ struct AetherPlayerApp: App {
                     }
                 }
             }
-            CommandMenu("Window") {
+            // Into the system Window menu, not next to it: a CommandMenu("Window") does not merge
+            // with the menu AppKit already provides, it adds a second one under the same name.
+            CommandGroup(after: .windowArrangement) {
                 Toggle("Always on Top", isOn: $alwaysOnTop)
                     .keyboardShortcut("t", modifiers: [.command, .shift])
                 Menu("Subtitle Size") {
@@ -113,6 +115,15 @@ struct AetherPlayerApp: App {
                 }
             }
             StatsCommands()
+            // Under Help because that is where someone goes when something is wrong. Both entries
+            // exist so a report costs one drag or one save panel rather than a debugger.
+            CommandGroup(after: .help) {
+                Divider()
+                Button("Reveal Diagnostics Log in Finder") {
+                    DiagnosticsLog.shared.revealInFinder()
+                }
+                Button("Save Diagnostics Log\u{2026}") { saveDiagnosticsLog() }
+            }
         }
 
         Window("Stats for Nerds", id: "stats") {
@@ -152,6 +163,21 @@ struct AetherPlayerApp: App {
         if panel.runModal() == .OK, let url = panel.url {
             Task { await model.open(url: url) }
         }
+    }
+
+    /// Save panel over a merged copy of the session logs, so the sandboxed build can put the file
+    /// somewhere the user can attach it from.
+    private func saveDiagnosticsLog() {
+        guard let snapshot = DiagnosticsLog.shared.exportSnapshot() else {
+            NSSound.beep()
+            return
+        }
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = snapshot.lastPathComponent
+        panel.allowedContentTypes = [.plainText]
+        guard panel.runModal() == .OK, let destination = panel.url else { return }
+        try? FileManager.default.removeItem(at: destination)
+        try? FileManager.default.copyItem(at: snapshot, to: destination)
     }
 
     private func openFolderPanel() {

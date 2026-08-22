@@ -18,6 +18,7 @@
   <img src="https://img.shields.io/badge/iOS%2FiPadOS-17%2B-black?logo=apple">
   <img src="https://img.shields.io/badge/Swift-6.0%2B-F05138?logo=swift&logoColor=white">
   <img src="https://img.shields.io/badge/license-LGPL--3.0-lightgrey">
+  <a href="https://discord.gg/P7NvpzNqnG"><img src="https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white"></a>
   <a href="https://ko-fi.com/superuser404"><img src="https://img.shields.io/badge/Ko--fi-Support-FF5E5B?logo=kofi&logoColor=white"></a>
 </p>
 
@@ -43,6 +44,7 @@
 - **Tunable buffering.** Preferences (Cmd+,) set how far ahead to buffer, for slow or unstable network sources.
 - **Stats for Nerds.** A live inspector window (Cmd+Shift+I) showing the active backend and decoder, resolution, frame rate, dynamic range, display mode, video and audio bitrate, channels, A/V sync, dropped frames, and buffer state.
 - **Stays out of the way.** Controls auto-hide during video playback and reappear on mouse movement.
+- **A diagnostics log you can hand over.** Every build writes the engine's diagnostics to a file; Help ▸ Reveal Diagnostics Log in Finder or Save Diagnostics Log picks it up. See [Reporting a playback problem](#reporting-a-playback-problem).
 
 ## Controls
 
@@ -75,6 +77,24 @@ A universal iPhone + iPad app (same source tree, sharing the playback core with 
 - **Track switching.** A tracks sheet lists audio and subtitle tracks, with an "Off" option for subtitles and support for attaching a sidecar `.srt`.
 - **Edge-swipe gestures.** A vertical swipe on the left edge adjusts brightness, on the right edge volume; the wide center stays a dead zone so a tap or a minimize swipe never nudges a level.
 - **Recents.** Recently opened files show up on Home with cached thumbnails for quick re-open.
+- **A diagnostics log you can hand over.** The button in the Home toolbar shares the same log the macOS app writes. See [Reporting a playback problem](#reporting-a-playback-problem).
+
+## Reporting a playback problem
+
+A file that will not play, freezes, stalls or picks the wrong decoder is almost always answerable
+from the log, and almost never from a description. Every build (not just debug ones) writes the
+engine's own diagnostics to a file:
+
+- **macOS:** Help ▸ *Reveal Diagnostics Log in Finder*, or Help ▸ *Save Diagnostics Log…* to put a
+  copy somewhere you can attach it from.
+- **iOS/iPadOS:** the share button in the Home toolbar.
+
+Open the file that misbehaves, let it fail, then export. The log opens with the app version, the OS,
+the hardware and the display's HDR eligibility, and carries the load decisions, the served playlist
+and any error code the player raised. It names the media files you opened, and no path around them.
+
+Attach it to an issue at
+[github.com/superuser404notfound/AetherPlayer/issues](https://github.com/superuser404notfound/AetherPlayer/issues).
 
 ## Build
 

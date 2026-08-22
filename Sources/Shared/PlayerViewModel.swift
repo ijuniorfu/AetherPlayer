@@ -164,11 +164,11 @@ final class PlayerViewModel {
 
     init() throws {
         self.engine = try AetherEngine()
-        #if DEBUG
-        // Mirror engine diagnostics to stdout so `devicectl process launch --console`
-        // captures them on device without Xcode attached.
-        EngineLog.handler = { print($0) }
-        #endif
+        // Installs the engine's diagnostic sink for every configuration, not just DEBUG, and mirrors
+        // it to a file the user can hand over. Shipped builds used to produce no diagnostics at all,
+        // which is why playback reports could never be answered from a log (AetherPlayer#2).
+        // stdout is kept in DEBUG so `devicectl process launch --console` still captures on device.
+        DiagnosticsLog.shared.start()
         bind()
         if UserDefaults.standard.object(forKey: "player.volume") != nil {
             engine.volume = UserDefaults.standard.float(forKey: "player.volume")
@@ -265,6 +265,11 @@ final class PlayerViewModel {
     /// loads straight on the engine's live path, skipping the VOD probe pass.
     private func openInternal(url: URL, recordPlaylistRelative: Bool, startOverride: Double? = nil, forceLive: Bool = false) async {
         loadError = nil
+        // Name the source in the log without publishing it: a file contributes its name and not the
+        // library layout around it, a remote source its scheme, host and name and not the query
+        // string, which is where a session token would sit.
+        DiagnosticsLog.shared.note(
+            "open \(DiagnosticsLog.describe(url)) forceLive=\(forceLive)")
         // Known-live sources (user toggle or a previous session that resolved live) load
         // directly on the live path: one tune-in, and the reader skips its size-probe
         // ladder entirely. Everything else keeps the probe-then-reload fallback below.
