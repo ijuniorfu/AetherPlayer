@@ -64,5 +64,13 @@ final class StatsFormatTests: XCTestCase {
                        "Dolby Vision P5 \u{2192} SDR")
         XCTAssertEqual(dynamicRangeLabel(source: .hdr10, effective: .hdr10, dvProfile: nil), "HDR10")
         XCTAssertEqual(dynamicRangeLabel(source: .sdr, effective: .sdr, dvProfile: nil), "SDR")
+        XCTAssertEqual(dynamicRangeLabel(source: .dolbyVision, effective: .dolbyVision, dvProfile: 7,
+                                         conversion: .profile7ToProfile81),
+                       "Dolby Vision P7 \u{2192} P8.1")
+        XCTAssertEqual(dynamicRangeLabel(source: .dolbyVision, effective: .sdr, dvProfile: 7,
+                                         conversion: .profile7ToProfile81),
+                       "Dolby Vision P7 \u{2192} SDR")
+        XCTAssertEqual(dynamicRangeLabel(source: .dolbyVision, effective: .hdr10Plus, dvProfile: 7),
+                       "Dolby Vision P7 \u{2192} HDR10+")
     }
 }

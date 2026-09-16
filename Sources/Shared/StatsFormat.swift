@@ -34,8 +34,17 @@ func hdrLabel(_ format: VideoFormat, dvProfile: Int?) -> String {
 
 /// Source dynamic range, showing the panel-negotiated result when the engine clamps it (DV/HDR source on an
 /// SDR panel renders "Dolby Vision P5 \u{2192} SDR"). `source` is `sourceVideoFormat`, `effective` is `videoFormat`.
-func dynamicRangeLabel(source: VideoFormat, effective: VideoFormat, dvProfile: Int?) -> String {
+/// A Profile 7 presented as Dolby Vision is served as Profile 8.1, so the target names that profile (AE#459).
+func dynamicRangeLabel(
+    source: VideoFormat,
+    effective: VideoFormat,
+    dvProfile: Int?,
+    conversion: DolbyVisionConversion? = nil
+) -> String {
     let s = hdrLabel(source, dvProfile: dvProfile)
+    if effective == .dolbyVision, conversion == .profile7ToProfile81 {
+        return "\(s) \u{2192} P8.1"
+    }
     let e = hdrLabel(effective, dvProfile: dvProfile)
     return s == e ? s : "\(s) \u{2192} \(e)"
 }
