@@ -14,6 +14,11 @@ final class PlayerHostController: AVPlayerViewController {
     /// Set on a real backgrounding, so the app switcher (which raises didBecomeActive without one)
     /// does not look like a return from suspension.
     private var wasFullyBackgrounded = false
+    /// What the session looked like on the way out, read by the foreground return. A teardown in
+    /// between wipes the engine's own view of it (`isLive` included), so it is taken here.
+    private var backgroundedAt: Date?
+    private var backgroundWasPlaying = false
+    private var backgroundPlayhead: Double = 0
 
     init(model: PlayerViewModel) {
         self.model = model
@@ -41,7 +46,7 @@ final class PlayerHostController: AVPlayerViewController {
     private func bindLifecycle() {
         NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.wasFullyBackgrounded = true }
+            .sink { [weak self] _ in self?.noteBackgrounding() }
             .store(in: &cancellables)
 
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
@@ -50,17 +55,56 @@ final class PlayerHostController: AVPlayerViewController {
             .store(in: &cancellables)
     }
 
+    private func noteBackgrounding() {
+        wasFullyBackgrounded = true
+        backgroundedAt = Date()
+        backgroundWasPlaying = model.engine.state == .playing
+        backgroundPlayhead = model.engine.clock.currentTime
+    }
+
     private func foregroundReturn() {
         guard wasFullyBackgrounded else { return }   // app switcher, nothing was torn down
         wasFullyBackgrounded = false
-        guard model.loadedURL != nil,
-              ForegroundReloadGate.needsReload(state: model.engine.state,
-                                               backend: model.engine.playbackBackend) else { return }
-        // Resumes paused on the frame it left: the engine settles a reload at readiness, and
-        // auto-resuming after a sleep gap would be startling. The pick the session was on rides
-        // along from AetherEngine 6.20.2, which is where a reload stopped losing it.
-        Task { @MainActor [engine = model.engine] in
-            try? await engine.reloadAtCurrentPosition()
+        guard let url = model.loadedURL else { return }
+        let engine = model.engine
+        let away = backgroundedAt.map { Date().timeIntervalSince($0) } ?? 0
+        let advance = engine.clock.currentTime - backgroundPlayhead
+        // Not `model.isLive`: that mirrors the engine, and the background teardown resets it.
+        let wasLive = !url.isFileURL && LiveStreamMemory.isKnownLive(url)
+        let action = ForegroundReloadGate.action(
+            state: engine.state, backend: engine.playbackBackend, wasLive: wasLive,
+            wasPlaying: backgroundWasPlaying, backgroundSeconds: away, playheadAdvance: advance)
+        if wasLive || action != .none {
+            // The numbers are what tells a suspension from a session that played through, and a
+            // report about a live return cannot be read without them (Sodalite logs the same line).
+            let torn = ForegroundReloadGate.needsReload(state: engine.state, backend: engine.playbackBackend)
+            DiagnosticsLog.shared.note(String(
+                format: "foreground return: away %.1fs, playhead %+.1fs, was %@, pipeline %@, %@ -> %@",
+                away, advance, backgroundWasPlaying ? "playing" : "paused",
+                torn ? "torn down" : "alive", wasLive ? "live" : "file", "\(action)")
+                + (engine.sessionReloadRefusal.map { " (engine refuses a rebuild: \($0))" } ?? ""))
+        }
+        switch action {
+        case .none:
+            return
+        case .reload:
+            // Resumes paused on the frame it left: the engine settles a reload at readiness, and
+            // auto-resuming after a sleep gap would be startling. The pick the session was on rides
+            // along from AetherEngine 6.20.2, which is where a reload stopped losing it.
+            Task { @MainActor [engine] in
+                do {
+                    try await engine.reloadAtCurrentPosition()
+                } catch {
+                    DiagnosticsLog.shared.note("foreground reload failed: \(error.localizedDescription)")
+                }
+            }
+        case .retune:
+            // AetherEngine #526: a live ingest cannot be reopened at a position, the engine refuses
+            // the rebuild, and a swallowed refusal left the player on a dead session. The DVR window
+            // died with the producer, so this tunes again through the same open the URL sheet uses.
+            Task { @MainActor [model] in
+                await model.open(url: url, forceLive: true)
+            }
         }
     }
 
