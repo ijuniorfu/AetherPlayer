@@ -37,7 +37,8 @@ struct StatsInspectorView: View {
                     row("Dynamic range", dynamicRangeLabel(
                         source: model.engine.sourceVideoFormat,
                         effective: model.engine.videoFormat,
-                        dvProfile: model.engine.sourceDVProfile))
+                        dvProfile: model.engine.sourceDVProfile,
+                        conversion: model.engine.dolbyVisionConversion))
                     row("Display mode", currentDisplayModeLabel())
                     row("Decoder", model.engine.activeVideoDecoder ?? "\u{2012}")
                     row("Backend", formatBackend(model.backend))
