@@ -7,7 +7,7 @@
 <p align="center">
   <b>A native media player built on <a href="https://github.com/superuser404notfound/AetherEngine">AetherEngine</a>, for macOS and iOS/iPadOS.</b><br>
   Drop or open a video or audio file, play it, switch audio and subtitle tracks, scrub with live thumbnail previews, and grab full-resolution frames.<br>
-  macOS: universal binary (Apple Silicon + Intel), macOS 14.0+. iOS/iPadOS: universal app, iOS 17.0+.
+  macOS: universal binary (Apple Silicon + Intel), macOS 15.0+. iOS/iPadOS: universal app, iOS 18.0+.
 </p>
 
 <p align="center">

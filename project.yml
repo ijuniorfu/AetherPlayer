@@ -2,8 +2,8 @@ name: AetherPlayer
 options:
   bundleIdPrefix: de.superuser404
   deploymentTarget:
-    macOS: "14.0"
-    iOS: "17.0"
+    macOS: "15.0"
+    iOS: "18.0"
   createIntermediateGroups: true
 settings:
   base:
@@ -49,7 +49,7 @@ targets:
         # Sparkle compares CFBundleVersion, so this must track the build number.
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
-        LSMinimumSystemVersion: "14.0"
+        LSMinimumSystemVersion: "15.0"
         NSHumanReadableCopyright: ""
         # Open URL plays user-entered servers (LAN Jellyfin, HDHomeRun proxies,
         # IPTV) that are commonly plain HTTP; the engine streams them through
@@ -127,7 +127,7 @@ targets:
         CFBundleName: AetherPlayer
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
-        LSMinimumSystemVersion: "14.0"
+        LSMinimumSystemVersion: "15.0"
         NSHumanReadableCopyright: ""
         # Cleartext media servers over URLSession, see the note on the macOS target.
         NSAppTransportSecurity:

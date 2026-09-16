@@ -4,6 +4,10 @@ import sys, os, datetime, xml.etree.ElementTree as ET
 # (monotonic integer). Sparkle compares sparkle:version (the build number)
 # against the installed app's CFBundleVersion, so it MUST be the build number.
 path, shortVersion, buildVersion, url, length, sigline = sys.argv[1:7]
+# The built app's LSMinimumSystemVersion. Sparkle offers an item to every installation unless the
+# item names a floor, and it does not read the floor out of the downloaded bundle, so without this a
+# floor raise installs an app the Mac cannot launch over one that still ran.
+minimumSystemVersion = sys.argv[7] if len(sys.argv) > 7 else ""
 # sigline looks like: sparkle:edSignature="..." length="..."
 sig = sigline.split('"')[1]
 NS = "http://www.andymatuschak.org/xml-namespaces/sparkle"
@@ -22,6 +26,8 @@ item = ET.SubElement(channel, "item")
 ET.SubElement(item, "title").text = shortVersion
 ET.SubElement(item, "{%s}version" % NS).text = buildVersion
 ET.SubElement(item, "{%s}shortVersionString" % NS).text = shortVersion
+if minimumSystemVersion:
+    ET.SubElement(item, "{%s}minimumSystemVersion" % NS).text = minimumSystemVersion
 ET.SubElement(item, "pubDate").text = datetime.datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
 ET.SubElement(item, "enclosure", {
     "url": url, "length": length, "type": "application/octet-stream",
