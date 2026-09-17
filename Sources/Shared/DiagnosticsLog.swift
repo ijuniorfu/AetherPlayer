@@ -164,8 +164,9 @@ final class DiagnosticsLog: @unchecked Sendable {
     /// The environment facts a playback report is otherwise asked for one at a time.
     /// `eligibleForHDRPlayback` earns its place: it is the input that decides whether a HDR source
     /// is served as a master playlist or media-direct, so a routing question is answerable from the
-    /// log instead of from a guess about the reporter's monitor.
-    private static func sessionHeader() -> String {
+    /// log instead of from a guess about the reporter's monitor. The engine line is the one fact the
+    /// reader cannot get anywhere else: a log without it gets the engine version guessed (#7).
+    static func sessionHeader() -> String {
         let info = Bundle.main.infoDictionary
         let version = info?["CFBundleShortVersionString"] as? String ?? "?"
         let build = info?["CFBundleVersion"] as? String ?? "?"
@@ -189,6 +190,7 @@ final class DiagnosticsLog: @unchecked Sendable {
         === AetherPlayer diagnostics ===
         opened      \(LogTimestamp.stamp(now)) (local \(localOpened.string(from: now)))
         app         \(version) (\(build)) \(configuration)
+        engine      AetherEngine \(AetherEngine.version)
         os          \(os)
         hardware    \(sysctlString("hw.model")) / \(sysctlString("hw.machine")) / \(sysctlString("hw.ncpu")) cpus / \(memory) GB
         hdr         AVPlayer.eligibleForHDRPlayback=\(AVPlayer.eligibleForHDRPlayback)
