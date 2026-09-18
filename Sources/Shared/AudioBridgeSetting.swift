@@ -46,9 +46,14 @@ enum AudioBridgeSetting {
 
     /// Picker row. Names the audible property first and the codec second, because the codec is the
     /// part someone reading this menu is least likely to be choosing by.
+    ///
+    /// Kept short enough to survive an iPhone's picker row, which truncates the middle rather than
+    /// wrapping: "Surround compatibility (Dolby Digital Plus)" came back as "Surround compatib...
+    /// (Dolby Digital Plus)", which loses the one word that distinguishes the two. What the mode
+    /// trades away lives in `explanation` underneath, where there is room for it.
     static func label(_ mode: AudioBridgeMode) -> String {
         switch mode {
-        case .surroundCompat: "Surround compatibility (Dolby Digital Plus)"
+        case .surroundCompat: "Surround (Dolby Digital Plus)"
         case .lossless:       "Lossless (FLAC)"
         }
     }

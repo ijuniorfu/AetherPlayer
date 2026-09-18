@@ -19,8 +19,10 @@ struct PlaybackSettingsView: View {
     // 0 == Auto (engine default); otherwise a forward-buffer segment count
     // (AetherEngine #102, engine clamps to 4...150).
     @AppStorage("playback.forwardBufferSegments") private var forwardBufferSegments = 0
-    // AetherEngine AE#455.
+    // AetherEngine AE#455. macOS only, see where it is shown below.
+    #if os(macOS)
     @AppStorage("playback.forceDolbyVisionOnNonDVDisplay") private var forceDolbyVision = false
+    #endif
 
     private var selectedMode: AudioBridgeMode { AudioBridgeSetting.resolve(stored: audioBridgeMode) }
 
@@ -66,10 +68,16 @@ struct PlaybackSettingsView: View {
         }
         caption("How far ahead to buffer. Higher values help slow or unstable sources at the cost of memory, and apply to the next file you open.")
 
+        // macOS only, and not for tidiness: the switch exists because no Mac reports a Dolby Vision
+        // display, so the engine serves a Profile 8.1 source as its HDR10 base layer and the RPU is
+        // dropped. Every iPhone and iPad this app runs on does report one, so there is nothing for
+        // the override to take over; offering it there would be a control that cannot do anything.
+        #if os(macOS)
         divider()
 
         Toggle("Compose Dolby Vision on this display", isOn: $forceDolbyVision)
         caption("Experimental. No Mac reports a Dolby Vision display, so a Profile 8.1 source plays as its HDR10 base layer and the per-frame metadata is discarded. This hands the composition to AVPlayer instead. On a display without the headroom for it, expect a shifted or washed-out picture; turn it back off and reopen the file. Applies to the next file you open.")
+        #endif
     }
 
     private func caption(_ text: String) -> some View {
