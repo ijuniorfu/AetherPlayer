@@ -20,6 +20,7 @@ struct HomeView: View {
     @State private var importKind: ImportKind = .media
     @State private var showImporter = false
     @State private var showURLSheet = false
+    @State private var showSettings = false
     @State private var diagnosticsSnapshot: DiagnosticsSnapshot?
 
     var body: some View {
@@ -42,8 +43,16 @@ struct HomeView: View {
                         Label("Share Diagnostics Log", systemImage: "doc.text.magnifyingglass")
                     }
                 }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+                }
             }
         }
+        .sheet(isPresented: $showSettings) { PlaybackSettingsView() }
         .sheet(item: $diagnosticsSnapshot) { DiagnosticsShareSheet(url: $0.url) }
         .fileImporter(
             isPresented: $showImporter,

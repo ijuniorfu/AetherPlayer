@@ -174,7 +174,7 @@ struct AetherPlayerApp: App {
         .commandsRemoved()
 
         Settings {
-            PreferencesView()
+            PlaybackSettingsView()
         }
     }
 
@@ -225,42 +225,6 @@ private struct StatsCommands: Commands {
             Button("Stats for Nerds") { openWindow(id: "stats") }
                 .keyboardShortcut("i", modifiers: [.command, .shift])
         }
-    }
-}
-
-/// Preferences window (Cmd-,). The forward-buffer depth and the Dolby Vision experiment; a home for
-/// future settings.
-private struct PreferencesView: View {
-    // 0 == Auto (engine default); otherwise a forward-buffer segment count
-    // (AetherEngine #102, engine clamps to 4...150). Applied on the next open.
-    @AppStorage("playback.forwardBufferSegments") private var forwardBufferSegments = 0
-    // AetherEngine AE#455. Applied on the next open, like the buffer depth above.
-    @AppStorage("playback.forceDolbyVisionOnNonDVDisplay") private var forceDolbyVision = false
-
-    var body: some View {
-        Form {
-            Picker("Forward buffer", selection: $forwardBufferSegments) {
-                Text("Auto").tag(0)
-                Text("Small (8 segments)").tag(8)
-                Text("Default (30 segments)").tag(30)
-                Text("Large (60 segments)").tag(60)
-                Text("Maximum (120 segments)").tag(120)
-            }
-            Text("How far ahead to buffer. Higher values help slow or unstable sources at the cost of memory, and apply to the next file you open.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            Divider()
-
-            Toggle("Compose Dolby Vision on this display", isOn: $forceDolbyVision)
-            Text("Experimental. No Mac reports a Dolby Vision display, so a Profile 8.1 source plays as its HDR10 base layer and the per-frame metadata is discarded. This hands the composition to AVPlayer instead. On a display without the headroom for it, expect a shifted or washed-out picture; turn it back off and reopen the file. Applies to the next file you open.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(20)
-        .frame(width: 440)
     }
 }
 
