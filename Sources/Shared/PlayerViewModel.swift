@@ -347,6 +347,9 @@ final class PlayerViewModel {
             // experimental, hence opt-in and read fresh on each open.
             options.forceDolbyVisionOnNonDVDisplay =
                 UserDefaults.standard.bool(forKey: "playback.forceDolbyVisionOnNonDVDisplay")
+            // Which encoder a non-fMP4-legal track is re-encoded on. Read fresh per open like the two
+            // above, because the right answer depends on what is plugged in rather than on the file.
+            options.audioBridgeMode = AudioBridgeSetting.current()
             if openAsLive {
                 options.isLive = true
                 options.dvrWindowSeconds = Self.liveDVRWindowSeconds
