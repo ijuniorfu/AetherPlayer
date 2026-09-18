@@ -93,8 +93,8 @@ engine's own diagnostics to a file:
   copy somewhere you can attach it from.
 - **iOS/iPadOS:** the share button in the Home toolbar.
 
-Open the file that misbehaves, let it fail, then export. The log opens with the app version, the OS,
-the hardware and the display's HDR eligibility, and carries the load decisions, the served playlist
+Open the file that misbehaves, let it fail, then export. The log opens with the app version, the
+engine release behind it, the OS, the hardware and the display's HDR eligibility, and carries the load decisions, the served playlist
 and any error code the player raised. It names the media files you opened, and no path around them.
 
 Attach it to an issue at
