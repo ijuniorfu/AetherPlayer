@@ -3,6 +3,12 @@
 /DerivedData/
 *.xcuserstate
 xcuserdata/
+
+# Shared schemes, generated from the `schemes:` block in project.yml. Xcode rewrites
+# a scheme whenever it is used and the next `xcodegen generate` writes it back, so the
+# file is never at rest. release-dmg.yml regenerates the project before it builds, and
+# a fresh clone gets them from `xcodegen generate`.
+*.xcodeproj/xcshareddata/xcschemes/
 .swiftpm/
 .worktrees/
 docs/superpowers/
