@@ -60,6 +60,25 @@ func formatFrameRate(_ value: Double?) -> String {
 }
 
 /// Channel layout with an Atmos suffix when the active track carries JOC ("5.1 \u{00B7} Atmos").
+/// AE#658: "48 kHz", "44.1 kHz"; placeholder when the stream declares none.
+func formatSampleRate(_ hz: Int) -> String {
+    guard hz > 0 else { return statsPlaceholder }
+    return hz % 1000 == 0 ? "\(hz / 1000) kHz" : String(format: "%.1f kHz", Double(hz) / 1000)
+}
+
+/// Placeholder for 0 / nil, which the engine uses where a codec has no fixed depth.
+func formatBitDepth(_ bits: Int?) -> String {
+    guard let bits, bits > 0 else { return statsPlaceholder }
+    return "\(bits)-bit"
+}
+
+/// Codec name with the engine's profile appended, "HEVC · Main 10", "DTS · DTS-HD MA + DTS:X".
+func formatCodec(_ codec: String?, profile: String?) -> String {
+    guard let codec, !codec.isEmpty else { return statsPlaceholder }
+    guard let profile, !profile.isEmpty else { return codec.uppercased() }
+    return "\(codec.uppercased()) \u{00B7} \(profile)"
+}
+
 func formatChannels(_ channels: Int, isAtmos: Bool) -> String {
     guard channels > 0 else { return statsPlaceholder }
     let layout: String

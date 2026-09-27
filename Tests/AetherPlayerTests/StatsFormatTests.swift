@@ -16,6 +16,18 @@ final class StatsFormatTests: XCTestCase {
         XCTAssertEqual(videoFormatLabel(.hlg), "HLG")
     }
 
+    func testStreamFormatFormatters() {
+        XCTAssertEqual(formatSampleRate(48_000), "48 kHz")
+        XCTAssertEqual(formatSampleRate(44_100), "44.1 kHz")
+        XCTAssertEqual(formatSampleRate(0), "\u{2012}")
+        XCTAssertEqual(formatBitDepth(24), "24-bit")
+        XCTAssertEqual(formatBitDepth(0), "\u{2012}")
+        XCTAssertEqual(formatBitDepth(nil), "\u{2012}")
+        XCTAssertEqual(formatCodec("hevc", profile: "Main 10"), "HEVC \u{00B7} Main 10")
+        XCTAssertEqual(formatCodec("aac", profile: nil), "AAC")
+        XCTAssertEqual(formatCodec(nil, profile: "LC"), "\u{2012}")
+    }
+
     func testOptionalNumericFormatters() {
         XCTAssertEqual(formatMbps(12.34), "12.3 Mbps")
         XCTAssertEqual(formatMbps(nil), "\u{2012}")

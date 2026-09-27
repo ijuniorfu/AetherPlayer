@@ -19,6 +19,12 @@ struct StatsInspectorView: View {
         model.audioTracks.first { $0.id == model.activeAudioTrackIndex }
     }
 
+    /// AE#658: the engine decoder's own output where it decodes (software path), the source's declaration
+    /// otherwise. On the native path AVPlayer decodes and the frames never reach the engine.
+    private var videoStreamFormat: VideoStreamFormat? {
+        model.engine.decodedVideoFormat?.frame ?? model.engine.sourceVideoStreamFormat
+    }
+
     var body: some View {
         let tele = diagnostics.liveTelemetry
         ScrollView {
@@ -29,6 +35,8 @@ struct StatsInspectorView: View {
                     row("Live", model.engine.isLive ? "Yes" : "No")
                 }
                 section("Video") {
+                    row("Codec", formatCodec(model.engine.sourceVideoCodecName,
+                                             profile: model.engine.sourceVideoStreamFormat?.profile))
                     row("Resolution", formatResolution(
                         width: Int(model.engine.sourceVideoWidth),
                         height: Int(model.engine.sourceVideoHeight)))
@@ -39,6 +47,15 @@ struct StatsInspectorView: View {
                         effective: model.engine.videoFormat,
                         dvProfile: model.engine.sourceDVProfile,
                         conversion: model.engine.dolbyVisionConversion))
+                    row("Pixel format", videoStreamFormat?.pixelFormat ?? "\u{2012}")
+                    row("Bit depth", formatBitDepth(videoStreamFormat?.bitDepth))
+                    row("Primaries", videoStreamFormat?.colorPrimariesLabel ?? "\u{2012}")
+                    row("Transfer", videoStreamFormat?.transferLabel ?? "\u{2012}")
+                    row("Matrix", videoStreamFormat?.matrixLabel ?? "\u{2012}")
+                    row("Range", videoStreamFormat?.rangeLabel ?? "\u{2012}")
+                    if let decoded = model.engine.decodedVideoFormat {
+                        row("Display buffer", decoded.pixelBufferLabel)
+                    }
                     row("Display mode", currentDisplayModeLabel())
                     row("Decoder", model.engine.activeVideoDecoder ?? "\u{2012}")
                     row("Backend", formatBackend(model.backend))
@@ -46,8 +63,11 @@ struct StatsInspectorView: View {
                 section("Audio") {
                     row("Decoder", model.engine.activeAudioDecoder ?? "\u{2012}")
                     if let track = activeAudioTrack {
-                        row("Codec", track.codec.uppercased())
+                        row("Codec", formatCodec(track.codec, profile: track.profile))
                         row("Channels", formatChannels(track.channels, isAtmos: track.isAtmos))
+                        row("Sample rate", formatSampleRate(track.sampleRate))
+                        row("Bit depth", formatBitDepth(track.bitsPerSample))
+                        row("Sample format", track.sampleFormat ?? "\u{2012}")
                         row("Bitrate", formatBitrateBps(track.bitrate))
                     }
                     if let bridge = tele?.audioBridgeBitrateMbps {
