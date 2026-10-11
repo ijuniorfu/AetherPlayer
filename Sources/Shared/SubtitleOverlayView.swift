@@ -84,16 +84,21 @@ struct SubtitleOverlayView: View {
     var body: some View {
         GeometryReader { geo in
             let active = activeCues
-            Color.clear.overlay(alignment: .topLeading) {
-                ForEach(active, id: \.id) { cue in
-                    if case .image(let image) = cue.body { imageCue(image, in: geo.size) }
+            // Bitmap and text cues sit in separate overlays: in one shared overlay next to the
+            // full-size text stack, no PGS/DVB cue was drawn at all (#10).
+            Color.clear
+                .overlay(alignment: .topLeading) {
+                    ForEach(active, id: \.id) { cue in
+                        if case .image(let image) = cue.body { imageCue(image, in: geo.size) }
+                    }
                 }
-                // Cues showing at the same time share one stack: placed one by one they all landed
-                // on the same baseline and drew over each other (a sign and a dialogue line).
-                placed(VStack(spacing: 6) {
-                    ForEach(active, id: \.id) { cue in textCue(cue, in: geo.size) }
-                }, in: geo.size)
-            }
+                .overlay {
+                    // Cues showing at the same time share one stack: placed one by one they all landed
+                    // on the same baseline and drew over each other (a sign and a dialogue line).
+                    placed(VStack(spacing: 6) {
+                        ForEach(active, id: \.id) { cue in textCue(cue, in: geo.size) }
+                    }, in: geo.size)
+                }
         }
     }
 
