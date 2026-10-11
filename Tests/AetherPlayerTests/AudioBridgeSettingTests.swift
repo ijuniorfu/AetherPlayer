@@ -38,3 +38,25 @@ struct AudioBridgeSettingTests {
         #expect(AudioBridgeSetting.label(.lossless) != AudioBridgeSetting.label(.surroundCompat))
     }
 }
+
+/// AetherEngine#731: TrueHD Atmos keeps its heights unless someone turns it off.
+struct TrueHDAtmosSettingTests {
+
+    @Test func onWhenNobodyHasChosen() {
+        #expect(TrueHDAtmosSetting.resolve(enabled: nil) == .apac(.l714))
+    }
+
+    @Test func offFallsBackToTheBridge() {
+        #expect(TrueHDAtmosSetting.resolve(enabled: false) == .off)
+        #expect(TrueHDAtmosSetting.resolve(enabled: true) == .apac(.l714))
+    }
+
+    @Test func trueHDAtmosIsLabelledAtmosInTheTrackMenu() {
+        let atmos = TrackInfo(id: 1, name: "", codec: "truehd", language: "en", channels: 8, isDefault: true,
+                              profile: "Dolby TrueHD + Dolby Atmos")
+        let plain = TrackInfo(id: 2, name: "", codec: "truehd", language: "en", channels: 8, isDefault: false)
+        let rows = audioMenuRows([atmos, plain], activeIndex: 1)
+        #expect(rows[0].label.hasSuffix("Atmos"))
+        #expect(rows[1].label.hasSuffix("7.1"))
+    }
+}

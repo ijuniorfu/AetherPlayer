@@ -7551,6 +7551,160 @@
         }
       }
     },
+    "Dolby Atmos from TrueHD" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos z TrueHD"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos fra TrueHD"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos aus TrueHD"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos από TrueHD"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos desde TrueHD"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos TrueHD:stä"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos depuis TrueHD"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos iz TrueHD-a"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos TrueHD-ból"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos da TrueHD"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueHDからDolby Atmos"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueHD의 Dolby Atmos"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos fra TrueHD"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos uit TrueHD"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos z TrueHD"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos a partir de TrueHD"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos a partir de TrueHD"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos din TrueHD"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos из TrueHD"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos z TrueHD"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos från TrueHD"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueHD'den Dolby Atmos"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dolby Atmos із TrueHD"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来自 TrueHD 的 Dolby Atmos"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "來自 TrueHD 的 Dolby Atmos"
+          }
+        }
+      }
+    },
     "Done" : {
       "localizations" : {
         "cs" : {
@@ -10482,6 +10636,160 @@
     },
     "https://example.com/video.mkv" : {
       "shouldTranslate" : false
+    },
+    "Keeps the height channels of TrueHD Atmos tracks and plays them as spatial audio, and picks such a track in your language. Lossy. When off, they play through the setting above. Applies to the next file you open." : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zachová výškové kanály stop TrueHD Atmos a přehraje je jako prostorový zvuk; takovou stopu také vybere ve vašem jazyce. Ztrátové. Když je vypnuto, přehrávají se podle nastavení výše. Platí pro další soubor, který otevřete."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bevarer højdekanalerne i TrueHD Atmos-spor og afspiller dem som rumlig lyd, og vælger et sådant spor på dit sprog. Med tab. Når det er slået fra, afspilles de efter indstillingen ovenfor. Gælder den næste fil, der åbnes."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behält die Höhenkanäle von TrueHD-Atmos-Spuren und gibt sie als 3D-Audio wieder, und wählt eine solche Spur in der eigenen Sprache. Verlustbehaftet. Aus: Wiedergabe nach der Einstellung darüber. Gilt für die nächste geöffnete Datei."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Διατηρεί τα κανάλια ύψους των κομματιών TrueHD Atmos και τα αναπαράγει ως χωρικό ήχο, και επιλέγει τέτοιο κομμάτι στη γλώσσα σας. Με απώλειες. Όταν είναι ανενεργό, αναπαράγονται σύμφωνα με την παραπάνω ρύθμιση. Ισχύει για το επόμενο αρχείο που θα ανοίξετε."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conserva los canales de altura de las pistas TrueHD Atmos y los reproduce como audio espacial, y elige una pista así en tu idioma. Con pérdida. Desactivado, se reproducen según el ajuste de arriba. Se aplica al siguiente archivo que abras."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Säilyttää TrueHD Atmos -raitojen korkeuskanavat ja toistaa ne tilaäänenä, ja valitsee tällaisen raidan omalla kielelläsi. Häviöllinen. Pois päältä ne toistetaan yllä olevan asetuksen mukaan. Koskee seuraavaa avaamaasi tiedostoa."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conserve les canaux en hauteur des pistes TrueHD Atmos et les lit en audio spatial, et choisit une telle piste dans votre langue. Avec perte. Désactivé, elles sont lues selon le réglage ci-dessus. S’applique au prochain fichier que vous ouvrez."
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadržava visinske kanale TrueHD Atmos zapisa i reproducira ih kao prostorni zvuk te odabire takav zapis na vašem jeziku. S gubicima. Kad je isključeno, reproduciraju se prema postavci iznad. Primjenjuje se na sljedeću datoteku koju otvorite."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Megtartja a TrueHD Atmos sávok magassági csatornáit, térhatású hangként játssza le őket, és ilyen sávot választ az Ön nyelvén. Veszteséges. Kikapcsolva a fenti beállítás szerint szólnak. A következő megnyitott fájlra vonatkozik."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantiene i canali in altezza delle tracce TrueHD Atmos e li riproduce come audio spaziale, e sceglie una traccia del genere nella tua lingua. Con perdita. Se disattivato, vengono riprodotte secondo l’impostazione qui sopra. Si applica al prossimo file che apri."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueHD Atmosトラックのハイトチャンネルを保ったまま空間オーディオとして再生し、お使いの言語のそのようなトラックを選択します。非可逆です。オフの場合は上の設定に従って再生されます。次に開くファイルから有効になります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueHD Atmos 트랙의 높이 채널을 유지해 공간 음향으로 재생하고, 사용 언어의 해당 트랙을 선택합니다. 손실 압축입니다. 끄면 위의 설정에 따라 재생됩니다. 다음에 여는 파일부터 적용됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beholder høydekanalene i TrueHD Atmos-spor og spiller dem av som romlig lyd, og velger et slikt spor på ditt språk. Med tap. Når det er av, spilles de av etter innstillingen over. Gjelder neste fil du åpner."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behoudt de hoogtekanalen van TrueHD Atmos-sporen en speelt ze af als ruimtelijke audio, en kiest zo’n spoor in je eigen taal. Met verlies. Uit: weergave volgens de instelling hierboven. Geldt voor het volgende bestand dat je opent."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zachowuje kanały wysokości ścieżek TrueHD Atmos i odtwarza je jako dźwięk przestrzenny, a także wybiera taką ścieżkę w Twoim języku. Stratne. Po wyłączeniu są odtwarzane zgodnie z ustawieniem powyżej. Dotyczy następnego otwartego pliku."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantém os canais de altura das faixas TrueHD Atmos e os reproduz como áudio espacial, e escolhe uma faixa assim no seu idioma. Com perdas. Desativado, elas tocam conforme o ajuste acima. Vale para o próximo arquivo que você abrir."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantém os canais de altura das faixas TrueHD Atmos e reprodu-los como áudio espacial, e escolhe uma faixa assim no seu idioma. Com perdas. Desativado, são reproduzidas conforme a definição acima. Aplica-se ao próximo ficheiro que abrir."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Păstrează canalele de înălțime ale pistelor TrueHD Atmos și le redă ca sunet spațial, alegând o astfel de pistă în limba dvs. Cu pierderi. Când este dezactivat, sunt redate conform setării de mai sus. Se aplică următorului fișier pe care îl deschideți."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохраняет каналы высоты дорожек TrueHD Atmos и воспроизводит их как пространственный звук, а также выбирает такую дорожку на вашем языке. С потерями. Если выключено, они воспроизводятся по настройке выше. Применяется к следующему открытому файлу."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zachová výškové kanály stôp TrueHD Atmos a prehrá ich ako priestorový zvuk; takú stopu tiež vyberie vo vašom jazyku. Stratové. Keď je vypnuté, prehrávajú sa podľa nastavenia vyššie. Platí pre ďalší súbor, ktorý otvoríte."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behåller höjdkanalerna i TrueHD Atmos-spår och spelar upp dem som rumsligt ljud, och väljer ett sådant spår på ditt språk. Med kvalitetsförlust. När det är av spelas de upp enligt inställningen ovan. Gäller nästa fil du öppnar."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueHD Atmos parçalarının yükseklik kanallarını korur ve bunları uzamsal ses olarak çalar; ayrıca dilinizdeki böyle bir parçayı seçer. Kayıplı. Kapalıyken yukarıdaki ayara göre çalınır. Açacağınız bir sonraki dosyada geçerli olur."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зберігає канали висоти доріжок TrueHD Atmos і відтворює їх як просторовий звук, а також вибирає таку доріжку вашою мовою. Із втратами. Якщо вимкнено, вони відтворюються за налаштуванням вище. Застосовується до наступного відкритого файлу."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留 TrueHD Atmos 音轨的高度声道并以空间音频播放，同时选择你所用语言的此类音轨。有损。关闭时按上方的设置播放。从下一个打开的文件开始生效。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留 TrueHD Atmos 音軌的高度聲道並以空間音訊播放，同時選擇你所用語言的此類音軌。有損。關閉時依上方的設定播放。從下一個開啟的檔案開始生效。"
+          }
+        }
+      }
     },
     "Large" : {
       "localizations" : {

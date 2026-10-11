@@ -26,10 +26,15 @@ private func channelLabel(_ channels: Int) -> String? {
     }
 }
 
+/// `TrackInfo.isAtmos` answers for E-AC-3 JOC only; TrueHD Atmos shows in the codec profile.
+func isTrueHDAtmos(_ t: TrackInfo) -> Bool {
+    t.codec.lowercased() == "truehd" && (t.profile?.localizedCaseInsensitiveContains("Dolby Atmos") ?? false)
+}
+
 private func audioLabel(_ t: TrackInfo) -> String {
     var parts = [t.name.isEmpty ? String(localized: "Track \(t.id)") : t.name]
     if let lang = t.language, !lang.isEmpty { parts.append(lang.uppercased()) }
-    if t.isAtmos { parts.append("Atmos") }
+    if t.isAtmos || isTrueHDAtmos(t) { parts.append("Atmos") }
     else if let ch = channelLabel(t.channels) { parts.append(ch) }
     return parts.joined(separator: " \u{00B7} ")
 }
