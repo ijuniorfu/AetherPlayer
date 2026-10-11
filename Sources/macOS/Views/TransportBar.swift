@@ -94,7 +94,10 @@ struct TransportBar: View {
                         .font(.system(.caption, design: .monospaced))
                         .aetherBadge()
                 }
-                .menuStyle(.borderlessButton)
+                // .borderlessButton redraws the label as a system control
+                // (label colour, no capsule), invisible on a dark frame.
+                .menuStyle(.button)
+                .buttonStyle(.plain)
                 .menuIndicator(.hidden)
                 .fixedSize()
 
