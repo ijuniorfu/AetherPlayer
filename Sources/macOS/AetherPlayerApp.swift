@@ -6,49 +6,24 @@ import UniformTypeIdentifiers
 struct AetherPlayerApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
-    @State private var model: PlayerViewModel? = {
-        try? PlayerViewModel()
-    }()
-    @State private var alwaysOnTop = false
     @AppStorage(SubtitleAppearanceKey.size) private var subtitleSize = SubtitleSize.normal
-    @State private var showOpenURLSheet = false
     @Environment(\.openWindow) private var openWindow
 #if DIRECT_DISTRIBUTION
     @StateObject private var updater = Updater()
 #endif
 
+    private var windows: PlayerWindowRegistry { .shared }
+    /// The player the menu bar acts on: the window that was key last (see PlayerWindowRegistry).
+    private var model: PlayerViewModel? { windows.active?.model }
+
     var body: some Scene {
-        Window("AetherPlayer", id: "main") {
-            Group {
-                if let model {
-                    ContentView(model: model) {
-                        showOpenURLSheet = true
-                    }
-                    .sheet(isPresented: $showOpenURLSheet) {
-                        OpenURLSheet(model: model)
-                    }
-                } else {
-                    Text("AetherEngine failed to initialize.")
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.black)
-                }
-            }
-            .onAppear {
-                NSApp.windows.first?.setFrameAutosaveName("AetherPlayerMainWindow")
-                if let model {
-                    // Activation/fronting is handled in AppDelegate; just load.
-                    AppDelegate.onOpenFiles = { urls in
-                        guard let url = urls.first else { return }
-                        Task { @MainActor in await model.open(url: url) }
-                    }
-                }
-            }
-            .onChange(of: alwaysOnTop) { _, on in
-                NSApp.keyWindow?.level = on ? .floating : .normal
-            }
-            .frame(minWidth: 640, minHeight: 360)
+        // One engine per window, so files can play side by side.
+        WindowGroup("AetherPlayer", id: PlayerWindowID.value) {
+            PlayerWindowView()
         }
+        // A relaunch opens one empty window instead of restoring every window of the last session
+        // without its media.
+        .restorationBehavior(.disabled)
         .windowResizability(.contentMinSize)
         .commands {
             // One Group for the app-menu entries: before Xcode 27 the commands builder takes at most
@@ -67,11 +42,15 @@ struct AetherPlayerApp: App {
                 }
             }
             CommandGroup(replacing: .newItem) {
+                Button("New Window") { openWindow(id: PlayerWindowID.value) }
+                    .keyboardShortcut("n", modifiers: .command)
+                Divider()
                 Button("Open\u{2026}") { openFile() }
                     .keyboardShortcut("o", modifiers: .command)
-                Button("Open URL\u{2026}") { showOpenURLSheet = true }
+                Button("Open URL\u{2026}") {
+                    windows.withActiveSession { $0.showOpenURLSheet = true }
+                }
                     .keyboardShortcut("l", modifiers: .command)
-                    .disabled(model == nil)
                 Button("Open Folder\u{2026}") { openFolderPanel() }
                     .keyboardShortcut("o", modifiers: [.command, .shift])
             }
@@ -151,8 +130,12 @@ struct AetherPlayerApp: App {
             // Into the system Window menu, not next to it: a CommandMenu("Window") does not merge
             // with the menu AppKit already provides, it adds a second one under the same name.
             CommandGroup(after: .windowArrangement) {
-                Toggle("Always on Top", isOn: $alwaysOnTop)
+                Toggle("Always on Top", isOn: Binding(
+                    get: { windows.active?.alwaysOnTop ?? false },
+                    set: { windows.active?.alwaysOnTop = $0 }
+                ))
                     .keyboardShortcut("t", modifiers: [.command, .shift])
+                    .disabled(windows.active == nil)
                 Menu("Subtitle Size") {
                     ForEach(SubtitleSize.allCases) { size in
                         Button(action: { subtitleSize = size }) {
@@ -176,7 +159,9 @@ struct AetherPlayerApp: App {
         Window("Stats for Nerds", id: "stats") {
             Group {
                 if let model {
+                    // Rebuilt per player: the view binds the engine's diagnostics object in its init.
                     StatsInspectorView(model: model)
+                        .id(ObjectIdentifier(model))
                 } else {
                     Text("No player.")
                 }
@@ -205,13 +190,12 @@ struct AetherPlayerApp: App {
     }
 
     private func openFile() {
-        guard let model else { return }
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.allowedContentTypes = [.movie, .video, .matroska, .audio, .discImage]
         if panel.runModal() == .OK, let url = panel.url {
-            Task { await model.open(url: url) }
+            windows.withActiveSession { session in Task { await session.model.open(url: url) } }
         }
     }
 
@@ -231,14 +215,15 @@ struct AetherPlayerApp: App {
     }
 
     private func openFolderPanel() {
-        guard let model else { return }
         let panel = NSOpenPanel()
         panel.canChooseFiles = false
         panel.canChooseDirectories = true
         panel.allowsMultipleSelection = false
         if panel.runModal() == .OK, let url = panel.url {
             let bm = BookmarkAccess.bookmark(for: url)
-            Task { await model.openFolder(url, bookmarkData: bm) }
+            windows.withActiveSession { session in
+                Task { await session.model.openFolder(url, bookmarkData: bm) }
+            }
         }
     }
 }

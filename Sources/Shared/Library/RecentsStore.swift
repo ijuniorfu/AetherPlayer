@@ -7,6 +7,9 @@ import Observation
 @MainActor
 final class RecentsStore {
     static let limit = 30
+    /// The app's list. Every player window reads this one, so a file opened in one window shows up in
+    /// the empty state of the others.
+    static let shared = RecentsStore()
     private let defaults: UserDefaults
     private let key = "recents.v1"
 

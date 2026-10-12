@@ -9,11 +9,18 @@ import AetherEngine
 /// populate MPNowPlayingInfoCenter, so the host writes it directly. The
 /// controller is metadata/clock agnostic: the view model pushes updates
 /// and the remote-command callbacks route back into the view model.
+///
+/// The system surface is one per process and every player window has a
+/// controller, so exactly one of them owns it: the player that started
+/// playing or whose window became key last (`claim()`). The others stay
+/// silent until the owner clears, and the next one to push takes over.
 @MainActor
 final class NowPlayingController {
     private let info = MPNowPlayingInfoCenter.default()
-    private let commands = MPRemoteCommandCenter.shared()
-    private var configured = false
+    private static let commands = MPRemoteCommandCenter.shared()
+    private static var targetsInstalled = false
+    private static weak var owner: NowPlayingController?
+    private var actions: Actions?
 
     /// Decoded cover, kept across pushes and rebuilt only when the bytes change.
     /// `update` runs on the throttled clock tick (about once a second for the
@@ -26,26 +33,49 @@ final class NowPlayingController {
     private var artworkSource: Data?
     private var artwork: MPMediaItemArtwork?
 
-    /// Wire transport commands once. Each closure calls back into the
-    /// supplied action set (the view model's methods).
+    /// Store this player's actions. The command targets are installed once per
+    /// process and call whichever controller owns the surface.
     func configure(actions: Actions) {
-        guard !configured else { return }
-        configured = true
+        self.actions = actions
+        Self.installTargets()
+    }
 
-        commands.playCommand.addTarget { _ in actions.play(); return .success }
-        commands.pauseCommand.addTarget { _ in actions.pause(); return .success }
-        commands.togglePlayPauseCommand.addTarget { _ in actions.toggle(); return .success }
+    func claim() {
+        Self.owner = self
+    }
+
+    /// True when this controller may write the surface, taking it over when nobody holds it.
+    private func mayPublish() -> Bool {
+        if Self.owner == nil { Self.owner = self }
+        return Self.owner === self
+    }
+
+    private static func installTargets() {
+        guard !targetsInstalled else { return }
+        targetsInstalled = true
+
+        func route(_ body: @escaping (Actions) -> Void) -> (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus {
+            { _ in
+                guard let actions = owner?.actions else { return .noActionableNowPlayingItem }
+                body(actions)
+                return .success
+            }
+        }
+        commands.playCommand.addTarget(handler: route { $0.play() })
+        commands.pauseCommand.addTarget(handler: route { $0.pause() })
+        commands.togglePlayPauseCommand.addTarget(handler: route { $0.toggle() })
 
         commands.skipForwardCommand.preferredIntervals = [10]
-        commands.skipForwardCommand.addTarget { _ in actions.skip(10); return .success }
+        commands.skipForwardCommand.addTarget(handler: route { $0.skip(10) })
         commands.skipBackwardCommand.preferredIntervals = [10]
-        commands.skipBackwardCommand.addTarget { _ in actions.skip(-10); return .success }
+        commands.skipBackwardCommand.addTarget(handler: route { $0.skip(-10) })
 
-        commands.nextTrackCommand.addTarget { _ in actions.next(); return .success }
-        commands.previousTrackCommand.addTarget { _ in actions.previous(); return .success }
+        commands.nextTrackCommand.addTarget(handler: route { $0.next() })
+        commands.previousTrackCommand.addTarget(handler: route { $0.previous() })
 
         commands.changePlaybackPositionCommand.addTarget { event in
-            guard let e = event as? MPChangePlaybackPositionCommandEvent else { return .commandFailed }
+            guard let e = event as? MPChangePlaybackPositionCommandEvent,
+                  let actions = owner?.actions else { return .commandFailed }
             actions.seekTo(e.positionTime)
             return .success
         }
@@ -53,6 +83,8 @@ final class NowPlayingController {
 
     /// Enable/disable next/previous to match playlist availability.
     func updateAvailability(hasNext: Bool, hasPrevious: Bool) {
+        guard mayPublish() else { return }
+        let commands = Self.commands
         commands.nextTrackCommand.isEnabled = hasNext
         commands.previousTrackCommand.isEnabled = hasPrevious
     }
@@ -60,6 +92,7 @@ final class NowPlayingController {
     /// Push the current metadata + clock to the system. Pass nil to clear.
     func update(metadata: MediaMetadata?, fallbackTitle: String,
                 duration: Double, elapsed: Double, rate: Float) {
+        guard mayPublish() else { return }
         var dict = nowPlayingInfo(
             metadata: metadata, fallbackTitle: fallbackTitle,
             duration: duration, elapsed: elapsed, rate: rate)
@@ -88,10 +121,12 @@ final class NowPlayingController {
 
     /// Clear the system surface on stop.
     func clear() {
-        info.nowPlayingInfo = nil
-        info.playbackState = .stopped
         artworkSource = nil
         artwork = nil
+        guard Self.owner === self else { return }
+        Self.owner = nil
+        info.nowPlayingInfo = nil
+        info.playbackState = .stopped
     }
 
     struct Actions {
@@ -125,6 +160,8 @@ final class NowPlayingController {
     }
 
     func configure(actions: Actions) {}
+
+    func claim() {}
 
     func updateAvailability(hasNext: Bool, hasPrevious: Bool) {}
 

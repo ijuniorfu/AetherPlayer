@@ -143,7 +143,7 @@ final class PlayerViewModel {
     }
     #endif
 
-    let recents = RecentsStore()
+    let recents = RecentsStore.shared
     private let nowPlaying = NowPlayingController()
     /// One frame extractor per playback session, built from the playing file
     /// and shared by scrub preview and snapshot. Released (and shut down) on
@@ -247,6 +247,7 @@ final class PlayerViewModel {
         engine.$state.receive(on: DispatchQueue.main).sink { [weak self] in
             self?.state = $0
             self?.updateSleepAssertion()
+            if $0 == .playing { self?.nowPlaying.claim() }
             if ($0 == .idle || $0 == .ended), self?.hasMedia == true {
                 self?.handleTrackEnded()
             }
@@ -470,6 +471,14 @@ final class PlayerViewModel {
         loadError = nil
         resumeMessage = nil
         nowPlaying.clear()
+        #if os(macOS)
+        // Released here, not only from the state observer: a closed window's model can be gone before
+        // the engine's idle state reaches that observer, and a leaked activity keeps the display awake.
+        if let token = sleepAssertion {
+            ProcessInfo.processInfo.endActivity(token)
+            sleepAssertion = nil
+        }
+        #endif
         activeSubtitleCodec = nil
         deactivateASSRendering()
         #if os(iOS)
@@ -751,6 +760,13 @@ final class PlayerViewModel {
     }
 
     // MARK: - Now Playing
+
+    /// Hands the system Now Playing surface and the media keys to this player (its window became key).
+    func claimNowPlaying() {
+        guard hasMedia else { return }
+        nowPlaying.claim()
+        pushNowPlaying()
+    }
 
     private func pushNowPlaying() {
         guard hasMedia else { nowPlaying.clear(); return }

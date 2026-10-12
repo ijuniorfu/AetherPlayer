@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        AetherPlayer is a deliberately small, one-window macOS media player. Feature requests here are about the app shell: the window, controls, track menus, scrubbing, snapshots, keyboard shortcuts, and file handling. Requests about which formats or codecs play, or how they decode, are engine concerns and belong on the [AetherEngine tracker](https://github.com/superuser404notfound/AetherEngine/issues).
+        AetherPlayer is a deliberately small media player for macOS and iOS/iPadOS. Feature requests here are about the app shell: the windows, controls, track menus, scrubbing, snapshots, keyboard shortcuts, and file handling. Requests about which formats or codecs play, or how they decode, are engine concerns and belong on the [AetherEngine tracker](https://github.com/superuser404notfound/AetherEngine/issues).
 
   - type: textarea
     id: what

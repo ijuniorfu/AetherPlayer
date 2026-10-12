@@ -13,6 +13,7 @@ struct PlayerContainerView: View {
     /// auto-hiding mid-drag, which would tear down the slider and drop the
     /// deferred seek.
     @State private var scrubbing = false
+    @Environment(\.playerWindow) private var window
     private let hideInterval: TimeInterval = 3
     private let tick = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
@@ -57,7 +58,7 @@ struct PlayerContainerView: View {
             KeyCatcherView(onKey: handleKey)
                 .allowsHitTesting(false)
         }
-        .onAppear { NSApp.keyWindow?.acceptsMouseMovedEvents = true }
+        .onAppear { window?.acceptsMouseMovedEvents = true }
         .onDisappear { NSCursor.setHiddenUntilMouseMoves(false) }
         .onChange(of: controlsVisible) { _, visible in
             updateCursorVisibility(controlsVisible: visible)
@@ -84,12 +85,18 @@ struct PlayerContainerView: View {
     }
 
     private func updateCursorVisibility(for notification: Notification) {
-        guard let window = notification.object as? NSWindow, window.isKeyWindow else { return }
+        guard let window = notification.object as? NSWindow, window === self.window else { return }
         updateCursorVisibility(controlsVisible: controlsVisible, window: window)
     }
 
-    private func updateCursorVisibility(controlsVisible: Bool, window: NSWindow? = NSApp.keyWindow) {
-        let isFullScreen = window?.styleMask.contains(.fullScreen) == true
+    private func updateCursorVisibility(controlsVisible: Bool) {
+        updateCursorVisibility(controlsVisible: controlsVisible, window: window)
+    }
+
+    private func updateCursorVisibility(controlsVisible: Bool, window: NSWindow?) {
+        // A player in a background window hiding its controls must not hide the cursor over another one.
+        guard let window, window.isKeyWindow else { return }
+        let isFullScreen = window.styleMask.contains(.fullScreen)
         NSCursor.setHiddenUntilMouseMoves(
             shouldHideCursor(controlsVisible: controlsVisible, isFullScreen: isFullScreen)
         )
@@ -109,7 +116,7 @@ struct PlayerContainerView: View {
         switch event.keyCode {
         case 49: model.primaryAction(); bumpActivity(); return true     // Space
         case 53:  // Esc: exit fullscreen if in fullscreen, else stop
-            if NSApp.keyWindow?.styleMask.contains(.fullScreen) == true {
+            if window?.styleMask.contains(.fullScreen) == true {
                 toggleFullScreen()
             } else {
                 model.stop()
@@ -135,7 +142,7 @@ struct PlayerContainerView: View {
     }
 
     private func toggleFullScreen() {
-        NSApp.keyWindow?.toggleFullScreen(nil)
+        window?.toggleFullScreen(nil)
     }
 
     private func ensureFolderThenAdvance(next: Bool) {

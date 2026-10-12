@@ -6,6 +6,7 @@ import AetherEngine
 struct ContentView: View {
     @State private var model: PlayerViewModel
     @State private var isDropTargeted = false
+    @Environment(\.playerWindow) private var window
     let onOpenURL: () -> Void
 
     init(model: PlayerViewModel, onOpenURL: @escaping () -> Void) {
@@ -131,6 +132,7 @@ struct ContentView: View {
             }
             return true
         }
+        .onChange(of: WindowRef(window: window)) { _, _ in updateWindowTitle() }
         .onChange(of: model.loadedURL) { _, _ in updateWindowTitle() }
         .onChange(of: model.metadata) { _, _ in updateWindowTitle() }
         .onChange(of: model.isAudioOnly) { _, _ in updateWindowTitle() }
@@ -149,7 +151,7 @@ struct ContentView: View {
     private static let subtitleExtensions: Set<String> = ["srt", "ass", "ssa", "vtt", "sub"]
 
     private func updateWindowTitle() {
-        NSApp.keyWindow?.title = windowTitle(
+        window?.title = windowTitle(
             metadata: model.metadata, url: model.loadedURL, isAudio: model.isAudioOnly)
     }
 

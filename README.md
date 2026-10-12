@@ -38,6 +38,7 @@
 - **Audio and subtitle track switching** from the menu bar or the tracks popover, with an "Off" option for subtitles. Drop an `.srt` onto a playing video to attach it as a sidecar track, and pick the subtitle size from the Window menu.
 - **Subtitle appearance.** Settings (Cmd-,) sets size, font (System or the bundled Atkinson Hyperlegible), weight, color, background (box, outline, shadow or none) and vertical position for text subtitles, applied to the line on screen. ASS/SSA tracks draw with the fonts, colors and placement they ship with, on the picture rather than the window; a switch shows them as plain text in your own style instead.
 - **Disc titles and chapters.** Open a decrypted DVD-Video or Blu-ray `.iso` (from the Open dialog, a drop onto the window, or Finder's *Open With*) and the tracks popover lists its titles (pick one to switch) and the playing title's chapters (click to jump).
+- **Several windows side by side.** File ▸ New Window (Cmd+N) opens another player with its own engine, so two files play next to each other. The menu bar, Stats for Nerds and Finder's *Open With* act on the window you used last, the media keys follow the window that started playing or was used last, and closing a window ends its playback.
 - **Scrub bar with live preview.** Hover the timeline for a thumbnail, click to seek, or drag to scrub.
 - **Frame capture.** Save the current frame at full resolution (Cmd+Shift+S, or the camera button).
 - **Recents with thumbnails.** Recently opened files show disk-cached keyframe thumbnails for quick visual recognition.
@@ -65,6 +66,7 @@
 | M | Mute / unmute |
 | J / K | Audio 50 ms earlier / later (lip-sync) |
 | Escape | Exit fullscreen, else stop |
+| Cmd+N | New player window |
 | Cmd+O | Open file |
 | Cmd+Shift+O | Open folder |
 | Cmd+Shift+S | Save current frame |
