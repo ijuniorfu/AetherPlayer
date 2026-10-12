@@ -9,6 +9,9 @@ final class PlayerSession {
     let model: PlayerViewModel
     @ObservationIgnored private(set) weak var window: NSWindow?
     @ObservationIgnored private var observers: [NSObjectProtocol] = []
+    /// Files handed to this window that are still opening. `hasMedia` turns true only once a load
+    /// lands, so without this a burst of Finder opens would read the same window as empty twice.
+    @ObservationIgnored private var opening = 0
     var showOpenURLSheet = false
     var alwaysOnTop = false {
         didSet { window?.level = alwaysOnTop ? .floating : .normal }
@@ -16,6 +19,17 @@ final class PlayerSession {
 
     init(model: PlayerViewModel) {
         self.model = model
+    }
+
+    /// Nothing playing and nothing on its way: a Finder open may take this window.
+    var isEmpty: Bool { opening == 0 && !model.hasMedia }
+
+    func open(_ url: URL) {
+        opening += 1
+        Task {
+            await model.open(url: url)
+            opening -= 1
+        }
     }
 
     func attach(_ window: NSWindow) {
@@ -50,8 +64,8 @@ final class PlayerSession {
     }
 }
 
-/// The open player windows and the one the menu bar, the Stats window and Finder's "Open With" act on:
-/// the player window that was key last. Tracked by hand rather than through focused values so the
+/// The open player windows and the one the menu bar and the Stats window act on: the player window
+/// that was key last. Tracked by hand rather than through focused values so the
 /// menus keep their target while the Stats or Settings window has focus.
 @Observable
 @MainActor
@@ -68,9 +82,9 @@ final class PlayerWindowRegistry {
     func register(_ session: PlayerSession) {
         sessions.append(session)
         if active == nil { active = session }
-        let work = pending
-        pending = []
-        work.forEach { $0(session) }
+        // One queued job per window: several Finder opens in a row each asked for a window of their own.
+        if !pending.isEmpty { pending.removeFirst()(session) }
+        FinderOpenEvents.shared.install()
     }
 
     func unregister(_ session: PlayerSession) {
@@ -94,6 +108,23 @@ final class PlayerWindowRegistry {
         }
     }
 
+    /// A file opened from Finder (double click, Open With, a drop on the Dock icon). The front window
+    /// takes it while it shows nothing; otherwise the file gets a window of its own, so opening several
+    /// files one after another never replaces the one already playing.
+    func openFromFinder(_ url: URL) {
+        let target = active?.isEmpty == true ? active : sessions.first(where: \.isEmpty)
+        if let target {
+            target.open(url)
+            bringToFront(target)
+        } else {
+            pending.append { [weak self] session in
+                session.open(url)
+                self?.bringToFront(session)
+            }
+            openPlayerWindow()
+        }
+    }
+
     func openPlayerWindow() {
         openWindow?(id: PlayerWindowID.value)
         NSApp.activate(ignoringOtherApps: true)
@@ -104,6 +135,43 @@ final class PlayerWindowRegistry {
             NSApp.activate(ignoringOtherApps: true)
             (session ?? self.active)?.window?.makeKeyAndOrderFront(nil)
         }
+    }
+}
+
+/// Takes Finder opens (double click, Open With, a drop on the Dock icon) off SwiftUI once the first
+/// player window exists, because SwiftUI passes on only the first file of each open. Until then SwiftUI
+/// keeps the event: it is what opens the launch window for a file that started the app.
+@MainActor
+final class FinderOpenEvents: NSObject {
+    static let shared = FinderOpenEvents()
+    private var installed = false
+
+    func install() {
+        guard !installed else { return }
+        installed = true
+        NSAppleEventManager.shared().setEventHandler(
+            self, andSelector: #selector(openDocuments(_:withReply:)),
+            forEventClass: AEEventClass(kCoreEventClass), andEventID: AEEventID(kAEOpenDocuments))
+    }
+
+    @objc private func openDocuments(_ event: NSAppleEventDescriptor, withReply reply: NSAppleEventDescriptor) {
+        Self.files(of: event).forEach(PlayerWindowRegistry.shared.openFromFinder)
+    }
+
+    /// The files of the launch event behind `url`, read from the event SwiftUI is handling, since it
+    /// passes on only the first of them.
+    func launchFiles(for url: URL) -> [URL] {
+        guard let event = NSAppleEventManager.shared().currentAppleEvent,
+              event.eventClass == AEEventClass(kCoreEventClass),
+              event.eventID == AEEventID(kAEOpenDocuments) else { return [url] }
+        let files = Self.files(of: event)
+        return files.contains { $0.standardizedFileURL == url.standardizedFileURL } ? files : [url]
+    }
+
+    private static func files(of event: NSAppleEventDescriptor) -> [URL] {
+        guard let list = event.paramDescriptor(forKeyword: keyDirectObject) else { return [] }
+        guard list.numberOfItems > 0 else { return [list.fileURLValue].compactMap { $0 } }
+        return (1...list.numberOfItems).compactMap { list.atIndex($0)?.fileURLValue }
     }
 }
 
@@ -147,8 +215,8 @@ struct PlayerWindowView: View {
     @State private var session: PlayerSession?
     @State private var engineFailed = false
     @State private var windowRef = WindowRef()
-    /// A Finder open that reached this window before its session existed (cold launch).
-    @State private var pendingURL: URL?
+    /// Finder opens that started the app and reached this window before its session existed.
+    @State private var launchURLs: [URL] = []
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
@@ -171,15 +239,15 @@ struct PlayerWindowView: View {
             }
         }
         .background(WindowAccessor { window in windowRef = WindowRef(window: window) })
-        // Finder opens land in an open player window. Without this the WindowGroup answers every
-        // opened file with a fresh, empty window of its own.
+        // Only the launch is still SwiftUI's (see FinderOpenEvents). Without this the WindowGroup
+        // answers the file with an empty window beside the one that plays it.
         .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
         .onOpenURL { url in
-            if let session {
-                Task { await session.model.open(url: url) }
-                PlayerWindowRegistry.shared.bringToFront(session)
+            let urls = FinderOpenEvents.shared.launchFiles(for: url)
+            if session != nil {
+                urls.forEach(PlayerWindowRegistry.shared.openFromFinder)
             } else {
-                pendingURL = url
+                launchURLs += urls
             }
         }
         .onAppear {
@@ -190,10 +258,10 @@ struct PlayerWindowView: View {
                 self.session = session
                 if let window = windowRef.window { session.attach(window) }
                 PlayerWindowRegistry.shared.register(session)
-                if let url = pendingURL {
-                    pendingURL = nil
-                    Task { await session.model.open(url: url) }
-                }
+                let urls = launchURLs
+                launchURLs = []
+                if let first = urls.first { session.open(first) }
+                urls.dropFirst().forEach(PlayerWindowRegistry.shared.openFromFinder)
             } catch {
                 engineFailed = true
             }

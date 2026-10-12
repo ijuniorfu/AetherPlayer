@@ -195,7 +195,7 @@ struct AetherPlayerApp: App {
         panel.canChooseDirectories = false
         panel.allowedContentTypes = [.movie, .video, .matroska, .audio, .discImage]
         if panel.runModal() == .OK, let url = panel.url {
-            windows.withActiveSession { session in Task { await session.model.open(url: url) } }
+            windows.withActiveSession { $0.open(url) }
         }
     }
 
