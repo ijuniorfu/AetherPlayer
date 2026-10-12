@@ -43,6 +43,19 @@ xcodebuild -exportArchive -archivePath "$ARCHIVE" \
 APP="$EXPORT_DIR/$APP_NAME.app"
 VOL_ICON="docs/images/AppIcon.icns"
 
+# The ticket lookup right after notarization fails now and then with "The network
+# connection was lost" (Error 68) against Apple's ticket service; 0.22.1 lost two CI
+# runs to it in a row. A later attempt finds the ticket.
+staple() {
+  local attempt
+  for attempt in 1 2 3 4 5; do
+    if xcrun stapler staple "$1"; then return 0; fi
+    echo "stapler failed for $1 (attempt $attempt), retrying in 30 s" >&2
+    sleep 30
+  done
+  return 1
+}
+
 # 2b. Notarize + staple the .app BEFORE it is packaged into the DMG.
 # Sparkle extracts the .app out of the DMG and discards the DMG, so the
 # notarization ticket must live on the .app itself. Stapling only the .dmg
@@ -53,7 +66,7 @@ if [ -n "$NOTARY_PROFILE" ]; then
   APP_ZIP="$BUILD_DIR/$APP_NAME-app.zip"
   ditto -c -k --keepParent "$APP" "$APP_ZIP"
   xcrun notarytool submit "$APP_ZIP" --keychain-profile "$NOTARY_PROFILE" --wait
-  xcrun stapler staple "$APP"
+  staple "$APP"
   rm -f "$APP_ZIP"
 fi
 
@@ -86,7 +99,7 @@ rm -f "$RW_DMG"
 #    test only). The .app inside was already notarized + stapled in step 2b.
 if [ -n "$NOTARY_PROFILE" ]; then
   xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
-  xcrun stapler staple "$DMG"
+  staple "$DMG"
 
   # Guard against the stapling-gap regression: the .app Sparkle extracts from
   # the DMG MUST carry its own stapled ticket, or in-app updates fail. Verify
