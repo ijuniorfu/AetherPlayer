@@ -155,8 +155,8 @@ final class PlayerViewModel {
     @ObservationIgnored private var frameExtractorTitleID: Int?
     /// Scrub-preview source, reconfigured on each load.
     let scrubPreview = ScrubPreviewProvider()
-    /// Decode + disk-cached thumbnails for the recents list.
-    let recentsThumbnails = RecentsThumbnailProvider()
+    /// Decode + disk-cached thumbnails for the recents list, shared by every window.
+    var recentsThumbnails: RecentsThumbnailProvider { .shared }
     private var scoped: ScopedResource?
     /// Set briefly after a resume so the UI can offer "Start over".
     private(set) var resumeMessage: String?
