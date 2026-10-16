@@ -32,14 +32,17 @@ private struct RecentCell: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            ZStack {
-                Color.gray.opacity(0.2)
-                if let image {
-                    Image(decorative: image, scale: 1).resizable().scaledToFill()
+            // The 16:9 plate sizes the cell and the thumbnail is an overlay on it: as a sibling in a
+            // ZStack, a scaled-to-fill 2.39:1 still widened the stack past 16:9 and the clip followed
+            // it, so the picture spilled into the neighbouring cell.
+            Color.gray.opacity(0.2)
+                .aspectRatio(16.0 / 9.0, contentMode: .fit)
+                .overlay {
+                    if let image {
+                        Image(decorative: image, scale: 1).resizable().scaledToFill()
+                    }
                 }
-            }
-            .aspectRatio(16.0 / 9.0, contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             // `clipShape` clips what is DRAWN, not what is touchable. A thumbnail that is not 16:9
             // (a 4:3 recording, a 2.39:1 film still) is scaled to fill and overhangs this cell
             // invisibly, and the overhang stays hittable on top of the neighbouring cell, which then
