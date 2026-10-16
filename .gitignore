@@ -13,3 +13,6 @@ xcuserdata/
 .worktrees/
 docs/superpowers/
 CLAUDE.md
+
+# Local-only App Store Connect copy and tooling (texts live in ASC; never pushed).
+Marketing/
