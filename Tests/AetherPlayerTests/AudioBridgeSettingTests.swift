@@ -39,7 +39,7 @@ struct AudioBridgeSettingTests {
     }
 }
 
-/// AetherEngine#731: TrueHD Atmos keeps its heights unless someone turns it off.
+/// AetherEngine#731, #744: TrueHD Atmos and DTS:X keep their heights unless someone turns it off.
 struct TrueHDAtmosSettingTests {
 
     @Test func onWhenNobodyHasChosen() {
@@ -57,6 +57,16 @@ struct TrueHDAtmosSettingTests {
         let plain = TrackInfo(id: 2, name: "", codec: "truehd", language: "en", channels: 8, isDefault: false)
         let rows = audioMenuRows([atmos, plain], activeIndex: 1)
         #expect(rows[0].label.hasSuffix("Atmos"))
+        #expect(rows[1].label.hasSuffix("7.1"))
+    }
+
+    @Test func dtsXIsLabelledInTheTrackMenu() {
+        let dtsX = TrackInfo(id: 1, name: "", codec: "dts", language: "en", channels: 8, isDefault: true,
+                             profile: "DTS-HD MA + DTS:X")
+        let plain = TrackInfo(id: 2, name: "", codec: "dts", language: "en", channels: 8, isDefault: false,
+                              profile: "DTS-HD MA")
+        let rows = audioMenuRows([dtsX, plain], activeIndex: 1)
+        #expect(rows[0].label.hasSuffix("DTS:X"))
         #expect(rows[1].label.hasSuffix("7.1"))
     }
 }

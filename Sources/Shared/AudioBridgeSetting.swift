@@ -69,14 +69,15 @@ enum AudioBridgeSetting {
     }
 }
 
-/// Host policy for TrueHD Atmos (`LoadOptions.objectAudioRendering`, AetherEngine#731).
+/// Host policy for TrueHD Atmos and DTS:X (`LoadOptions.objectAudioRendering`, AetherEngine#731, #744).
 ///
-/// The bridge above decodes TrueHD to its 7.1 presentation, which loses every height and object
-/// position. With this on, the engine decodes the Atmos objects instead, renders them into a 7.1.4
-/// bed and hands AVPlayer Apple Positional Audio, which macOS and iOS play as spatial audio. It is
-/// lossy where FLAC 7.1 is not, hence a switch, and on by default like Sodalite's: a track that
-/// carries heights should keep them unless someone decides otherwise. Any TrueHD that is not Atmos,
-/// and any failure to start the renderer, falls back to `AudioBridgeSetting`.
+/// The bridge above decodes TrueHD and DTS-HD MA to their 7.1 presentation, which loses every height
+/// and object position. With this on, the engine decodes the heights and objects instead, renders
+/// them into a 7.1.4 bed and hands AVPlayer Apple Positional Audio, which macOS and iOS play as
+/// spatial audio. It is lossy where FLAC 7.1 is not, hence a switch, and on by default like
+/// Sodalite's: a track that carries heights should keep them unless someone decides otherwise. Any
+/// TrueHD that is not Atmos, any DTS-HD MA that is not DTS:X, and any failure to start the renderer,
+/// falls back to `AudioBridgeSetting`.
 enum TrueHDAtmosSetting {
 
     static let defaultsKey = "playback.trueHDAtmosHeights"

@@ -68,8 +68,8 @@ struct PlaybackSettingsView: View {
             + String(localized: "Applies to formats that have to be re-encoded, such as TrueHD and DTS, and to the next file you open.")
         )
 
-        Toggle("Dolby Atmos from TrueHD", isOn: $trueHDAtmosHeights)
-        caption(String(localized: "Keeps the height channels of TrueHD Atmos tracks and plays them as spatial audio, and picks such a track in your language. Lossy. When off, they play through the setting above. Applies to the next file you open."))
+        Toggle("Dolby Atmos from TrueHD and DTS:X", isOn: $trueHDAtmosHeights)
+        caption(String(localized: "Keeps the height channels of TrueHD Atmos and DTS:X tracks and plays them as spatial audio, and picks such a track in your language. Lossy. When off, they play through the setting above. Applies to the next file you open."))
 
         divider()
 
