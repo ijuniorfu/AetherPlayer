@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A native media player built on <a href="https://github.com/superuser404notfound/AetherEngine">AetherEngine</a>, for macOS and iOS/iPadOS.</b><br>
-  Drop or open a video or audio file, play it, switch audio and subtitle tracks, scrub with live thumbnail previews, and grab full-resolution frames.<br>
+  Open a video or audio file, a disc image or a stream URL and it plays, with Dolby Vision and HDR, Dolby Atmos from TrueHD and DTS:X, every audio and subtitle track, and live thumbnail previews on the scrub bar.<br>
   macOS: universal binary (Apple Silicon + Intel), macOS 15.0+. iOS/iPadOS: universal app, iOS 18.0+.
 </p>
 
@@ -14,8 +14,8 @@
   <a href="https://github.com/superuser404notfound/AetherPlayer/releases/latest"><img src="https://img.shields.io/github/v/release/superuser404notfound/AetherPlayer?label=release&color=blue"></a>
   <a href="https://github.com/superuser404notfound/AetherPlayer/actions/workflows/release-dmg.yml"><img src="https://github.com/superuser404notfound/AetherPlayer/actions/workflows/release-dmg.yml/badge.svg"></a>
   <a href="https://testflight.apple.com/join/rgrjZ98V"><img src="https://img.shields.io/badge/iOS-TestFlight-0D96F6?logo=apple&logoColor=white"></a>
-  <img src="https://img.shields.io/badge/macOS-14%2B-black?logo=apple">
-  <img src="https://img.shields.io/badge/iOS%2FiPadOS-17%2B-black?logo=apple">
+  <img src="https://img.shields.io/badge/macOS-15%2B-black?logo=apple">
+  <img src="https://img.shields.io/badge/iOS%2FiPadOS-18%2B-black?logo=apple">
   <img src="https://img.shields.io/badge/Swift-6.0%2B-F05138?logo=swift&logoColor=white">
   <img src="https://img.shields.io/badge/license-LGPL--3.0-lightgrey">
   <a href="https://discord.gg/P7NvpzNqnG"><img src="https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white"></a>
@@ -24,11 +24,21 @@
 
 ---
 
+## Highlights
+
+- **Plays almost anything, as it is.** MKV, MP4, AVI, WMV, FLV, transport streams and more, with HEVC, H.264, AV1, VP9 and VC-1 video, decoded in hardware where the Mac or iPhone can and in software where it cannot. No conversion step, no transcoding server.
+- **HDR and Dolby Vision.** HDR10, HDR10+, HLG and Dolby Vision play in HDR on a display that can show it. An iPhone or iPad with an HDR screen plays Dolby Vision as such; a Mac reports no Dolby Vision display, so there it plays the HDR10 base layer, with an experimental switch for the full composition.
+- **Dolby Atmos from TrueHD and DTS:X.** The height channels and objects of a Blu-ray soundtrack are rendered into a 7.1.4 bed and played as spatial audio, on AirPods or on the built-in speakers. Needs macOS or iOS 26.
+- **Every track.** Switch audio and subtitle tracks while playing, attach an `.srt`, and draw ASS/SSA subtitles with their own fonts and placement.
+- **Disc images.** A decrypted DVD-Video or Blu-ray `.iso` opens with its titles and chapters.
+- **Files, folders and URLs.** Open from Finder or the Files app, step through a folder, or paste an `http`/`https` URL, live IPTV streams included.
+- **In 26 languages, with no account and no tracking.**
+
 ## Install
 
-**macOS:** grab the latest notarized `.dmg` from the [Releases page](https://github.com/superuser404notfound/AetherPlayer/releases), drag AetherPlayer to your Applications folder, and launch it. The `.dmg` keeps itself current through built-in auto-updates (Sparkle), so you only have to download it once. You can also try the beta on [TestFlight](https://testflight.apple.com/join/rgrjZ98V) (an App Store release is on the way).
+**macOS:** grab the latest notarized `.dmg` from the [Releases page](https://github.com/superuser404notfound/AetherPlayer/releases), drag AetherPlayer to your Applications folder, and launch it. The `.dmg` keeps itself current through built-in auto-updates (Sparkle), so you only have to download it once. The Mac App Store version is on its way; until then, [TestFlight](https://testflight.apple.com/join/rgrjZ98V) carries the same build.
 
-**iOS/iPadOS:** join the public [TestFlight beta](https://testflight.apple.com/join/rgrjZ98V) (an App Store release is on the way), or build and run it from source (see [Build](#build) below).
+**iOS/iPadOS:** join the public [TestFlight beta](https://testflight.apple.com/join/rgrjZ98V) (the App Store release is on its way), or build and run it from source (see [Build](#build) below).
 
 ## macOS features
 
@@ -46,7 +56,7 @@
 - **Folder playlists.** Open a folder and step through its videos with Cmd+Left / Cmd+Right.
 - **Tunable buffering.** Preferences (Cmd+,) set how far ahead to buffer, for slow or unstable network sources. On iOS and iPadOS the same settings live behind the gear button in the Home toolbar.
 - **Pick how multichannel audio is delivered.** Formats that cannot be carried in fMP4 (TrueHD, DTS and DTS-HD MA, MP2, WMA, raw PCM) are re-encoded on the way to the player, and Preferences chooses on what. *Surround compatibility* (the default) uses Dolby Digital Plus, which an AV receiver or a soundbar decodes itself, works on nearly any setup, and folds 7.1 to 5.1. *Lossless* uses FLAC, which stays bit-perfect and keeps 7.1 whole, and suits headphones and built-in speakers; a sink that only accepts a Dolby bitstream falls back to stereo. Atmos objects survive neither, and an Atmos source that plays untouched never reaches this choice.
-- **Dolby Atmos from TrueHD.** A TrueHD Atmos track keeps its heights: the engine decodes its objects, renders them into a 7.1.4 bed and plays them as spatial audio, and the automatic track pick prefers such a track over the others in the same language. On by default and lossy; turned off in Preferences, TrueHD plays through the multichannel choice above. Needs macOS or iOS 26.
+- **Dolby Atmos from TrueHD and DTS:X.** A TrueHD Atmos or DTS:X track keeps its heights: the engine decodes its bed, heights and objects, renders them into a 7.1.4 bed and plays them as spatial audio, the automatic track pick prefers such a track over the others in the same language, and the track menu labels it Atmos or DTS:X. On by default and lossy; turned off in Preferences, both play through the multichannel choice above. Needs macOS or iOS 26.
 - **Dolby Vision composition (experimental).** No Mac reports a Dolby Vision display, so a Profile 8.1 source plays as its HDR10 base layer and the per-frame metadata is discarded. A Preferences switch hands the composition to AVPlayer instead. Off by default; on a display without the headroom for it, expect a shifted picture.
 - **Stats for Nerds.** A live inspector window (Cmd+Shift+I) showing the active backend and decoder, resolution, frame rate, dynamic range, pixel format, bit depth and colour description, display mode, video and audio bitrate, audio codec profile (DTS:X, TrueHD Atmos), channels, sample rate and format, how the audio reaches the renderer, the lip-sync offset, A/V sync, dropped frames, and buffer state.
 - **A silent file says why it is silent.** When a source carries audio that nothing in the chain can decode, playback used to continue silently with the reason only in the log. It now says so on screen, and the Stats inspector keeps the answer for the rest of the session.
@@ -85,6 +95,7 @@ A universal iPhone + iPad app (same source tree, sharing the playback core with 
 - **Custom playback chrome, matching the macOS design.** A transport bar with a scrubber (monospaced leading/trailing timecodes), a floating scrub-thumbnail preview while dragging, play/pause, and -/+10s skip. A top bar with Close, AirPlay, and Tracks. Controls tap to show/hide and auto-hide during playback, and a replay button appears when playback reaches the end.
 - **Picture in Picture, AirPlay, and lock-screen Now Playing.** Playback is still hosted in an `AVPlayerViewController` under the hood, so PiP, AirPlay routing, and Control Center / lock-screen Now Playing come for free. Only AVKit's own visible chrome is hidden; its backend stays in place.
 - **Track switching and lip-sync.** A tracks sheet lists audio and subtitle tracks, with an "Off" option for subtitles and support for attaching a sidecar `.srt`, plus a 50 ms audio-delay stepper for the latency Bluetooth headphones add. The settings sheet carries the same subtitle appearance options as the Mac.
+- **The same audio as on the Mac.** Dolby Atmos from TrueHD and DTS:X as spatial audio (iOS 26), the multichannel choice between Dolby Digital Plus and lossless FLAC, and tunable buffering, behind the gear button in the Home toolbar.
 - **Edge-swipe gestures.** A vertical swipe on the left edge adjusts brightness, on the right edge volume; the wide center stays a dead zone so a tap or a minimize swipe never nudges a level.
 - **Recents.** Recently opened files show up on Home with cached thumbnails for quick re-open.
 - **In your language.** The same 26 languages as on the Mac, following the system language or the per-app language in Settings.
