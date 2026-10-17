@@ -20,8 +20,6 @@ struct PlaybackSettingsView: View {
     // 0 == Auto (engine default); otherwise a forward-buffer segment count
     // (AetherEngine #102, engine clamps to 4...150).
     @AppStorage("playback.forwardBufferSegments") private var forwardBufferSegments = 0
-    // AetherEngine#731, on by default; see TrueHDAtmosSetting.
-    @AppStorage(TrueHDAtmosSetting.defaultsKey) private var trueHDAtmosHeights = true
     // AetherEngine AE#455. macOS only, see where it is shown below.
     #if os(macOS)
     @AppStorage("playback.forceDolbyVisionOnNonDVDisplay") private var forceDolbyVision = false
@@ -67,9 +65,6 @@ struct PlaybackSettingsView: View {
             AudioBridgeSetting.explanation(selectedMode) + " "
             + String(localized: "Applies to formats that have to be re-encoded, such as TrueHD and DTS, and to the next file you open.")
         )
-
-        Toggle("Dolby Atmos from TrueHD and DTS:X", isOn: $trueHDAtmosHeights)
-        caption(String(localized: "Keeps the height channels of TrueHD Atmos and DTS:X tracks and plays them as spatial audio, and picks such a track in your language. Lossy. When off, they play through the setting above. Applies to the next file you open."))
 
         divider()
 

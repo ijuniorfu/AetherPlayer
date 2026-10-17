@@ -39,17 +39,8 @@ struct AudioBridgeSettingTests {
     }
 }
 
-/// AetherEngine#731, #744: TrueHD Atmos and DTS:X keep their heights unless someone turns it off.
-struct TrueHDAtmosSettingTests {
-
-    @Test func onWhenNobodyHasChosen() {
-        #expect(TrueHDAtmosSetting.resolve(enabled: nil) == .apac(.l714))
-    }
-
-    @Test func offFallsBackToTheBridge() {
-        #expect(TrueHDAtmosSetting.resolve(enabled: false) == .off)
-        #expect(TrueHDAtmosSetting.resolve(enabled: true) == .apac(.l714))
-    }
+/// The track menu names TrueHD Atmos and DTS:X tracks for what the file carries.
+struct ObjectAudioTrackLabelTests {
 
     @Test func trueHDAtmosIsLabelledAtmosInTheTrackMenu() {
         let atmos = TrackInfo(id: 1, name: "", codec: "truehd", language: "en", channels: 8, isDefault: true,
