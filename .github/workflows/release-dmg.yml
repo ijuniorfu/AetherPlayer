@@ -131,12 +131,15 @@ jobs:
           ./Scripts/build-dmg.sh
 
       # The object-audio traits reach the build only through Scripts/generate-project.sh; without them
-      # the app silently plays TrueHD Atmos and DTS:X without heights. LibDTSX is the one of the two
-      # that ships as an embedded framework, so its presence proves the traits were on.
+      # the app silently plays TrueHD Atmos and DTS:X without heights. Both decoders are compiled into
+      # the app binary only with their trait, so a string each of them carries proves it was on.
       - name: Check the object-audio traits were built in
         run: |
-          test -d build/export/AetherPlayer.app/Contents/Frameworks/DTSX.framework ||
-            { echo "::error::DTSX.framework missing: AetherEngine's object-audio traits were not enabled"; exit 1; }
+          BIN=build/export/AetherPlayer.app/Contents/MacOS/AetherPlayer
+          grep -q -a "TrueHDObjectAudioDecoder: status" "$BIN" ||
+            { echo "::error::TrueHD object decoder missing: AetherEngine's TrueHDObjectAudio trait was not enabled"; exit 1; }
+          grep -q -a "no x_heights option" "$BIN" ||
+            { echo "::error::DTS:X decoder missing: AetherEngine's DTSXObjectAudio trait was not enabled"; exit 1; }
 
       - name: Upload .dmg to release
         env:
